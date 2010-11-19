@@ -1,0 +1,114 @@
+#Пример написания формы авторизации
+= HTML =
+{{{
+<html>
+<body id="rootPanel" layout="border" style="width: 400; height:300; border: empty 12 12 12 12">
+
+<table style="column-sizes: preferred preferred fill; row-sizes: preferred preferred preferred preferred">
+    <tr>
+        <td rowspan="4">
+            <img src="/img/login_icon.gif" alt=""/>
+        </td>
+        <td style="text-align:right;">
+            <p style="border: empty 0 0 0 6">User name:</p>
+        </td>
+        <td>
+            <input type="text" id="login"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;">
+            <p style="border: empty 0 0 0 6">Password:</p>
+        </td>
+        <td>
+            <input type="password" id="password"/>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <p id="result" style="color: red"></p>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div layout="flow" style="text-align: right; margin: 12 0">
+                <input type="button" text="OK" id="ok" icon="/img/accept.png"/>
+                <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+</body>
+</html>
+}}}
+
+= Java =
+{{{
+package ru.swing.html.example;
+
+import org.jdom.JDOMException;
+import ru.swing.html.Bind;
+import ru.swing.html.Binder;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+
+public class LoginForm {
+
+    @Bind("login")
+    private JTextField login;
+
+    @Bind("password")
+    private JPasswordField password;
+
+    @Bind("ok")
+    private JButton okBtn;
+
+    @Bind("cancel")
+    private JButton cancelBtn;
+
+    @Bind("rootPanel")
+    private JPanel rootPanel;
+
+    @Bind("result")
+    private JLabel result;
+
+    public LoginForm() {
+        try {
+            Binder.bind(this);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        init();
+    }
+
+    public void init() {
+        okBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                result.setText("Logging in user "+login.getText());
+            }
+        });
+
+        cancelBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                result.setText("Cancel clicked");
+            }
+        });
+    }
+
+    public JPanel getRootPanel() {
+        return rootPanel;
+    }
+}
+
+}}}
+
+
+== Result ==
