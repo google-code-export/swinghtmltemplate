@@ -3,10 +3,12 @@ package ru.swing.html.tags;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.*;
+import ru.swing.html.layout.LayoutManagerSupport;
+import ru.swing.html.layout.LayoutManagerSupportFactory;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -257,6 +259,10 @@ public class Tag {
 
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public JComponent createComponent() {
+        throw new UnsupportedOperationException();
     }
 
     /**

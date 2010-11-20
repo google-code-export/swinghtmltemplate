@@ -26,7 +26,7 @@ public class Test {
         LoginForm loginForm = new LoginForm();
 
         JFrame f = new JFrame("Test");
-        f.setSize(400, 150);
+        f.setSize(400, 200);
 
 
         f.getContentPane().add(loginForm.getRootPanel());

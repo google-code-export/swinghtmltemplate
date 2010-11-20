@@ -46,6 +46,14 @@ public class SplitPane extends Tag {
     private Double dividerPercentLocation = null;
     private int dividerLocation = -1;
 
+
+    @Override
+    public JComponent createComponent() {
+        JSplitPane c = new JSplitPane();
+        setComponent(c);
+        return c;
+    }
+    
     @Override
     public void handleChildren() {
         if (getComponent() instanceof JSplitPane) {

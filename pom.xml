@@ -32,7 +32,11 @@
             <artifactId>TableLayout</artifactId>
             <version>20050920</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.miglayout</groupId>
+            <artifactId>miglayout</artifactId>
+            <version>3.7.3</version>
+        </dependency>
     </dependencies>
 
 </project>

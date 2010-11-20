@@ -15,6 +15,7 @@
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.1" level="project" />
     <orderEntry type="library" name="Maven: tablelayout:TableLayout:20050920" level="project" />
+    <orderEntry type="library" name="Maven: com.miglayout:miglayout:3.7.3" level="project" />
   </component>
 </module>
 

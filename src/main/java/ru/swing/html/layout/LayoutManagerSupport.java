@@ -1,4 +1,4 @@
-package ru.swing.html;
+package ru.swing.html.layout;
 
 import ru.swing.html.tags.Tag;
 
