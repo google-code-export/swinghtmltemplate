@@ -288,6 +288,9 @@ public class Tag {
                     logger.warn("Failed to set text property for component of class "+component.getClass());
                 }
             }
+            else if ("opaque".equals(attrName)) {
+                component.setOpaque(Boolean.parseBoolean(attrValue));
+            }
             else if ("icon".equals(attrName)) {
                 Icon icon = new ImageIcon(getClass().getResource(attrValue));
                 try {

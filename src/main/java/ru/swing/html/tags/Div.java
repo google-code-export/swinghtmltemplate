@@ -7,10 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 20.11.2010
- * Time: 23:51:21
+ * Тег преобразуется в панель JPanel. По умолчанию подставляется FlowLayout.
  */
 public class Div extends Tag {
 
