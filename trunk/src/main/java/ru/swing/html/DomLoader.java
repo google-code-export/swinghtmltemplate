@@ -2,10 +2,7 @@ package ru.swing.html;
 
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
-import ru.swing.html.tags.ScrollPane;
-import ru.swing.html.tags.SplitPane;
-import ru.swing.html.tags.Table;
-import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,11 +54,41 @@ public class DomLoader {
         if ("table".equals(element.getName())) {
             return new Table();
         }
+        else if ("body".equals(element.getName())) {
+            return new Body();
+        }
+        else if ("component".equals(element.getName())) {
+            return new Component();
+        }
+        else if ("div".equals(element.getName())) {
+            return new Div();
+        }
+        else if ("img".equals(element.getName())) {
+            return new Img();
+        }
+        else if ("form".equals(element.getName())) {
+            return new Form();
+        }
+        else if ("glue".equals(element.getName())) {
+            return new Glue();
+        }
+        else if ("input".equals(element.getName())) {
+            return new Input();
+        }
+        else if ("textarea".equals(element.getName())) {
+            return new TextArea();
+        }
         else if ("scroll".equals(element.getName())) {
             return new ScrollPane();
         }
         else if ("split".equals(element.getName())) {
             return new SplitPane();
+        }
+        else if ("strut".equals(element.getName())) {
+            return new Strut();
+        }
+        else if ("p".equals(element.getName())) {
+            return new P();
         }
         else {
             return new Tag();

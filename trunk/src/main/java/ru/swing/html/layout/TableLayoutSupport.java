@@ -1,4 +1,4 @@
-package ru.swing.html;
+package ru.swing.html.layout;
 
 import info.clearthought.layout.TableLayout;
 import org.apache.commons.lang.StringUtils;

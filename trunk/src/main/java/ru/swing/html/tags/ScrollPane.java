@@ -18,6 +18,13 @@ public class ScrollPane extends Tag {
     private Log logger = LogFactory.getLog(getClass());
 
     @Override
+    public JComponent createComponent() {
+        JScrollPane scrollPane = new JScrollPane();
+        setComponent(scrollPane);
+        return scrollPane;
+    }
+
+    @Override
     public void handleLayout() {
     }
 

@@ -1,4 +1,4 @@
-package ru.swing.html;
+package ru.swing.html.layout;
 
 import ru.swing.html.tags.Tag;
 
@@ -25,6 +25,12 @@ public class LayoutManagerSupportFactory {
         }
         else if ("table".equals(layoutName)) {
             res = new TableLayoutSupport();
+        }
+        else if ("mig".equals(layoutName)) {
+            res = new MigLayoutSupport();
+        }
+        else if ("box".equals(layoutName)) {
+            res = new BoxLayoutSupport();
         }
         else {
             res = new FlowLayoutSupport();

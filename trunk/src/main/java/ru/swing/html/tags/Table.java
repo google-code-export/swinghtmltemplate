@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import ru.swing.html.CellSpan;
 import ru.swing.html.DomConverter;
 import ru.swing.html.SpanMap;
-import ru.swing.html.TableLayoutSupport;
+import ru.swing.html.layout.TableLayoutSupport;
 
 import javax.swing.*;
 import java.util.HashSet;
@@ -24,6 +24,14 @@ public class Table extends Tag {
     private Set<TagPosition> tags = new HashSet<TagPosition>();
     private TableLayoutSupport tableLayoutSupport;
     private SpanMap spanMap = new SpanMap();
+
+    @Override
+    public JComponent createComponent() {
+        JPanel c = new JPanel();
+        setComponent(c);
+        return c;
+    }
+
 
     @Override
     public void handleLayout() {
