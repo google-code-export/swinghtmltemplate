@@ -262,7 +262,8 @@ public class Tag {
     }
 
     public JComponent createComponent() {
-        throw new UnsupportedOperationException();
+        logger.error("Can't create component for tag "+getName());
+        return null;
     }
 
     /**
