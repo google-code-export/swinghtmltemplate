@@ -87,6 +87,9 @@ public class DomLoader {
         else if ("strut".equals(element.getName())) {
             return new Strut();
         }
+        else if ("tabs".equals(element.getName())) {
+            return new Tabs();
+        }
         else if ("p".equals(element.getName())) {
             return new P();
         }
