@@ -3,9 +3,13 @@ package ru.swing.html;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ru.swing.html.css.CssBlock;
 import ru.swing.html.tags.Tag;
 
+import javax.swing.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,6 +22,7 @@ import java.util.Map;
 public class DomModel {
 
     private Log logger = LogFactory.getLog(getClass());
+    private List<CssBlock> globalStyles = new ArrayList<CssBlock>();
     private Tag rootTag;
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
 
@@ -54,4 +59,13 @@ public class DomModel {
             fillIdsWithinTag(child);
         }
     }
+
+    public void addGlobalStyle(CssBlock cssBlock) {
+        globalStyles.add(cssBlock);
+    }
+
+    public List<CssBlock> getGlobalStyles() {
+        return globalStyles;
+    }
+
 }

@@ -3,12 +3,13 @@ package ru.swing.html.tags;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.*;
+import ru.swing.html.css.CssBlock;
+import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import java.util.Map;
  */
 public class Tag {
 
+    private DomModel model;
     private JComponent component;
     private Log logger = LogFactory.getLog(Tag.class);
     private String id;
@@ -43,10 +45,15 @@ public class Tag {
     private String textAlign;
     private String verticalAlign;
     private String margin;
-    private int width;
-    private int height;
+    private String width;
+    private String height;
     private Map<String, String> attributes = new HashMap<String, String>();
 
+    /**
+     * Возвращает первый дочерний тег с указанным именем.
+     * @param name имя тега (p, body, div)
+     * @return тег или null, если тег не найден
+     */
     public Tag getChildByName(String name) {
         for (Tag child : getChildren()) {
             if (name.equals(child.getName())) {
@@ -55,6 +62,8 @@ public class Tag {
         }
         return null;
     }
+
+    
 
     public String getAttribute(String name) {
         return attributes.get(name);
@@ -94,10 +103,10 @@ public class Tag {
             setBackgroundColor(ColorFactory.getColor(value));
         }
         else if ("width".equals(name)) {
-            setWidth(new Integer(value));
+            setWidth(value);
         }
         else if ("height".equals(name)) {
-            setHeight(new Integer(value));
+            setHeight(value);
         }
         else if ("style".equals(name)) {
             Map<String, String> styles = StyleParser.extractStyles(value);
@@ -105,9 +114,7 @@ public class Tag {
                 setAttribute(styleName, styles.get(styleName));
             }
         }
-        else {
-            attributes.put(name, value);
-        }
+        attributes.put(name, value);
     }
 
     public void handleLayout() {
@@ -228,19 +235,19 @@ public class Tag {
         this.component = component;
     }
 
-    public int getHeight() {
+    public String getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(String height) {
         this.height = height;
     }
 
-    public int getWidth() {
+    public String getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(String width) {
         this.width = width;
     }
 
@@ -261,18 +268,24 @@ public class Tag {
         this.backgroundColor = backgroundColor;
     }
 
+    
+
     public JComponent createComponent() {
         logger.error("Can't create component for tag "+getName());
         return null;
+    }
+
+    public void applyAttributes(JComponent component) {
+        actualApplyAttributes(component, getAttributes());
     }
 
     /**
      * Применяет аттрибуты тэга к компоненту. Так как в атрибутах может храниться что угодно (например, стили),
      * данный метод должен обрабатывать каждый атрибут отдельно.
      * @param component компонент, для которого применяются атрибуты
+     * @param attributes атрибуты
      */
-    public void applyAttributes(JComponent component) {
-        final Map<String,String> attributes = getAttributes();
+    private void actualApplyAttributes(JComponent component, Map<String, String> attributes) {
         for (String attrName : attributes.keySet()) {
 
             final String attrValue = attributes.get(attrName);
@@ -320,5 +333,13 @@ public class Tag {
         if (getBackgroundColor()!=null) {
             component.setBackground(getBackgroundColor());
         }
+    }
+
+    public DomModel getModel() {
+        return model;
+    }
+
+    public void setModel(DomModel model) {
+        this.model = model;
     }
 }

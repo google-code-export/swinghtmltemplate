@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
+import ru.swing.html.DomModel;
 
 import javax.swing.*;
 

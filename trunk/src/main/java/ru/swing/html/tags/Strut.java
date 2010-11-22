@@ -14,10 +14,10 @@ public class Strut extends Tag {
     @Override
     public JComponent createComponent() {
         if ("horizontal".equals(getType())) {
-            return (JComponent) Box.createHorizontalStrut(getWidth());
+            return (JComponent) Box.createHorizontalStrut(new Integer(getWidth()));
         }
         else {
-            return (JComponent) Box.createVerticalStrut(getHeight());
+            return (JComponent) Box.createVerticalStrut(new Integer(getHeight()));
         }
     }
 

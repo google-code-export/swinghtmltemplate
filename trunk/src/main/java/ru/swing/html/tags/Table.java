@@ -1,14 +1,17 @@
 package ru.swing.html.tags;
 
+import info.clearthought.layout.TableLayout;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.swing.html.CellSpan;
 import ru.swing.html.DomConverter;
 import ru.swing.html.SpanMap;
+import ru.swing.html.css.CssBlock;
 import ru.swing.html.layout.TableLayoutSupport;
 
 import javax.swing.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * <pre>
@@ -19,11 +22,14 @@ import java.util.Set;
  */
 public class Table extends Tag {
 
+    private Log logger = LogFactory.getLog(getClass());
     private int currentCol = 0;
     private int currentRow = 0;
     private Set<TagPosition> tags = new HashSet<TagPosition>();
     private TableLayoutSupport tableLayoutSupport;
     private SpanMap spanMap = new SpanMap();
+    private List<String> widths = new ArrayList<String>();
+    private List<String> heights = new ArrayList<String>();
 
     @Override
     public JComponent createComponent() {
@@ -35,17 +41,39 @@ public class Table extends Tag {
 
     @Override
     public void handleLayout() {
-        tableLayoutSupport = new TableLayoutSupport();
-        getComponent().setLayout(tableLayoutSupport.createLayout(this));
     }
 
     @Override
     public void handleChildren() {
-        //todo нет colspan, rowspan
 
         tags.clear();
         //вычисляем позиции всех дочерних элементов
         positionChildren(this);
+
+        tableLayoutSupport = new TableLayoutSupport();
+        if (getAttribute("column-sizes")==null) {
+            String columnSizes = "";
+            for (int i = 0; i<currentCol; i++) {
+                String w = widths.get(i);
+                if (w==null) {
+                    w = "preferred";
+                }
+                columnSizes+= w +" ";
+            }
+            setAttribute("column-sizes", columnSizes);
+        }
+        if (getAttribute("row-sizes")==null) {
+            String rowSizes = "";
+            for (int i = 0; i<currentRow; i++) {
+                String w = heights.get(i);
+                if (w==null) {
+                    w = "preferred";
+                }
+                rowSizes+= w +" ";
+            }
+            setAttribute("row-sizes", rowSizes);
+        }
+        getComponent().setLayout(tableLayoutSupport.createLayout(this));
 
 
         //размещаем элементы
@@ -92,7 +120,7 @@ public class Table extends Tag {
             }
             align+=" "+horizAlign+" "+verticalAlign;
 
-            tagAtPosition.setAlign(align);
+            tagAtPosition.setAttribute("align", align);
 
             JComponent childComponent = DomConverter.convertComponent(tagAtPosition);
             tableLayoutSupport.addComponent(getComponent(), childComponent, align);
@@ -108,22 +136,130 @@ public class Table extends Tag {
                 currentRow++;
             }
             else if ("td".equals(child.getName())) {
-                String rowspanStr = child.getAttribute("rowspan");
-                String colspanStr = child.getAttribute("colspan");
-                if (StringUtils.isNotEmpty(rowspanStr) || StringUtils.isNotEmpty(colspanStr)) {
-                    int rowspan = StringUtils.isNotEmpty(rowspanStr) ? new Integer(rowspanStr) : 1;
-                    int colspan = StringUtils.isNotEmpty(colspanStr) ? new Integer(colspanStr) : 1;
-                    if (colspan>1 || rowspan>1) {
 
-                        CellSpan sp = spanMap.getSpanForCell(currentRow, currentCol);
-                        if (sp!=null && (sp.getColumn()!=currentCol || sp.getRow()!=currentRow)) {
-                            int xOffset = sp.getColumn()+sp.getColumnSpan()-currentCol;
-                            currentCol+=xOffset;
+                //так как мы обрабатываем тег td вручную, то необходимо вручную применить все глобальные стили
+                Map<String, String> old = new HashMap<String, String>();
+
+                List<CssBlock> css = child.getModel().getGlobalStyles();
+                for (CssBlock block : css) {
+                    if (block.matches(child)) {
+                        for (String attrName : block.getStyles().keySet()) {
+                            child.setAttribute(attrName, block.getStyles().get(attrName));
                         }
-
-                        spanMap.addSpan(new CellSpan(currentRow, currentCol, rowspan, colspan));
                     }
                 }
+                for (String attrName : old.keySet()) {
+                    child.setAttribute(attrName, old.get(attrName));
+                }
+
+
+                String rowspanStr = child.getAttribute("rowspan");
+                String colspanStr = child.getAttribute("colspan");
+                int rowspan = StringUtils.isNotEmpty(rowspanStr) ? new Integer(rowspanStr) : 1;
+                int colspan = StringUtils.isNotEmpty(colspanStr) ? new Integer(colspanStr) : 1;
+
+                if (colspan>1 || rowspan>1) {
+
+                    CellSpan sp = spanMap.getSpanForCell(currentRow, currentCol);
+                    if (sp!=null && (sp.getColumn()!=currentCol || sp.getRow()!=currentRow)) {
+                        int xOffset = sp.getColumn()+sp.getColumnSpan()-currentCol;
+                        currentCol+=xOffset;
+                    }
+
+                    spanMap.addSpan(new CellSpan(currentRow, currentCol, rowspan, colspan));
+                }
+
+
+                //если ячейка не тянется на несколько колонок, то обрабатываем ее ширину
+                if (colspan<=1) {
+                    if (StringUtils.isEmpty(child.getWidth())) {//если не указана ширина ячейки, выставляем preferred
+                        if (currentCol>widths.size()-1) {
+                            widths.add(currentCol, "preferred");
+                        }
+                    }
+                    else {//если указана ширина ячейки
+                        if (currentCol>widths.size()-1) {//если для данного ряда еще не было указаний по ширине
+                            widths.add(currentCol, child.getWidth());//то просто сохраняем значение ширины
+                        }
+                        else {//иначе надо сравнить с уже сохраненным, и заменить только если указана большая высота
+                            if ("fill".equals(child.getWidth()) || "fill".equals(widths.get(currentCol))) {
+                                //если хоть для какой-то ячейки указан fill, то принудительно выставляем его
+                                heights.set(currentCol, "fill");
+                            }
+                            else if ("preferred".equals(child.getWidth())) {
+                                //preferred - самый низкий приоритет, он и так выставляется, ничего не делаем
+                            }
+                            else {
+                                //парсим высоту ячейки
+                                Double h;
+                                try {
+                                    h = new Double(child.getWidth());
+                                } catch (NumberFormatException e) {
+                                    h = 0d;
+                                }
+                                //парсим максимальную высоту
+                                Double max;
+                                try {
+                                    max = new Double(widths.get(currentCol));
+                                } catch (NumberFormatException e) {
+                                    max = 0d;//не получится парсить когда max==preferred
+                                }
+                                if (h>max) {
+                                    //если для ячейки указана больная высота, чем было сохранено ранее, то
+                                    //сохраняем высоту ячейки
+                                    widths.set(currentCol, h.toString());
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                //если ячейка не тянется на несколько рядов, то обрабатываем ее высоту
+                if (rowspan<=1) {
+                    if (StringUtils.isEmpty(child.getHeight())) {//если не указана высота ячейки, выставляем preferred
+                        if (currentRow>heights.size()-1) {
+                            heights.add(currentRow, "preferred");
+                        }
+                    }
+                    else {//если указана высота ячейки
+                        if (currentRow>heights.size()-1) {//если для данного ряда еще не было указаний по высоте
+                            heights.add(currentRow, child.getHeight().trim());//то просто сохраняем значение высоты
+                        }
+                        else {//иначе надо сравнить с уже сохраненным, и заменить только если указана большая высота
+                            if ("fill".equals(child.getHeight()) || "fill".equals(heights.get(currentRow))) {
+                                //если хоть для какой-то ячейки указан fill, то принудительно выставляем его
+                                heights.set(currentRow, "fill");
+                            }
+                            else if ("preferred".equals(child.getHeight())) {
+                                //preferred - самый низкий приоритет, он и так выставляется, ничего не делаем
+                            }
+                            else {
+                                //парсим высоту ячейки
+                                Double h;
+                                try {
+                                    h = new Double(child.getHeight());
+                                } catch (NumberFormatException e) {
+                                    h = 0d;
+                                }
+                                //парсим максимальную высоту
+                                Double max;
+                                try {
+                                    max = new Double(heights.get(currentRow));
+                                } catch (NumberFormatException e) {
+                                    max = 0d;//не получится парсить когда max==preferred
+                                }
+                                if (h>max) {
+                                    //если для ячейки указана больная высота, чем было сохранено ранее, то
+                                    //сохраняем высоту ячейки
+                                    heights.set(currentRow, h.toString());
+                                }
+                            }
+                        }
+
+                    }
+                }
+
                 positionChildren(child);
                 currentCol++;
             }

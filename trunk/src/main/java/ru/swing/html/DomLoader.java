@@ -25,6 +25,7 @@ public class DomLoader {
 
         Element root = doc.getRootElement();
         Tag rootTag = createTag(root);
+        rootTag.setModel(model);
         model.setRootTag(rootTag);
         parseElement(root, rootTag);
 
@@ -44,6 +45,7 @@ public class DomLoader {
         for (Object o : element.getChildren()) {
             Element child = (Element) o;
             Tag childTag = createTag(child);
+            childTag.setModel(tag.getModel());
             childTag.setParent(tag);
             tag.getChildren().add(childTag);
             parseElement(child, childTag);
