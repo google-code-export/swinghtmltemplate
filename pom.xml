@@ -7,6 +7,7 @@
     <groupId>swinghtml</groupId>
     <artifactId>swinghtml</artifactId>
     <version>1.0</version>
+
     <build>
         <plugins>
             <plugin>
@@ -20,8 +21,8 @@
         </plugins>
     </build>
 
-
     <dependencies>
+
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
@@ -33,6 +34,7 @@
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
         </dependency>
+
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
@@ -44,11 +46,20 @@
             <artifactId>TableLayout</artifactId>
             <version>20050920</version>
         </dependency>
+
         <dependency>
             <groupId>com.miglayout</groupId>
             <artifactId>miglayout</artifactId>
             <version>3.7.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

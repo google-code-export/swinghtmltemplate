@@ -1,13 +1,29 @@
 <html>
+
+<head>
+
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+        .top {
+            vertical-align: top;
+        }
+        #loginForm {
+            x-miglayout-column-constraints: [right]related[grow,fill];
+        }
+    </style>
+
+</head>
 <body id="rootPanel" layout="border" style="width: 400; height:300; border: empty 12 12 12 12">
 
-<table style="column-sizes: preferred  fill; row-sizes: preferred preferred preferred ">
+<table>
     <tr>
-        <td rowspan="3" style="vertical-align:top">
+        <td rowspan="3" class="top">
             <img src="/img/login_icon.gif" alt=""/>
         </td>
-        <td>
-            <form style="x-miglayout-column-constraints: [right]related[grow,fill]">
+        <td width="fill">
+            <form id="loginForm">
                 <p>Login:</p>
                 <input id="login" type="text" align="wrap"/>
                 <p>Password:</p>
@@ -17,7 +33,7 @@
     </tr>
     <tr>
         <td>
-            <p id="result" style="color: red"></p>
+            <p id="result" class="red"></p>
         </td>
     </tr>
     <tr>

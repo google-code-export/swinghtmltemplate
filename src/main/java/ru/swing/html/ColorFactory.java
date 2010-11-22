@@ -11,9 +11,27 @@ import java.awt.*;
  */
 public class ColorFactory {
 
-    public static final Color getColor(String name) {
+    public static Color getColor(String name) {
         if ("red".equals(name)) {
             return Color.red;
+        }
+        else if ("blue".equals(name)) {
+            return Color.blue;
+        }
+        else if ("black".equals(name)) {
+            return Color.black;
+        }
+        else if ("yellow".equals(name)) {
+            return Color.yellow;
+        }
+        else if ("pink".equals(name)) {
+            return Color.pink;
+        }
+        else if ("white".equals(name)) {
+            return Color.white;
+        }
+        else if ("green".equals(name)) {
+            return Color.green;
         }
         return null;
     }

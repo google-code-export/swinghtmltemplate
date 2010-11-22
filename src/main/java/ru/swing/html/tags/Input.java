@@ -1,5 +1,7 @@
 package ru.swing.html.tags;
 
+import ru.swing.html.DomModel;
+
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
