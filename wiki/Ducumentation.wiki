@@ -193,3 +193,61 @@ javax.swing.Box.createVerticalGlue();
 
 
 == strut ==
+Тег преобразуется в компонент, возвращаемый в результате вызова
+{{{
+javax.swing.Box.createHorizontalStrut(width)
+}}}
+для {{{type="horizontal"}}}, или 
+{{{
+javax.swing.Box.createVerticalStrut(height)
+}}}
+для {{{type="vertical"}}}. Значение type по умолчанию - vertical.
+Используется в компонентах с менеджером компоновки {{{BoxLayout}}}.
+{{{width}}} и {{{height}}} - значения атрибутов тега width и height соответственно.
+
+Пример:
+{{{
+<strut type="horizontal" style="width: 12"/>
+<strut type="vertical" height="12"/>
+}}}
+
+
+== table ==
+Тег преобразуется в панель, в качестве менеджера компоновки которой используется TableLayout. 
+
+== tabs ==
+Тег преобразуется в панель JTabbedPane.
+
+Для каждого дочернего тега создается вкладка, в качестве названия подставляется значение атрибута title дочернего тега.
+
+Тег поддерживает атрибуты:
+
+  * *tab-position* - определяет позицию вкладок. Допустимые значения: top, bottom, left, right.
+
+
+Пример:
+{{{
+<tabs>
+    <div title="Text">
+        <p>Tab 1</p>
+    </div>
+
+    <div title="JEditorPane" layout="border">
+        <scroll>
+            <component type="javax.swing.JEditorPane"/>
+        </scroll>
+
+    </div>
+</tabs>
+}}}
+
+
+== textarea ==
+Тег преобразуется в компонент JTextArea. В качестве текста компонента присваивается содержимое тега.
+
+Пример:
+{{{
+<scroll>
+   <textarea>Some text</textarea>
+</scroll>
+}}}
