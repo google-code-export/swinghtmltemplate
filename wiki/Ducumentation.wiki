@@ -103,11 +103,11 @@ public class LoginForm {
 {{{
 javax.swing.Box.createHorizontalGlue();
 }}}
-для {{{type="horizontal"}}, или 
+для {{{type="horizontal"}}}, или 
 {{{
 javax.swing.Box.createVerticalGlue();
 }}}
-для {{{type="vertical"}}. Значение type по умолчанию - vertical.
+для {{{type="vertical"}}}. Значение type по умолчанию - vertical.
 Используется в компонентах с менеджером компоновки BoxLayout.
 
 Пример:
