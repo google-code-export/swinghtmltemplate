@@ -421,7 +421,7 @@ preferred < number < fill
 }}}
 
 == mig ==
-Соответствует менеджеру компоновки [[http://www.miglayout.com/ net.miginfocom.swing.MigLayout]].
+Соответствует менеджеру компоновки [http://www.miglayout.com/ net.miginfocom.swing.MigLayout].
 
 Свойства менеджера компоновки задаются атрибутом {{{x-miglayout-constraints}}}.
 
