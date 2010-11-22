@@ -442,7 +442,7 @@ preferred < number < fill
 Тег {{{<form/>}}} по умолчанию использует данную компоновку.
 
 == table ==
-Соответствует менеджеру компоновки [[https://tablelayout.dev.java.net TableLayout]].
+Соответствует менеджеру компоновки [https://tablelayout.dev.java.net TableLayout].
 
 Свойства столбцов задаются атрибутом {{{column-sizes}}}.
 
