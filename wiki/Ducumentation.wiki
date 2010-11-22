@@ -419,3 +419,79 @@ preferred < number < fill
     <input type="button" text="Cancel"/>
 </div>
 }}}
+
+== mig ==
+Соответствует менеджеру компоновки [[http://www.miglayout.com/ net.miginfocom.swing.MigLayout]].
+
+Свойства менеджера компоновки задаются атрибутом {{{x-miglayout-constraints}}}.
+
+Свойства колонок задаются атрибутом {{{x-miglayout-column-constraints}}}.
+
+Свойства рядов задаются атрибутом {{{x-miglayout-row-constraints}}}.
+
+Пример:
+{{{
+<form id="loginForm" style="x-miglayout-column-constraints: [right]related[grow,fill];">
+   <p>Login:</p>
+   <input id="login" type="text" align="wrap"/>
+   <p>Password:</p>
+   <input id="password" type="password" align="wrap" />
+</form>
+}}}
+
+Тег {{{<form/>}}} по умолчанию использует данную компоновку.
+
+== table ==
+Соответствует менеджеру компоновки [[https://tablelayout.dev.java.net/ TableLayout]].
+
+Свойства столбцов задаются атрибутом {{{column-sizes}}}.
+
+Свойства рядов задаются атрибутом {{{row-sizes}}}.
+
+Пример: 
+{{{
+<table style="row-sizes: preferred preferred preferred preferred; column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+
+    <tr>
+        <td style="text-align: right;"><p>Login:</p></td>
+        <td><input type="text">qqq</input></td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Password:</p></td>
+        <td>
+            <input type="text">***</input>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Remember:</p></td>
+        <td>
+            <input type="checkbox"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
+        <td>
+            <table style="row-sizes: preferred preferred; column-sizes: preferred fill">
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Manager</p></td>
+                </tr>
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Admin</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+</table>
+
+<div layout="table" style="row-sizes: preferred preferred; column-sizes: 100 fill;">
+   <p align="0 0 c c">1</p>
+   <p align="0 1 c c">2</p>
+   <p align="1 0 c c">3</p>
+   <p align="1 1 c c">4</p>
+</div>
+
+}}}
+Тег {{{<table/>}}} по умолчанию использует данную компоновку.
