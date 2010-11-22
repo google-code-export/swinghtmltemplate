@@ -30,3 +30,32 @@ model.getRootTag().getComponent();
 }}}
 
 корневой элемент соответствует тегу body в html документе.
+Также из модели можно получить любой компонент по его id:
+{{{
+model.getTagById("someId");
+}}}
+
+== Автоматический биндинг ==
+Можно автоматически подгрузить форму для некого объекта, представляющего контроллер формы, и присвоить полям объекта требуемые элементы:
+{{{
+public class LoginForm {
+
+   @Bind("login")
+   private JTextField loginText;
+
+   public LoginForm() {
+        try {
+            Binder.bind(this);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+   }
+
+}
+}}}
+
+Аннотация @Bind("id") указывает на то, что данному полю в качестве значения будет присвоен компонент, соответствующий тегу с идентификатором "id".
+
