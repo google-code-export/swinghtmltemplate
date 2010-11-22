@@ -213,7 +213,111 @@ javax.swing.Box.createVerticalStrut(height)
 
 
 == table ==
-Тег преобразуется в панель, в качестве менеджера компоновки которой используется TableLayout. 
+Тег преобразуется в панель, в качестве менеджера компоновки которой используется [[https://tablelayout.dev.java.net/ TableLayout]]. 
+
+У тега можно задать атрибуты
+ * *column-sizes* - размеры колонок, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * *row-sizes* - размеры рядов, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+
+Пример:
+{{{
+<table style="column-sizes: preferred fill; row-sizes: preferred">
+   <tr>
+      <td><p>Login:</p></td>
+      <td><input type="text"/></td>
+   </tr>
+</table>
+}}}
+
+Если не задавать column-sizes (row-sizes), то соответствующее свойство будет вычисляться динамически: для каждой ячейки запоминается максимальное значение ширины (высоты) и затем оно будет использовано в качестве размера столбца (строки).
+
+При этом следует учитывать, что
+{{{
+preferred < number < fill
+}}}
+
+По умолчанию используется значение preferred. Таким образом, если указать для какой-либо ячейки атрибут width (height) с числовым значением, то это число перекроет значение preferred. Аналогично значение fill перекроет любое числовое значение и значение preferred.
+
+Следует учитывать, что задание column-sizes (row-sizes) для тега {{{table}}} автоматически устанавливает количество столюцов (строк), при динамическом вычислении количество столбцов считается динамически.
+
+Для ячейки td можно задать следующие свойства:
+  * *width* - ширина столбца, см выше
+  * *height* - высота столбца, см выше
+  * *rowspan* - растягивание ячейки по горизонтали. Для таких ячеек игнорируется значение width
+ * *colspan* - растягивание ячейки по вертикали. Для таких ячеек игнорируется значение height
+ * text-align - центрирование по горизонтали. Значения: left, right, center, full
+ * vertcal-align - центрирование по вертикали. Значения: top, bottom, center, full
+
+Примеры:
+{{{
+<table style="row-sizes: preferred preferred preferred preferred; column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+
+    <tr>
+        <td style="text-align: right;"><p>Login:</p></td>
+        <td><input type="text">qqq</input></td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Password:</p></td>
+        <td>
+            <input type="text">***</input>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Remember:</p></td>
+        <td>
+            <input type="checkbox"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
+        <td>
+            <table style="row-sizes: preferred preferred; column-sizes: preferred fill">
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Manager</p></td>
+                </tr>
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Admin</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td rowspan="3" class="top">
+            <img src="/img/login_icon.gif" alt=""/>
+        </td>
+        <td width="fill">
+            <form id="loginForm">
+                <p>Login:</p>
+                <input id="login" type="text" align="wrap"/>
+                <p>Password:</p>
+                <input id="password" type="password" align="wrap" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p id="result" class="red"></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div layout="box" style="x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+                <glue type="horizontal"/>
+                <input type="button" text="OK" id="ok" icon="/img/accept.png" />
+                <strut type="horizontal" style="width: 6"/>
+                <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+}}}
+
 
 == tabs ==
 Тег преобразуется в панель JTabbedPane.
