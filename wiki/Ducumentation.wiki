@@ -108,7 +108,7 @@ javax.swing.Box.createHorizontalGlue();
 javax.swing.Box.createVerticalGlue();
 }}}
 для {{{type="vertical"}}}. Значение type по умолчанию - vertical.
-Используется в компонентах с менеджером компоновки BoxLayout.
+Используется в компонентах с менеджером компоновки {{{BoxLayout}}}.
 
 Пример:
 {{{
