@@ -81,3 +81,36 @@ public class LoginForm {
   * *border* - рамка компонента. Значение - рамка в формате класса BorderFactory
   * *color* - цвет шрифта компонента. Для данного свойства будет вызван метод {{{JComponent.setForeground(Color)}}}
   * *background-color* - цвет фона компонента. Для данного свойства будет вызван метод {{{JComponent.setBackground(Color)}}}
+
+== body ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется FlowLayout.
+
+== component ==
+Тег преобразуется в компонент, название класса которого задано атрибутом type.
+Пример:
+{{{
+<component type="javax.swing.JButton" text="OK"/>
+}}}
+
+== div ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется BorderLayout.
+
+== form ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется MigLayout.
+
+== glue ==
+Тег преобразуется в компонент, возвращаемый в результате вызова
+{{{
+javax.swing.Box.createHorizontalGlue();
+}}}
+для {{{type="horizontal"}}, или 
+{{{
+javax.swing.Box.createVerticalGlue();
+}}}
+для {{{type="vertical"}}. Значение type по умолчанию - vertical.
+Используется в компонентах с менеджером компоновки BoxLayout.
+
+Пример:
+{{{
+<glue type="horizontal"/>
+}}}
