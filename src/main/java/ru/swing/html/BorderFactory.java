@@ -18,7 +18,11 @@ import java.awt.*;
  * border: empty 12 12 12 12;<br/>
  * </p>
  * </li>
- *
+ * <li>
+ * compound: Составная рамка. 2 параметра: внешняя рамка и внутренняя рамка.
+ * <p>
+ * compound (empty 12 12 12 12) (compound (line black) (empty 12 12 12 12))
+ * </p>
  * </ul>
  * <pre>
  * User: Penkov Vladimir
@@ -69,10 +73,40 @@ public class BorderFactory {
         }
         else if ("compound".equals(borderType)) {
 
-            int outerStart = borderString.indexOf("(", spacePos+1)+1;
-            int outerEnd = borderString.indexOf(")", outerStart);
+            //формат: compound (border1) (border2)
+            int outerStart = borderString.indexOf("(", spacePos+1)+1;//открывающий тег первой рамки
+            int outerEnd = -1;
+            int currentOpened = 0;//количество открытых скобок (при вложенных скобках)
+            for (int i = outerStart; i<borderString.length() && outerEnd<0; i++) {
+                char c = borderString.charAt(i);
+                if (c =='(') {
+                    currentOpened++;
+                }
+                else if (c ==')') {
+                    if (currentOpened>0) {
+                        currentOpened--;
+                    }
+                    else {
+                        outerEnd = i;
+                    }
+                }
+            }
             int innerStart = borderString.indexOf("(", outerEnd+1)+1;
-            int innerEnd = borderString.indexOf(")", innerStart);
+            int innerEnd = -1;
+            for (int i = innerStart; i<borderString.length() && innerEnd<0; i++) {
+                char c = borderString.charAt(i);
+                if (c =='(') {
+                    currentOpened++;
+                }
+                else if (c ==')') {
+                    if (currentOpened>0) {
+                        currentOpened--;
+                    }
+                    else {
+                        innerEnd = i;
+                    }
+                }
+            }
 
             String inner = borderString.substring(innerStart, innerEnd);
             String outer = borderString.substring(outerStart, outerEnd);
