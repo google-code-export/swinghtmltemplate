@@ -355,3 +355,67 @@ preferred < number < fill
    <textarea>Some text</textarea>
 </scroll>
 }}}
+
+
+= Менеджеры компоновки =
+Менеджер компоновки, используемый в компоненте, задается атрибутом layout.
+
+== border ==
+Соответствует менеджеру компоновки java.awt.BorderLayout.
+
+Дочерние компоненты располагаются взависимости от значения атрибута align:
+  * {{{align="top"}}} - вверху
+  * {{{align="bottom"}}} - внизу
+  * {{{align="left"}}} - слева
+  * {{{align="right"}}} - справа
+  * {{{align="center"}}} - в центре
+По умолчанию дочерний компонент располагается в центре.
+
+В качестве горизонтальных и вертикальных промежутков между компонентами использует значение атрибута margin, заданного в формате {{{margin:hgap vgap}}}
+
+Пример: 
+{{{
+<div layout="border" style="margin: 6 0">
+   <input type="button" text="ok"/>
+   <input type="button" text="cancel"/>
+</div>
+}}}
+
+
+== box ==
+Соответствует менеджеру компоновки javax.swing.BoxLayout.
+
+Направление расположения дочерних компонент задается атрибутом x-boxlayout-direction:
+ * {{{horizontal}}} - компоненты располагаются горизонтально
+ * {{{vertical}}} - компоненты располагаются вертикально
+
+Для заданий расстояний между компонентами можно использовать теги {{{<strut/>}}}  и {{{<glue/>}}}.
+
+Пример: 
+{{{
+<div layout="box" style="x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+   <glue type="horizontal"/>
+   <input type="button" text="OK" id="ok" icon="/img/accept.png" />
+   <strut type="horizontal" style="width: 6"/>
+   <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+</div>
+}}}
+
+== flow ==
+Соответствует менеджеру компоновки java.awt.FlowLayout.
+
+Выравнивание дочерних компонент задается атрибутом text-align:
+  * {{{center}}} - компоненты выравниваются по центру
+  * {{{left}}} - компоненты выравниваются по левому краю
+  * {{{center}}} - компоненты выравниваются по правому краю
+
+В качестве горизонтальных и вертикальных промежутков между компонентами использует значение атрибута margin, заданного в формате {{{margin:hgap vgap}}}
+
+
+Пример: 
+{{{
+<div layout="flow" style="text-align: right; margin: 10 0">
+    <input id="ok" type="button" text="OK"/>
+    <input type="button" text="Cancel"/>
+</div>
+}}}
