@@ -114,3 +114,30 @@ javax.swing.Box.createVerticalGlue();
 {{{
 <glue type="horizontal"/>
 }}}
+
+== img ==
+Тег преобразуется в компонент JLabel. Значение атрибута src копирует в атрибут icon, таким образом, иконка, указанная в качестве значения src, будет иконкой компонента (см. сво-во icon
+
+Пример
+{{{
+<img src="/img/login-icon.gif"/>
+}}}
+
+== input ==
+В зависимости от значения атрибута type, преобразуется в 
+  * {{{type="text"}}} - JTextField
+  * {{{type="password"}}} - JPasswordField
+  * {{{type="button"}}} - JButton
+  * {{{type="checkbox"}}} - JCheckBox
+  * {{{type="radio"}}} - JRadioButton
+По умолчанию преобразуется в JTextField.
+{{{
+<input type="button" text="OK"/>
+}}}
+Если итоговый компонент расширяет класс JTextComponent, то в качестве текста компонента присваивается содержимое тега:
+{{{
+<input type="text">Initial text</input>
+}}}
+
+
+
