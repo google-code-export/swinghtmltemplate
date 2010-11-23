@@ -9,8 +9,12 @@ import ru.swing.html.layout.LayoutManagerSupportFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.font.TextAttribute;
+import java.lang.*;
+import java.lang.Object;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +50,10 @@ public class Tag {
     private String margin;
     private String width;
     private String height;
+    private String fontSize;
+    private String fontWeight;
+    private String fontStyle;
+    private String fontFamily;
     private Map<String, String> attributes = new HashMap<String, String>();
 
     /**
@@ -103,6 +111,18 @@ public class Tag {
         }
         else if ("width".equals(name)) {
             setWidth(value);
+        }
+        else if ("font-size".equals(name)) {
+            setFontSize(value);
+        }
+        else if ("font-weight".equals(name)) {
+            setFontWeight(value);
+        }
+        else if ("font-style".equals(name)) {
+            setFontStyle(value);
+        }
+        else if ("font-family".equals(name)) {
+            setFontFamily(value);
         }
         else if ("height".equals(name)) {
             setHeight(value);
@@ -267,7 +287,37 @@ public class Tag {
         this.backgroundColor = backgroundColor;
     }
 
-    
+    public String getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(String fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public String getFontWeight() {
+        return fontWeight;
+    }
+
+    public void setFontWeight(String fontWeight) {
+        this.fontWeight = fontWeight;
+    }
+
+    public String getFontStyle() {
+        return fontStyle;
+    }
+
+    public void setFontStyle(String fontStyle) {
+        this.fontStyle = fontStyle;
+    }
+
+    public String getFontFamily() {
+        return fontFamily;
+    }
+
+    public void setFontFamily(String fontFamily) {
+        this.fontFamily = fontFamily;
+    }
 
     public JComponent createComponent() {
         logger.error("Can't create component for tag "+getName());
@@ -324,6 +374,28 @@ public class Tag {
 
 
         }
+
+        if (getFontSize()!=null) {
+            component.setFont(component.getFont().deriveFont(new Float(getFontSize())));
+        }
+
+        Map<AttributedCharacterIterator.Attribute, Object> map = new HashMap<AttributedCharacterIterator.Attribute, Object>();
+        if ("bold".equals(getFontWeight()) || "bolder".equals(getFontWeight())) {
+            map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+        }
+        else if ("normal".equals(getFontWeight()) || "lighter".equals(getFontWeight())) {
+            map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
+        }
+        if (getFontFamily()!=null) {
+            map.put(TextAttribute.FAMILY, getFontFamily());
+        }
+        Font font = component.getFont().deriveFont(map);
+
+        if ("italic".equals(getFontStyle())) {
+            font = font.deriveFont(font.getStyle()+Font.ITALIC);
+        }
+        component.setFont(font);
+
 
         if (getColor()!=null) {
             component.setForeground(getColor());
