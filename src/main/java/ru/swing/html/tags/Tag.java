@@ -164,7 +164,7 @@ public class Tag {
     public void addChild(Tag tag) {
         tag.setParent(this);
         tag.setModel(getModel());
-        getChildren().add(tag);
+        children.add(tag);
     }
 
     public List<Tag> getChildren() {
