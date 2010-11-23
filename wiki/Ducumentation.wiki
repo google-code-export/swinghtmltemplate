@@ -1,4 +1,4 @@
-#documentation for rev48
+#documentation for rev50
 
 <wiki:toc max_depth="2" />
 = Что это такое =
@@ -92,6 +92,10 @@ for (JComponent c : model.select(".button")) {
   * {{{border}}} - рамка компонента. Значение - рамка в формате класса BorderFactory
   * {{{color}}} - цвет шрифта компонента. Для данного свойства будет вызван метод {{{JComponent.setForeground(Color)}}}
   * {{{background-color}}} - цвет фона компонента. Для данного свойства будет вызван метод {{{JComponent.setBackground(Color)}}}
+  * {{{font-size}}} - Размер шрифта компонента в пикселях.
+  * {{{font-weight}}} - Толщина шрифта. По умолчанию используется дефолтная для компонента (например, JLabel все выводит жирным). Допустимые значения: normal, bold, bolder, lighter.
+  * {{{font-style}}} - Наклон шрифта. Если равен italic, то шрифт будет наклонным.
+  * {{{font-family}}} - Семейство шрифта.
 
 == body ==
 Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется FlowLayout.
