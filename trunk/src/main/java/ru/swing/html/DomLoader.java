@@ -3,6 +3,7 @@ package ru.swing.html;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import ru.swing.html.tags.*;
+import ru.swing.html.tags.Object;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,14 +36,14 @@ public class DomLoader {
 
     private static void parseElement(Element element, Tag tag) {
         tag.setName(element.getName());
-        for (Object o : element.getAttributes()) {
+        for (java.lang.Object o : element.getAttributes()) {
             org.jdom.Attribute a = (org.jdom.Attribute) o;
             tag.setAttribute(a.getName(), a.getValue());
         }
 
         tag.setContent(element.getText());
 
-        for (Object o : element.getChildren()) {
+        for (java.lang.Object o : element.getChildren()) {
             Element child = (Element) o;
             Tag childTag = createTag(child);
             childTag.setModel(tag.getModel());
@@ -59,9 +60,6 @@ public class DomLoader {
         else if ("body".equals(element.getName())) {
             return new Body();
         }
-        else if ("component".equals(element.getName())) {
-            return new Component();
-        }
         else if ("div".equals(element.getName())) {
             return new Div();
         }
@@ -76,6 +74,9 @@ public class DomLoader {
         }
         else if ("input".equals(element.getName())) {
             return new Input();
+        }
+        else if ("object".equals(element.getName())) {
+            return new Object();
         }
         else if ("textarea".equals(element.getName())) {
             return new TextArea();
