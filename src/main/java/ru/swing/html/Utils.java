@@ -32,4 +32,54 @@ public class Utils {
         return res;
     }
 
+    /**
+     * Разбивает строку на параметры. Разделителем выступает пробельный символ.
+     * @param text строка
+     * @return параметры
+     */
+    public static String[] extractParams(String text) {
+        text = mergeSpaces(text);
+        return text.split(" ");
+    }
+
+    /**
+     * Удаляет лишние пробельные символы в строке. Все пробельные символы переводит в пробелы.
+     * Пример:
+     * "aa    aa;\tqq" -> "aa aa; qq"
+     * @param text строка
+     * @return строка без лишних пробелов
+     */
+    public static String mergeSpaces(String text) {
+        text = text.replaceAll("\\s", " ");
+        while (text.indexOf("  ")>=0) {
+            text = text.replaceAll("  ", " ");
+        }
+        return text.trim();
+    }
+
+    /**
+     * Возвращает индекс позиции, в которой находится соответствующая закрывающая скобка
+     * @param text строка
+     * @param openingBracketIndex индекс открывающей скобки
+     * @return индекс закрывающей скобки или -1, если такой скобки нет
+     */
+    public static int fingMatchingClosingBracket(String text, int openingBracketIndex) {
+        int outerEnd = -1;
+        int currentOpened = 0;//количество открытых скобок (при вложенных скобках)
+        for (int i = openingBracketIndex+1; i<text.length() && outerEnd<0; i++) {
+            char c = text.charAt(i);
+            if (c =='(') {
+                currentOpened++;
+            }
+            else if (c ==')') {
+                if (currentOpened>0) {
+                    currentOpened--;
+                }
+                else {
+                    outerEnd = i;
+                }
+            }
+        }
+        return outerEnd;
+    }
 }
