@@ -394,7 +394,13 @@ public class Tag {
         if (getFontFamily()!=null) {
             map.put(TextAttribute.FAMILY, getFontFamily());
         }
-        Font font = component.getFont().deriveFont(map);
+        Font font;
+        if (map.size()>0) {
+            font = component.getFont().deriveFont(map);
+        }
+        else {
+            font = component.getFont();
+        }
 
         if ("italic".equals(getFontStyle())) {
             font = font.deriveFont(font.getStyle()+Font.ITALIC);
