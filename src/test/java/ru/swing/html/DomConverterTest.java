@@ -4,6 +4,9 @@ import junit.framework.TestCase;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.tags.Tag;
 
+import javax.swing.*;
+import java.io.ByteArrayInputStream;
+
 /**
  * <pre>
  * User: Penkov Vladimir
@@ -37,6 +40,37 @@ public class DomConverterTest extends TestCase {
         tag.setAttribute("class", "foo");
         assertTrue(block.matches(tag));
         assertEquals(1, block.getStyles().size());
+
+    }
+
+    public void testLocalAttributesOverrideGlobal() throws Exception {
+
+        String html = "<html>" +
+                "<head>" +
+                "<style>" +
+                "p {" +
+                "   type: text;" +
+                "}" +
+                "</style>" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "   <p type='html'>center</p>" +
+                "   <p align='top'>top</p>" +
+                "   <p align='bottom'>bottom</p>" +
+                "   <p align='left'>left</p>" +
+                "   <p align='right'>right</p>" +
+                "</body>" +
+                "</html>";
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+        Tag body = model.getRootTag().getChildByName("body");
+
+        Tag p1 = body.getChildren().get(0);
+        assertEquals("html", p1.getAttribute("type"));
+
+        Tag p2 = body.getChildren().get(1);
+        assertEquals("text", p2.getAttribute("type"));
 
     }
 }
