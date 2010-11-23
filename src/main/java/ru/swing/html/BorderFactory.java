@@ -101,10 +101,10 @@ import java.awt.*;
  *    <p>
  *    Примеры:
  *    <ul>
- *       <li>title "Foo"</li>
- *       <li>title "Foo" (empty 12 12 12 12)</li>
- *       <li>title "Foo" (empty 12 12 12 12) left bottom</li>
- *       <li>title "Foo" (empty 12 12 12 12) left bottom (Arial) red</li>
+ *       <li>titled "Foo"</li>
+ *       <li>titled "Foo" (empty 12 12 12 12)</li>
+ *       <li>titled "Foo" (empty 12 12 12 12) left bottom</li>
+ *       <li>titled "Foo" (empty 12 12 12 12) left bottom (Arial) red</li>
  *    </ul>
  *    </p>
  * </li>
