@@ -22,8 +22,8 @@ public class Span extends Tag {
 
     @Override
     public void applyAttributes(JComponent component) {
-        if (StringUtils.isEmpty(getLayout())) {
-            setAttribute("layout", "flow");
+        if (StringUtils.isEmpty(getDisplay())) {
+            setAttribute("display", "flow");
         }
         super.applyAttributes(component);
     }

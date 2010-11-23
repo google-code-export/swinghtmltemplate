@@ -2,7 +2,6 @@ package ru.swing.html.tags;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ru.swing.html.DomModel;
 
 import javax.swing.*;
 
@@ -22,7 +21,7 @@ public class Form extends Tag {
 
     @Override
     public void applyAttributes(JComponent component) {
-        setLayout("mig");
+        setDisplay("mig");
         super.applyAttributes(component);
     }
 

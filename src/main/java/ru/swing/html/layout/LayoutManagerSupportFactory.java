@@ -11,7 +11,7 @@ import ru.swing.html.tags.Tag;
  */
 public class LayoutManagerSupportFactory {
     public static LayoutManagerSupport createLayout(Tag tag) {
-        String layoutName = tag.getLayout();
+        String layoutName = tag.getDisplay();
         LayoutManagerSupport res;
 
         if ("p".equals(tag.getName())) {

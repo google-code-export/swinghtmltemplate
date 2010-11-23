@@ -3,7 +3,6 @@ package ru.swing.html.tags;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.*;
-import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
@@ -34,7 +33,7 @@ public class Tag {
     private Tag parent;
     private List<Tag> children = new ArrayList<Tag>();
     private String content;
-    private String layout;
+    private String display;
     private Color color;
     private Color backgroundColor;
     /**
@@ -75,8 +74,8 @@ public class Tag {
     }
 
     public void setAttribute(String name, String value) {
-        if ("layout".equals(name)) {
-            setLayout(value);
+        if ("display".equals(name)) {
+            setDisplay(value);
         }
         else if ("id".equals(name)) {
             setId(value);
@@ -118,7 +117,7 @@ public class Tag {
     }
 
     public void handleLayout() {
-        final String layoutName = getLayout();
+        final String layoutName = getDisplay();
         LayoutManagerSupport layoutManagerSupport = null;
         if (layoutName != null) {
             layoutManagerSupport = LayoutManagerSupportFactory.createLayout(this);
@@ -130,7 +129,7 @@ public class Tag {
     public void handleChildren() {
         for (Tag childTag : getChildren()) {
             JComponent child = DomConverter.convertComponent(childTag);
-            if (getLayout() != null) {
+            if (getDisplay() != null) {
                 LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(this);
                 layoutManagerSupport.addComponent(component, child, childTag.getAlign());
             }
@@ -171,12 +170,12 @@ public class Tag {
         this.content = content;
     }
 
-    public String getLayout() {
-        return layout;
+    public String getDisplay() {
+        return display;
     }
 
-    public void setLayout(String layout) {
-        this.layout = layout;
+    public void setDisplay(String display) {
+        this.display = display;
     }
 
     public String getTextAlign() {
