@@ -12,7 +12,7 @@ public class Object extends Tag {
 
     @Override
     public JComponent createComponent() {
-        String classname = getAttribute("classid");
+        String classname = getAttribute("code");
         JComponent c;
         Class cl;
         try {
