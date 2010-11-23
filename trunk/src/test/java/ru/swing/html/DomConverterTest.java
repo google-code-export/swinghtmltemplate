@@ -28,7 +28,7 @@ public class DomConverterTest extends TestCase {
                         "  color: red;" +
                         "  font-weight: bold;" +
                         "}");
-        head.getChildren().add(style);
+        head.addChild(style);
         DomConverter.parseHead(model, head);
         assertEquals(2, model.getGlobalStyles().size());
 
