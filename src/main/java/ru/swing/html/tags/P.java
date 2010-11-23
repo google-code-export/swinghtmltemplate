@@ -28,8 +28,12 @@ public class P extends Tag {
     public void applyAttributes(JComponent component) {
         super.applyAttributes(component);
         JLabel label = (JLabel) component;
-        //todo обертку html делать в зависимости от параметров
-        label.setText("<html>"+getContent()+"</html>");
+        if ("html".equals(getType())) {
+            label.setText("<html>"+getContent()+"</html>");
+        }
+        else {
+            label.setText(getContent());
+        }
     }
 
     @Override
