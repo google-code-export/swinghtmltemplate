@@ -1,4 +1,4 @@
-#documentation for rev45
+#documentation for rev48
 
 <wiki:toc max_depth="2" />
 = Что это такое =
@@ -77,21 +77,21 @@ for (JComponent c : model.select(".button")) {
 = Компоненты =
 == Общие свойства ==
 Для каждого компонента можно задать его свойства, указав их атрибутами соответствующего тега или элементами стиля. Поддерживаются следующие общие свойства (для всех тегов):
-  * *id* - идентификатор компонента
-  * *layout* - идентификатор менеджера компоновки для компонента, соответствующего элементу. Если не указано иное, по умолчанию используется {{{FlowLayout}}} (для div, к примеру, используется {{{BorderLayout}}}). 
-  * *align* - это указание менеджеру компоновки как следует располагать компонент данного элемента. У каждого поддерживаемого менеджера компоновки есть вспомогательный класс, который преобразует текстовые значения данного атрибута в подходящие значения менеджера компоновки. Например, для BorderLayout, данный вспомогательный класс преобразует значения top, bottom, left, right, center в BorderLayout.NORTH, BorderLayout.SOUTH итд соответственно
-  * *text-align* - зависит от действий менеджера компоновки. Используется для выравнивания по левому/правому краю (соответственно может быть проигнорировано, если менеджер компоновки не позволяет выравнивать по краю)
-  * *vertial-align* - зависит от действий менеджера компоновки. Используется для выравнивания по верхнему/нижнему краю (соответственно может быть проигнорировано, если менеджер компоновки не позволяет выравнивать по краю)
-  * *type* - зависит от тега. Используется для указания тегу какой компонент требуется создать. Примеры: {{{<input type="text" /> -> JTextField}}}, {{{<input type="button" /> -> JButton}}}
-  * *width* - ширина компонента. Зависит от менеджера компоновки
-  * *height* - высота компонента. Зависит от менеджера компоновки
-  * *style* - воспринимается как список свойств, но записанный в формате css
-  * *text* - текст компонента. Для данного свойства вызывается метод {{{setText(String)}}} в компоненте. Если данного метода нет, то в лог выведется предупреждение.
-  * *opaque* - прозрачность. Соответствует свойству {{{JComponent.opaque}}}. Значения: true или false
-  * *icon* - иконка компонента. Для данного свойства вызывается метод {{{setIcon(Icon)}}} в компоненте. Если данного метода нет, то в лог выведется предупреждение. Значение - путь до иконки (иконка должна быть доступна методу {{{getClass().getResource("url"))}}}.
-  * *border* - рамка компонента. Значение - рамка в формате класса BorderFactory
-  * *color* - цвет шрифта компонента. Для данного свойства будет вызван метод {{{JComponent.setForeground(Color)}}}
-  * *background-color* - цвет фона компонента. Для данного свойства будет вызван метод {{{JComponent.setBackground(Color)}}}
+  * {{{id}}} - идентификатор компонента
+  * {{{display}}} - идентификатор менеджера компоновки для компонента, соответствующего элементу. Если не указано иное, по умолчанию используется {{{FlowLayout}}} (для div, к примеру, используется {{{java.awt.BorderLayout}}}). 
+  * {{{align}}} - это указание менеджеру компоновки как следует располагать компонент данного элемента. У каждого поддерживаемого менеджера компоновки есть вспомогательный класс, который преобразует текстовые значения данного атрибута в подходящие значения менеджера компоновки. Например, для BorderLayout, данный вспомогательный класс преобразует значения top, bottom, left, right, center в BorderLayout.NORTH, BorderLayout.SOUTH итд соответственно
+  * {{{text-align}}} - зависит от действий менеджера компоновки. Используется для выравнивания по левому/правому краю (соответственно может быть проигнорировано, если менеджер компоновки не позволяет выравнивать по краю)
+  * {{{vertial-align}}} - зависит от действий менеджера компоновки. Используется для выравнивания по верхнему/нижнему краю (соответственно может быть проигнорировано, если менеджер компоновки не позволяет выравнивать по краю)
+  * {{{type}}} - зависит от тега. Используется для указания тегу какой компонент требуется создать. Примеры: {{{<input type="text" /> -> JTextField}}}, {{{<input type="button" /> -> JButton}}}
+  * {{{width}}} - ширина компонента. Зависит от менеджера компоновки
+  * {{{height}}} - высота компонента. Зависит от менеджера компоновки
+  * {{{style}}} - воспринимается как список свойств, но записанный в формате css
+  * {{{text}}} - текст компонента. Для данного свойства вызывается метод {{{setText(String)}}} в компоненте. Если данного метода нет, то в лог выведется предупреждение.
+  * {{{opaque}}} - прозрачность. Соответствует свойству {{{JComponent.opaque}}}. Значения: true или false
+  * {{{icon}}} - иконка компонента. Для данного свойства вызывается метод {{{setIcon(Icon)}}} в компоненте. Если данного метода нет, то в лог выведется предупреждение. Значение - путь до иконки (иконка должна быть доступна методу {{{getClass().getResource("url"))}}}.
+  * {{{border}}} - рамка компонента. Значение - рамка в формате класса BorderFactory
+  * {{{color}}} - цвет шрифта компонента. Для данного свойства будет вызван метод {{{JComponent.setForeground(Color)}}}
+  * {{{background-color}}} - цвет фона компонента. Для данного свойства будет вызван метод {{{JComponent.setBackground(Color)}}}
 
 == body ==
 Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется FlowLayout.
@@ -326,7 +326,7 @@ preferred < number < fill
     </tr>
     <tr>
         <td>
-            <div layout="box" style="x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+            <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
                 <glue type="horizontal"/>
                 <input type="button" text="OK" id="ok" icon="/img/accept.png" />
                 <strut type="horizontal" style="width: 6"/>
@@ -356,7 +356,7 @@ preferred < number < fill
         <p>Tab 1</p>
     </div>
 
-    <div title="JEditorPane" layout="border">
+    <div title="JEditorPane" style="display:border">
         <scroll>
             <component type="javax.swing.JEditorPane"/>
         </scroll>
@@ -378,7 +378,7 @@ preferred < number < fill
 
 
 = Менеджеры компоновки =
-Менеджер компоновки, используемый в компоненте, задается атрибутом layout.
+Менеджер компоновки, используемый в компоненте, задается атрибутом display.
 
 == border ==
 Соответствует менеджеру компоновки java.awt.BorderLayout.
@@ -395,7 +395,7 @@ preferred < number < fill
 
 Пример: 
 {{{
-<div layout="border" style="margin: 6 0">
+<div style="display: border; margin: 6 0">
    <input type="button" text="ok"/>
    <input type="button" text="cancel"/>
 </div>
@@ -413,7 +413,7 @@ preferred < number < fill
 
 Пример: 
 {{{
-<div layout="box" style="x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+<div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
    <glue type="horizontal"/>
    <input type="button" text="OK" id="ok" icon="/img/accept.png" />
    <strut type="horizontal" style="width: 6"/>
@@ -434,7 +434,7 @@ preferred < number < fill
 
 Пример: 
 {{{
-<div layout="flow" style="text-align: right; margin: 10 0">
+<div style="display: flow; text-align: right; margin: 10 0">
     <input id="ok" type="button" text="OK"/>
     <input type="button" text="Cancel"/>
 </div>
@@ -506,7 +506,7 @@ preferred < number < fill
 
 </table>
 
-<div layout="table" style="row-sizes: preferred preferred; column-sizes: 100 fill;">
+<div style="display: table; row-sizes: preferred preferred; column-sizes: 100 fill;">
    <p align="0 0 c c">1</p>
    <p align="0 1 c c">2</p>
    <p align="1 0 c c">3</p>
@@ -529,7 +529,7 @@ preferred < number < fill
 {{{
 <style>
 div {
-   layout: border;
+   display: border;
 }
 p.error {
    color: red;
