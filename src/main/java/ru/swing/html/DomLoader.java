@@ -84,6 +84,9 @@ public class DomLoader {
         else if ("scroll".equals(element.getName())) {
             return new ScrollPane();
         }
+        else if ("span".equals(element.getName())) {
+            return new Span();
+        }
         else if ("split".equals(element.getName())) {
             return new SplitPane();
         }
