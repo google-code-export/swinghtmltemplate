@@ -11,6 +11,19 @@ import junit.framework.TestCase;
  */
 public class UtilsTest extends TestCase {
 
+    public void testParseIntegers() throws Exception {
+
+        String numbers = "12 13   14 3245";
+        int[] nums = Utils.parseIntegers(numbers);
+        assertEquals(4, nums.length);
+        assertEquals(12, nums[0]);
+        assertEquals(13, nums[1]);
+        assertEquals(14, nums[2]);
+        assertEquals(3245, nums[3]);
+
+
+    }
+
     public void testExtractParams() throws Exception {
 
         String[] params = Utils.extractParams("  \"qq1\"  qq2;\tqq3 ");

@@ -14,11 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 19.11.2010
- * Time: 10:49:18
- * </pre>
+ * dom-модель компонент. Хранит в себе дерево тегов (начиная с корневого элемента getRootTag()), список css стилей
+ * (getGlobalStyles()).
+ *
+ * css стили - это стили, описанные в теге &lt;style&gt; внутри тега &lt;head&gt;. 
  */
 public class DomModel {
 
@@ -27,6 +26,10 @@ public class DomModel {
     private Tag rootTag;
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
 
+    /**
+     * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;body%gt;.
+     * @return корневой элемент модели
+     */
     public Tag getRootTag() {
         return rootTag;
     }
@@ -97,10 +100,18 @@ public class DomModel {
     }
 
 
+    /**
+     * Добавляет css стиль в модель. Стиль при этом не применяется к имеющимся в модели тегам.
+     * @param cssBlock css стиль
+     */
     public void addGlobalStyle(CssBlock cssBlock) {
         globalStyles.add(cssBlock);
     }
 
+    /**
+     * Возвращает список css стилей.
+     * @return список css стилей
+     */
     public List<CssBlock> getGlobalStyles() {
         return globalStyles;
     }

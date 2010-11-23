@@ -119,12 +119,21 @@ public class BorderFactory {
 
     private static Log logger = LogFactory.getLog(BorderFactory.class);
 
+    /**
+     * Создает рамку для компонента тега. Строка, описывающая рамку, берется из атрибута border.
+     * @param tag тег
+     * @return рамка
+     */
     public static Border createBorder(Tag tag) {
-
-        String borderString = tag.getAttribute("border");
+        String borderString = tag.getAttribute(Tag.BORDER_ATTRIBUTE);
         return parseBorderString(borderString);
     }
 
+    /**
+     * Преобразует строку, описывающую рамку, в рамку.
+     * @param borderString строка, описывающая рамку
+     * @return рамка
+     */
     public static Border parseBorderString(String borderString) {
         borderString = Utils.mergeSpaces(borderString);
         int spacePos = borderString.indexOf(" ");
@@ -300,6 +309,11 @@ public class BorderFactory {
         return border;
     }
 
+    /**
+     * Переводит строку с значением параметра justification рамки TitledBorder в параметр, подходящий для TitledBorder.
+     * @param justif строка
+     * @return параметр
+     */
     private static int convertTitleJustification(String justif) {
         int titleJustification = TitledBorder.DEFAULT_JUSTIFICATION;
         if ("left".equals(justif)) {
@@ -323,6 +337,11 @@ public class BorderFactory {
         return titleJustification;
     }
 
+    /**
+     * Переводит строку с значением параметра position рамки TitledBorder в параметр, подходящий для TitledBorder.
+     * @param pos строка
+     * @return параметр
+     */
     private static int convertTitlePosition(String pos) {
 
         int position = TitledBorder.DEFAULT_POSITION;

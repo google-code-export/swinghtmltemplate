@@ -15,10 +15,8 @@ import java.lang.Object;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>
@@ -55,6 +53,7 @@ public class Tag {
     private String fontStyle;
     private String fontFamily;
     private Map<String, String> attributes = new HashMap<String, String>();
+    public static final String BORDER_ATTRIBUTE = "border";
 
     /**
      * Возвращает первый дочерний тег с указанным именем.
@@ -158,12 +157,18 @@ public class Tag {
     }
 
 
-    public List<Tag> getChildren() {
-        return children;
+    /**
+     * Добавляет дочерний тег. Для дочернего тега проставляется родительский тег и dom-модель
+     * @param tag дочерний тег
+     */
+    public void addChild(Tag tag) {
+        tag.setParent(this);
+        tag.setModel(getModel());
+        getChildren().add(tag);
     }
 
-    public void setChildren(List<Tag> children) {
-        this.children = children;
+    public List<Tag> getChildren() {
+        return Collections.unmodifiableList(children);
     }
 
     public String getName() {

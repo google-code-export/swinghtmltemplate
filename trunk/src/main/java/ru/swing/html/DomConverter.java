@@ -23,6 +23,11 @@ public class DomConverter {
 
     private static Log logger = LogFactory.getLog(DomConverter.class);
 
+    /**
+     * Для каждого тега dom-модели производит построение соответствующего swing-компонета.
+     * @param model dom-модель
+     * @return корневой swing-компонент
+     */
     public static JComponent toSwing(DomModel model) {
 
         Tag html = model.getRootTag();
@@ -35,6 +40,11 @@ public class DomConverter {
         return b;
     }
 
+    /**
+     * Обрабатывает тег &lt;head&gt;
+     * @param model dom-модель
+     * @param head тег
+     */
     public static void parseHead(DomModel model, Tag head) {
         if (head==null) {
             return;
@@ -51,10 +61,17 @@ public class DomConverter {
         }
     }
 
+    /**
+     * Выполняет процедуру преобразования тега dom-модели в swing-компонент.
+     * @param componentTag тег dom-модели
+     * @return swing-компонент
+     */
     public static JComponent convertComponent(Tag componentTag) {
 
+        //сохраняем имеющиеся атрибуты тега (они получены на этапе загрузки dom-модели)
         Map<String, String> old = new HashMap<String, String>();
 
+        //применяем к тегу глобальные css-стили документа
         List<CssBlock> css = componentTag.getModel().getGlobalStyles();
         for (CssBlock block : css) {
             if (block.matches(componentTag)) {
@@ -63,15 +80,20 @@ public class DomConverter {
                 }
             }
         }
+        //теперь применяем атрибуты тега, таким образом локальные атрибуты перекрывают глобальные
         for (String attrName : old.keySet()) {
             componentTag.setAttribute(attrName, old.get(attrName));
         }
-        
+
+        //вызываем создание тегом компонента
         JComponent component = componentTag.createComponent();
         componentTag.setComponent(component);
+        //вызываем процедуру применения атрибутов тега к компоненту
         componentTag.applyAttributes(component);
         if (component!=null) {
+            //инициализируем менеджер компоновки в компоненте
             componentTag.handleLayout();
+            //обрабатываем дочерние теги
             componentTag.handleChildren();
         }      
 
