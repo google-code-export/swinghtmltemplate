@@ -3,6 +3,7 @@ package ru.swing.html.example;
 import org.jdom.JDOMException;
 import ru.swing.html.Bind;
 import ru.swing.html.Binder;
+import ru.swing.html.DomModel;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -36,9 +37,11 @@ public class LoginForm {
     @Bind("result")
     private JLabel result;
 
+    private DomModel model;
+
     public LoginForm() {
         try {
-            Binder.bind(this);
+            model = Binder.bind(this);
         } catch (JDOMException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -50,6 +53,9 @@ public class LoginForm {
     public void init() {
         okBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                for (JComponent c : model.select(".button")) {
+                    c.setEnabled(false);
+                }
                 result.setText("Logging in user "+login.getText());
             }
         });
@@ -64,4 +70,19 @@ public class LoginForm {
     public JPanel getRootPanel() {
         return rootPanel;
     }
+
+    public static void main(String[] args) throws JDOMException, IOException {
+
+        LoginForm loginForm = new LoginForm();
+
+        JFrame f = new JFrame("Test");
+        f.setSize(400, 200);
+
+
+        f.getContentPane().add(loginForm.getRootPanel());
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
+
+    }
+
 }
