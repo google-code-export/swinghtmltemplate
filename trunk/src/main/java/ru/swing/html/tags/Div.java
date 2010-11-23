@@ -3,7 +3,6 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ru.swing.html.DomModel;
 
 import javax.swing.*;
 
@@ -23,8 +22,8 @@ public class Div extends Tag {
 
     @Override
     public void applyAttributes(JComponent component) {
-        if (StringUtils.isEmpty(getLayout())) {
-            setAttribute("layout", "border");
+        if (StringUtils.isEmpty(getDisplay())) {
+            setAttribute("display", "border");
         }
         super.applyAttributes(component);
     }
