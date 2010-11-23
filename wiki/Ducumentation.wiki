@@ -1,4 +1,4 @@
-#documentation for rev50
+#documentation for rev53
 
 <wiki:toc max_depth="2" />
 = Что это такое =
@@ -560,14 +560,88 @@ div.red.top {
 }}}
 
 Поддерживаются следующие типы рамок:
-  * {{{empty}}} - пустая рамка. Параметров или нет, или 4 целых числа (отступа). (верх, лево, низ, право)
-  * {{{etched}}} - рамка в виде выемки.
-  * {{{compound}}} -  cоставная рамка. 2 параметра: {{{(внешняя_рамка) (внутренняя_рамка)}}}.
-  * {{{line}}} - рамка в виде линии. Параметры: {{{цвет}}} или {{{цвет толщина}}}
-  * {{{title}}} - рамка с названием. Параметр - текст.
+
+==compound==
+Составная рамка. 2 параметра: внешняя рамка и внутренняя рамка.
+{{{compound (outer) (inner)}}}
+Пример: 
+{{{
+compound (empty 12 12 12 12) (compound (line black) (empty 12 12 12 12))
+}}}
 
 
+==empty==
+Пустая рамка. Параметров или нет, или 4 целых числа (отступа). (верх, лево, низ, право)
+{{{
+border: empty;
+border: empty 12 12 12 12;
+}}}
+
+
+==etched==
+рамка в виде выемки. Допустимые форматы:
+{{{
+etched
+etched type
+etched highlight_color shadow_color
+etched type highlight_color shadow_color
+}}}
+где
+  * {{{type}}} - тип рамки ({{{lowered}}}, {{{raised}}})
+  * {{{highlight_color}}} - цвет светлой части в формате {{{ColorFactory.getColor(String)}}}
+  * {{{shadow_color}}} - цвет теневой части в формате {{{ColorFactory.getColor(String)}}}
 Примеры:
+{{{
+border: etched;
+border: etched lowered;
+border: etched white black;
+border: etched lowered white black;
+}}}
+
+
+==line==
+Рамка в виде линии. Допустимые форматы:
+{{{
+line color
+line color thick
+}}}
+где
+  * {{{color}}} - цвет линии в формате {{{ColorFactory.getColor(String)}}}
+  * {{{thick}}} - толщина линии в пикселях
+Примеры:
+{{{
+border: line black;
+border: line red 2;
+}}}
+
+
+
+==titled==
+Рамка с заголовком. Допустимые форматы:
+{{{
+titled "caption"
+titled "caption" (inner)
+titled "caption" (inner) justification position
+titled "caption" (inner) justification position (font) color
+}}}
+где
+  * {{{caption}}} - заголовок
+  * {{{inner}}} - формат рамки
+  * {{{justification}}} - выравнивание по горизонтали ({{{left}}}, {{{right}}}, {{{center}}}, {{{leading}}}, {{{trailing}}})
+  * {{{position}}} - выравнивание по вертикали ({{{top}}}, {{{above-top}}}, {{{below-top}}}, {{{bottom}}}, {{{above-bottom}}}, {{{below-bottom}}})
+  * {{{font}}} - шрифт заголовка в формате {{{Font.decode(String)}}}
+  * {{{color}}} - цвет заголовка в формате {{{ColorFactory.getColor(String)}}}
+Примеры:
+{{{
+title "Foo"
+title "Foo" (empty 12 12 12 12)
+title "Foo" (empty 12 12 12 12) left bottom
+title "Foo" (empty 12 12 12 12) left bottom (Arial) red
+}}}
+
+
+
+==Примеры==
 {{{
 <body style="border: compound (empty 12 12 12 12) (compound (etched) (empty 12 12 12 12))">
    <div style="border: line black"><p>Hello</p></div>
