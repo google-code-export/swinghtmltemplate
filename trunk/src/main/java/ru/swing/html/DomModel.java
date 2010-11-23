@@ -27,7 +27,7 @@ public class DomModel {
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
 
     /**
-     * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;body%gt;.
+     * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;html%gt;.
      * @return корневой элемент модели
      */
     public Tag getRootTag() {

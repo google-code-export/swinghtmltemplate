@@ -68,21 +68,24 @@ public class DomConverter {
      */
     public static JComponent convertComponent(Tag componentTag) {
 
-        //сохраняем имеющиеся атрибуты тега (они получены на этапе загрузки dom-модели)
-        Map<String, String> old = new HashMap<String, String>();
+        //если dom-модель тега не null, то попробуем применить на тег таблицу css стилей.
+        if (componentTag.getModel()!=null) {
+            //сохраняем имеющиеся атрибуты тега (они получены на этапе загрузки dom-модели)
+            Map<String, String> old = new HashMap<String, String>(componentTag.getAttributes());
 
-        //применяем к тегу глобальные css-стили документа
-        List<CssBlock> css = componentTag.getModel().getGlobalStyles();
-        for (CssBlock block : css) {
-            if (block.matches(componentTag)) {
-                for (String attrName : block.getStyles().keySet()) {
-                    componentTag.setAttribute(attrName, block.getStyles().get(attrName));
+            //применяем к тегу глобальные css-стили документа
+            List<CssBlock> css = componentTag.getModel().getGlobalStyles();
+            for (CssBlock block : css) {
+                if (block.matches(componentTag)) {
+                    for (String attrName : block.getStyles().keySet()) {
+                        componentTag.setAttribute(attrName, block.getStyles().get(attrName));
+                    }
                 }
             }
-        }
-        //теперь применяем атрибуты тега, таким образом локальные атрибуты перекрывают глобальные
-        for (String attrName : old.keySet()) {
-            componentTag.setAttribute(attrName, old.get(attrName));
+            //теперь применяем атрибуты тега, таким образом локальные атрибуты перекрывают глобальные
+            for (String attrName : old.keySet()) {
+                componentTag.setAttribute(attrName, old.get(attrName));
+            }
         }
 
         //вызываем создание тегом компонента
