@@ -8,15 +8,15 @@ import ru.swing.html.tags.Object;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * <pre>
- * User: Penkov Vladimir
- * Date: 19.11.2010
- * Time: 10:48:52
- * </pre>
- */
 public class DomLoader {
 
+    /**
+     * Загружает dom-модель html-документа.
+     * @param in поток, из которого происходит считывание html-документа
+     * @return dom-модель документа
+     * @throws JDOMException
+     * @throws IOException
+     */
     public static DomModel loadModel(InputStream in) throws JDOMException, IOException {
 
         DomModel model = new DomModel();
@@ -34,25 +34,37 @@ public class DomLoader {
         return model;
     }
 
+    /**
+     * Преобразует jdom-элемент в тег.
+     * @param element jdom-элемент
+     * @param tag тег
+     */
     private static void parseElement(Element element, Tag tag) {
-        tag.setName(element.getName());
+        //присваиваем имя тега
+        tag.setName(element.getName().toLowerCase());
+        //присваиваем атрибуты
         for (java.lang.Object o : element.getAttributes()) {
             org.jdom.Attribute a = (org.jdom.Attribute) o;
-            tag.setAttribute(a.getName(), a.getValue());
+            tag.setAttribute(a.getName().toLowerCase(), a.getValue());
         }
 
+        //присваиваем содержимое тега
         tag.setContent(element.getText());
 
+        //рекурсивно обрабатываем дочерние теги
         for (java.lang.Object o : element.getChildren()) {
             Element child = (Element) o;
             Tag childTag = createTag(child);
-            childTag.setModel(tag.getModel());
-            childTag.setParent(tag);
-            tag.getChildren().add(childTag);
+            tag.addChild(childTag);
             parseElement(child, childTag);
         }
     }
 
+    /**
+     * Фабрика тегов. Создает тег по имени jdom элемента.
+     * @param element jdom-элемент
+     * @return тег
+     */
     private static Tag createTag(Element element) {
         if ("table".equals(element.getName())) {
             return new Table();

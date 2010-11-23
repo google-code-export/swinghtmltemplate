@@ -6,18 +6,20 @@ import org.apache.commons.lang.StringUtils;
 import java.util.ArrayList;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 19.11.2010
- * Time: 15:21:03
- * </pre>
+ * Вспомогательные утилиты.
  */
 public class Utils {
 
+    /**
+     * Преобразует строку чисел в массив чисел.
+     * @param text строка чисел, например, "10 10 12 234"
+     * @return массив чисел
+     */
     public static int[] parseIntegers(String text) {
         if (StringUtils.isEmpty(text)) {
             return new int[0];
         }
+        text = mergeSpaces(text);
         String[] tokens = text.split(" ");
         java.util.List<Integer> sizes = new ArrayList<Integer>();
         for (String t : tokens) {

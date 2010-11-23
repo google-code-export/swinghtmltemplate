@@ -1,13 +1,10 @@
-package ru.swing.html;
+package ru.swing.html.layout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 19.11.2010
- * Time: 23:02:56
+ * Вспомогательный класс для хранения списка всех растянутых ячеек в tableLayout.
  */
 public class SpanMap {
 

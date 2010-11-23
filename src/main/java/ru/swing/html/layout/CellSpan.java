@@ -1,11 +1,7 @@
-package ru.swing.html;
+package ru.swing.html.layout;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 19.11.2010
- * Time: 23:01:58
- * To change this template use File | Settings | File Templates.
+ * Вспомогательный класс для хранения информации о растяжении ячейки таблицы в tableLayout.
  */
 public class CellSpan {
 

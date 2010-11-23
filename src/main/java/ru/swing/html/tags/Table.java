@@ -1,12 +1,11 @@
 package ru.swing.html.tags;
 
-import info.clearthought.layout.TableLayout;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ru.swing.html.CellSpan;
+import ru.swing.html.layout.CellSpan;
 import ru.swing.html.DomConverter;
-import ru.swing.html.SpanMap;
+import ru.swing.html.layout.SpanMap;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.layout.TableLayoutSupport;
 
