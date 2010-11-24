@@ -1,0 +1,654 @@
+#summary documentation for rev63
+#labels documentation
+
+<wiki:toc max_depth="2" />
+= Что это такое =
+
+swinghtmltemplate позволяет конструировать формы с помощью декларативного описания на языке разметки, похожей на html.
+
+Разметка формы располагается во внешнем файле .html, во время выполнения приложения она подгружается в программу и преобразуется в swing-компонент. При этом имеется возможность присвоить дочерние элементы html документа (текстовые поля, панели итп) полям некоторого класса с помощью аннотации {{{@Bind}}}.
+
+
+= Как это работает =
+
+Загрузка html документа происходит с помощью библиотеки jdom, таким образом html должен быть валидным xml документом.
+Далее DOM-модель xml-документа преобразуется в дерево тегов, готовых для преобразования в компоненты swing. По получившейся dom-модели тегов строится дерево swing-компонент.
+
+= Использование =
+Загрузить dom-модель можно с помощью вызова 
+{{{
+InputStream in = ...;
+DomModel model = DomLoader.loadModel(in);
+}}}
+
+Для построения дерева swing компонент необходимо вызвать метод 
+{{{
+DomConverter.toSwing(model);
+}}}
+
+далее из dom-модели необходимо получить корневой элемент, у которого можно извлечь соответствующий компонент:
+{{{
+model.getRootTag().getComponent();
+}}}
+
+корневой элемент соответствует тегу body в html документе.
+Также из модели можно получить любой компонент по его id:
+{{{
+model.getTagById("someId");
+}}}
+
+== Автоматический биндинг ==
+Можно автоматически подгрузить форму для некого объекта, представляющего контроллер формы, и присвоить полям объекта требуемые элементы:
+{{{
+package foo;
+
+public class LoginForm {
+
+   @Bind("login")
+   private JTextField loginText;
+
+   public LoginForm() {
+        try {
+            Binder.bind(this);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+   }
+
+}
+}}}
+{{{Binder.bind(this)}}} подгружает html документ, располагающийся в том же месте, где и класс контроллера формы и имеющий такое же имя,то есть для примера выше это будет {{{"/foo/LoginForm.html"}}}
+
+Аннотация {{{@Bind("id")}}} указывает на то, что данному полю в качестве значения будет присвоен компонент, соответствующий тегу с идентификатором "id".
+
+== Выборка элементов с помощью селекторов ==
+Можно выбрать компоненты dom-модели с помощью селекторов:
+{{{
+InputStream in = ...
+DomModel model = DomLoader.loadModel(in);
+for (JComponent c : model.select(".button")) {
+   c.setEnabled(false);
+}
+}}}
+
+
+= Компоненты =
+== Общие свойства ==
+Для каждого компонента можно задать его свойства, указав их атрибутами соответствующего тега или элементами стиля. Поддерживаются следующие общие свойства (для всех тегов):
+  * {{{id}}} - идентификатор компонента
+  * {{{display}}} - идентификатор менеджера компоновки для компонента, соответствующего элементу. Если не указано иное, по умолчанию используется {{{FlowLayout}}} (для div, к примеру, используется {{{java.awt.BorderLayout}}}). 
+  * {{{align}}} - это указание менеджеру компоновки как следует располагать компонент данного элемента. У каждого поддерживаемого менеджера компоновки есть вспомогательный класс, который преобразует текстовые значения данного атрибута в подходящие значения менеджера компоновки. Например, для BorderLayout, данный вспомогательный класс преобразует значения top, bottom, left, right, center в BorderLayout.NORTH, BorderLayout.SOUTH итд соответственно
+  * {{{text-align}}} - зависит от действий менеджера компоновки. Используется для выравнивания по левому/правому краю (соответственно может быть проигнорировано, если менеджер компоновки не позволяет выравнивать по краю)
+  * {{{vertial-align}}} - зависит от действий менеджера компоновки. Используется для выравнивания по верхнему/нижнему краю (соответственно может быть проигнорировано, если менеджер компоновки не позволяет выравнивать по краю)
+  * {{{type}}} - зависит от тега. Используется для указания тегу какой компонент требуется создать. Примеры: {{{<input type="text" /> -> JTextField}}}, {{{<input type="button" /> -> JButton}}}
+  * {{{width}}} - ширина компонента. Зависит от менеджера компоновки
+  * {{{height}}} - высота компонента. Зависит от менеджера компоновки
+  * {{{style}}} - воспринимается как список свойств, но записанный в формате css
+  * {{{text}}} - текст компонента. Для данного свойства вызывается метод {{{setText(String)}}} в компоненте. Если данного метода нет, то в лог выведется предупреждение.
+  * {{{opaque}}} - прозрачность. Соответствует свойству {{{JComponent.opaque}}}. Значения: true или false
+  * {{{icon}}} - иконка компонента. Для данного свойства вызывается метод {{{setIcon(Icon)}}} в компоненте. Если данного метода нет, то в лог выведется предупреждение. Значение - путь до иконки (иконка должна быть доступна методу {{{getClass().getResource("url"))}}}.
+  * {{{border}}} - рамка компонента. Значение - рамка в формате класса BorderFactory
+  * {{{color}}} - цвет шрифта компонента. Для данного свойства будет вызван метод {{{JComponent.setForeground(Color)}}}
+  * {{{background-color}}} - цвет фона компонента. Для данного свойства будет вызван метод {{{JComponent.setBackground(Color)}}}
+  * {{{font-size}}} - Размер шрифта компонента в пикселях.
+  * {{{font-weight}}} - Толщина шрифта. По умолчанию используется дефолтная для компонента (например, JLabel все выводит жирным). Допустимые значения: normal, bold, bolder, lighter.
+  * {{{font-style}}} - Наклон шрифта. Если равен italic, то шрифт будет наклонным.
+  * {{{font-family}}} - Семейство шрифта.
+
+== body ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется FlowLayout.
+
+== div ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется BorderLayout.
+
+== form ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется MigLayout.
+
+== glue ==
+Тег преобразуется в компонент, возвращаемый в результате вызова
+{{{
+javax.swing.Box.createHorizontalGlue();
+}}}
+для {{{type="horizontal"}}}, или 
+{{{
+javax.swing.Box.createVerticalGlue();
+}}}
+для {{{type="vertical"}}}. Значение type по умолчанию - vertical.
+Используется в компонентах с менеджером компоновки {{{BoxLayout}}}.
+
+Пример:
+{{{
+<glue type="horizontal"/>
+}}}
+
+== img ==
+Тег преобразуется в компонент JLabel. Значение атрибута src копирует в атрибут icon, таким образом, иконка, указанная в качестве значения src, будет иконкой компонента (см. сво-во icon
+
+Пример
+{{{
+<img src="/img/login-icon.gif"/>
+}}}
+
+== input ==
+В зависимости от значения атрибута type, преобразуется в 
+  * {{{type="text"}}} - JTextField
+  * {{{type="password"}}} - JPasswordField
+  * {{{type="button"}}} - JButton
+  * {{{type="checkbox"}}} - JCheckBox
+  * {{{type="radio"}}} - JRadioButton
+По умолчанию преобразуется в JTextField.
+{{{
+<input type="button" text="OK"/>
+}}}
+Если итоговый компонент расширяет класс JTextComponent, то в качестве текста компонента присваивается содержимое тега:
+{{{
+<input type="text">Initial text</input>
+}}}
+
+== object ==
+Тег преобразуется в компонент, название класса которого задано атрибутом classid.
+Пример:
+{{{
+<object classid="javax.swing.JButton" text="OK"/>
+}}}
+
+== p ==
+Тег преобразуется в компонент JLabel. В качестве текста компонента присваивается содержимое тега.
+Если значение атрибута {{{content}}} равно {{{html}}}, то содержимое тега обрамляется строками {{{<html>}}} спереди и {{{</html>}}} сзади, таким образом JLabel будет выводить текст в виде html. Если значение атрибута {{{content}}} равно {{{text}}} или пустое, то в качестве текста просто подставляется содержимое тега.
+
+Пример:
+{{{
+<p>Login:</p>
+<p content="html"><![CDATA[<u>Login:</u>]]></p>
+<p content="text"><![CDATA[<html><u>Login:</u></html>]]></p>
+}}}
+
+== span ==
+Тег преобразуется в компонент JPanel. В качестве менеджера компоновки по умолчанию используется {{{java.awt.FlowLayout}}}.
+
+Пример:
+{{{
+<span style="text-align:right">
+   <input type="button" text="OK"/>
+   <input type="button" text="Cancel"/>
+</span>
+}}}
+
+== scroll ==
+Тег преобразуется в JScrollPane. В качестве содержимого компонента, отображаемого в окне прокрутки, будет использован компонент от первого дочернего тега. Если дочерних тегов более 1, то в лог будет выведено предупреждение.
+
+Пример:
+{{{
+<scroll>
+<component type="javax.swing.JTable"/>
+</scroll>
+}}}
+
+== split ==
+Тег преобразуется в JSplitPane. 
+
+ Допустимые параметры тега:
+  * {{{orientation}}} - ориентация, допустимые значения: horizontal, vertical
+  * {{{divider-size}}} - ширина разделительной линии
+  * {{{divider-position}}} - положение разделительной линии. в пикселях (100) или процентах (50%)
+
+У тега может быть ровно 2 дочерних элемента. Расположение элементов зависит от значения
+атрибута align дочернего тега:
+  * {{{left}}} - компонент пойдет в левую панель
+  * {{{top}}} - компонент пойдет в верхнюю панель
+  * {{{right}}} - компонент пойдет в правую панель
+  * {{{bottom}}} - компонент пойдет в нижнюю панель
+
+Если align не указан у первого тега, то первый компонент пойдет в левую панель, 2ой - в правую.
+
+Пример:
+{{{
+<split orientation="horizontal" style="divider-size: 2;divider-position: 200;">
+
+    <scroll>
+        <textarea>Left</textarea>
+    </scroll>
+
+    <scroll>
+        <textarea>Right</textarea>
+    </scroll>
+
+</split>
+}}}
+
+
+== strut ==
+Тег преобразуется в компонент, возвращаемый в результате вызова
+{{{
+javax.swing.Box.createHorizontalStrut(width)
+}}}
+для {{{type="horizontal"}}}, или 
+{{{
+javax.swing.Box.createVerticalStrut(height)
+}}}
+для {{{type="vertical"}}}. Значение type по умолчанию - vertical.
+Используется в компонентах с менеджером компоновки {{{BoxLayout}}}.
+{{{width}}} и {{{height}}} - значения атрибутов тега width и height соответственно.
+
+Пример:
+{{{
+<strut type="horizontal" style="width: 12"/>
+<strut type="vertical" height="12"/>
+}}}
+
+
+== table ==
+Тег преобразуется в панель, в качестве менеджера компоновки которой используется [[https://tablelayout.dev.java.net/ TableLayout]]. 
+
+У тега можно задать атрибуты
+ * {{{x-tablelayout-column-sizes}}} - размеры колонок, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * {{{x-tablelayout-row-sizes}}} - размеры рядов, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * {{{cellspacing}}} - расстояние между ячейками в пикселях
+
+Пример:
+{{{
+<table style="x-tablelayout-column-sizes: preferred fill; x-tablelayout-row-sizes: preferred">
+   <tr>
+      <td><p>Login:</p></td>
+      <td><input type="text"/></td>
+   </tr>
+</table>
+}}}
+
+Если не задавать {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}), то соответствующее свойство будет вычисляться динамически: для каждой ячейки запоминается максимальное значение ширины (высоты) и затем оно будет использовано в качестве размера столбца (строки).
+
+При этом следует учитывать, что
+{{{
+preferred < number < fill
+}}}
+
+По умолчанию используется значение {{{preferred}}}. Таким образом, если указать для какой-либо ячейки атрибут {{{width}}} ({{{height}}}) с числовым значением, то это число перекроет значение {{{preferred}}}. Аналогично значение {{{fill}}} перекроет любое числовое значение и значение {{{preferred}}}.
+
+Следует учитывать, что задание {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}) для тега {{{table}}} автоматически устанавливает количество столюцов (строк), при динамическом вычислении количество столбцов считается динамически.
+
+Для ячейки td можно задать следующие свойства:
+  * {{{width}}} - ширина столбца, см выше
+  * {{{height}}} - высота столбца, см выше
+  * {{{rowspan}}} - растягивание ячейки по горизонтали. Для таких ячеек игнорируется значение {{{width}}}
+  * {{{colspan}}} - растягивание ячейки по вертикали. Для таких ячеек игнорируется значение {{{height}}}
+  * {{{text-align}}} - центрирование по горизонтали. Значения: {{{left}}}, {{{right}}}, {{{center}}}, {{{full}}}
+  * {{{vertcal-align}}} - центрирование по вертикали. Значения: {{{top}}}, {{{bottom}}}, {{{center}}}, {{{full}}}
+
+Примеры:
+{{{
+<table style="x-tablelayout-row-sizes: preferred preferred preferred preferred; x-tablelayout-column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+
+    <tr>
+        <td style="text-align: right;"><p>Login:</p></td>
+        <td><input type="text">qqq</input></td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Password:</p></td>
+        <td>
+            <input type="text">***</input>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Remember:</p></td>
+        <td>
+            <input type="checkbox"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
+        <td>
+            <table style="x-tablelayout-row-sizes: preferred preferred; x-tablelayout-column-sizes: preferred fill">
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Manager</p></td>
+                </tr>
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Admin</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td rowspan="3" class="top">
+            <img src="/img/login_icon.gif" alt=""/>
+        </td>
+        <td width="fill">
+            <form id="loginForm">
+                <p>Login:</p>
+                <input id="login" type="text" align="wrap"/>
+                <p>Password:</p>
+                <input id="password" type="password" align="wrap" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p id="result" class="red"></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+                <glue type="horizontal"/>
+                <input type="button" text="OK" id="ok" icon="/img/accept.png" />
+                <strut type="horizontal" style="width: 6"/>
+                <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+}}}
+
+
+== tabs ==
+Тег преобразуется в панель JTabbedPane.
+
+Для каждого дочернего тега создается вкладка, в качестве названия подставляется значение атрибута title дочернего тега.
+
+Тег поддерживает атрибуты:
+
+  * {{{tab-position}}} - определяет позицию вкладок. Допустимые значения: {{{top}}}, {{{bottom}}}, {{{left}}}, {{{right}}}.
+
+
+Пример:
+{{{
+<tabs>
+    <div title="Text">
+        <p>Tab 1</p>
+    </div>
+
+    <div title="JEditorPane" style="display:border">
+        <scroll>
+            <component type="javax.swing.JEditorPane"/>
+        </scroll>
+
+    </div>
+</tabs>
+}}}
+
+
+== textarea ==
+Тег преобразуется в компонент JTextArea. В качестве текста компонента присваивается содержимое тега.
+
+Пример:
+{{{
+<scroll>
+   <textarea>Some text</textarea>
+</scroll>
+}}}
+
+
+= Менеджеры компоновки =
+Менеджер компоновки, используемый в компоненте, задается атрибутом display.
+
+== border ==
+Соответствует менеджеру компоновки java.awt.BorderLayout.
+
+Дочерние компоненты располагаются взависимости от значения атрибута align:
+  * {{{align="top"}}} - вверху
+  * {{{align="bottom"}}} - внизу
+  * {{{align="left"}}} - слева
+  * {{{align="right"}}} - справа
+  * {{{align="center"}}} - в центре
+По умолчанию дочерний компонент располагается в центре.
+
+В качестве горизонтальных и вертикальных промежутков между компонентами использует значение атрибута margin, заданного в формате {{{margin:hgap vgap}}}
+
+Пример: 
+{{{
+<div style="display: border; margin: 6 0">
+   <input type="button" text="ok"/>
+   <input type="button" text="cancel"/>
+</div>
+}}}
+
+
+== box ==
+Соответствует менеджеру компоновки javax.swing.BoxLayout.
+
+Направление расположения дочерних компонент задается атрибутом x-boxlayout-direction:
+ * {{{horizontal}}} - компоненты располагаются горизонтально
+ * {{{vertical}}} - компоненты располагаются вертикально
+
+Для заданий расстояний между компонентами можно использовать теги {{{<strut/>}}}  и {{{<glue/>}}}.
+
+Пример: 
+{{{
+<div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+   <glue type="horizontal"/>
+   <input type="button" text="OK" id="ok" icon="/img/accept.png" />
+   <strut type="horizontal" style="width: 6"/>
+   <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+</div>
+}}}
+
+== flow ==
+Соответствует менеджеру компоновки java.awt.FlowLayout.
+
+Выравнивание дочерних компонент задается атрибутом text-align:
+  * {{{center}}} - компоненты выравниваются по центру
+  * {{{left}}} - компоненты выравниваются по левому краю
+  * {{{center}}} - компоненты выравниваются по правому краю
+
+В качестве горизонтальных и вертикальных промежутков между компонентами использует значение атрибута margin, заданного в формате {{{margin:hgap vgap}}}
+
+
+Пример: 
+{{{
+<div style="display: flow; text-align: right; margin: 10 0">
+    <input id="ok" type="button" text="OK"/>
+    <input type="button" text="Cancel"/>
+</div>
+}}}
+
+== mig ==
+Соответствует менеджеру компоновки [http://www.miglayout.com/ net.miginfocom.swing.MigLayout].
+
+Свойства менеджера компоновки задаются атрибутом {{{x-miglayout-constraints}}}.
+
+Свойства колонок задаются атрибутом {{{x-miglayout-column-constraints}}}.
+
+Свойства рядов задаются атрибутом {{{x-miglayout-row-constraints}}}.
+
+Пример:
+{{{
+<form id="loginForm" style="x-miglayout-column-constraints: [right]related[grow,fill];">
+   <p>Login:</p>
+   <input id="login" type="text" align="wrap"/>
+   <p>Password:</p>
+   <input id="password" type="password" align="wrap" />
+</form>
+}}}
+
+Тег {{{<form/>}}} по умолчанию использует данную компоновку.
+
+== table ==
+Соответствует менеджеру компоновки [https://tablelayout.dev.java.net TableLayout].
+
+Свойства столбцов задаются атрибутом {{{column-sizes}}}.
+
+Свойства рядов задаются атрибутом {{{row-sizes}}}.
+
+Пример: 
+{{{
+<table style="row-sizes: preferred preferred preferred preferred; column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+
+    <tr>
+        <td style="text-align: right;"><p>Login:</p></td>
+        <td><input type="text">qqq</input></td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Password:</p></td>
+        <td>
+            <input type="text">***</input>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Remember:</p></td>
+        <td>
+            <input type="checkbox"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
+        <td>
+            <table style="row-sizes: preferred preferred; column-sizes: preferred fill">
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Manager</p></td>
+                </tr>
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Admin</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+</table>
+
+<div style="display: table; row-sizes: preferred preferred; column-sizes: 100 fill;">
+   <p align="0 0 c c">1</p>
+   <p align="0 1 c c">2</p>
+   <p align="1 0 c c">3</p>
+   <p align="1 1 c c">4</p>
+</div>
+
+}}}
+Тег {{{<table/>}}} по умолчанию использует данную компоновку.
+
+
+= Стили =
+Атрибуты тегов можно задать отдельно от самих тегов с помощью тега {{{<style/>}}} внутри тега {{{<head/>}}}, аналогично обычном css стилям.
+
+Стиль задается в формате css с ограничениями. Поддерживаются следующие типы селекторов:
+  * имя_компонента
+  * .имя_класса
+  * #идентификатор_компонента
+
+Примеры:
+{{{
+<style>
+div {
+   display: border;
+}
+p.error {
+   color: red;
+}
+div.red.top {
+   vertical-align: top;
+   color: red;
+}
+
+#results {
+   color: red;
+}
+</style>
+}}}
+
+С точки зрения фреймворка нет разницы между атрибутами и элементами стиля. 
+
+
+= Рамки =
+С помощью атрибута border можно задать рамку компонента.
+Формат рамки:
+{{{
+тип_рамки параметры_рамки
+}}}
+
+Поддерживаются следующие типы рамок:
+
+==compound==
+Составная рамка. 2 параметра: внешняя рамка и внутренняя рамка.
+{{{compound (outer) (inner)}}}
+Пример: 
+{{{
+compound (empty 12 12 12 12) (compound (line black) (empty 12 12 12 12))
+}}}
+
+
+==empty==
+Пустая рамка. Параметров или нет, или 4 целых числа (отступа). (верх, лево, низ, право)
+{{{
+border: empty;
+border: empty 12 12 12 12;
+}}}
+
+
+==etched==
+рамка в виде выемки. Допустимые форматы:
+{{{
+etched
+etched type
+etched highlight_color shadow_color
+etched type highlight_color shadow_color
+}}}
+где
+  * {{{type}}} - тип рамки ({{{lowered}}}, {{{raised}}})
+  * {{{highlight_color}}} - цвет светлой части в формате {{{ColorFactory.getColor(String)}}}
+  * {{{shadow_color}}} - цвет теневой части в формате {{{ColorFactory.getColor(String)}}}
+Примеры:
+{{{
+border: etched;
+border: etched lowered;
+border: etched white black;
+border: etched lowered white black;
+}}}
+
+
+==line==
+Рамка в виде линии. Допустимые форматы:
+{{{
+line color
+line color thick
+}}}
+где
+  * {{{color}}} - цвет линии в формате {{{ColorFactory.getColor(String)}}}
+  * {{{thick}}} - толщина линии в пикселях
+Примеры:
+{{{
+border: line black;
+border: line red 2;
+}}}
+
+
+
+==titled==
+Рамка с заголовком. Допустимые форматы:
+{{{
+titled "caption"
+titled "caption" (inner)
+titled "caption" (inner) justification position
+titled "caption" (inner) justification position (font) color
+}}}
+где
+  * {{{caption}}} - заголовок
+  * {{{inner}}} - формат рамки
+  * {{{justification}}} - выравнивание по горизонтали ({{{left}}}, {{{right}}}, {{{center}}}, {{{leading}}}, {{{trailing}}})
+  * {{{position}}} - выравнивание по вертикали ({{{top}}}, {{{above-top}}}, {{{below-top}}}, {{{bottom}}}, {{{above-bottom}}}, {{{below-bottom}}})
+  * {{{font}}} - шрифт заголовка в формате {{{Font.decode(String)}}}
+  * {{{color}}} - цвет заголовка в формате {{{ColorFactory.getColor(String)}}}
+Примеры:
+{{{
+title "Foo"
+title "Foo" (empty 12 12 12 12)
+title "Foo" (empty 12 12 12 12) left bottom
+title "Foo" (empty 12 12 12 12) left bottom (Arial) red
+}}}
+
+
+
+==Примеры==
+{{{
+<body style="border: compound (empty 12 12 12 12) (compound (etched) (empty 12 12 12 12))">
+   <div style="border: line black"><p>Hello</p></div>
+</body>
+}}}
