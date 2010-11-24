@@ -1,0 +1,717 @@
+#summary documentation for rev79
+#labels documentation
+
+<wiki:toc max_depth="2" />
+= What is all about =
+
+swinghtmltemplate let's you construct gui forms by declaring theirs tamplate using html-like syntax.
+
+Templates are stored in external file with ".html" extension, they are loaded in runtime and are coverted to
+swing-components. You can assign these components to some class fields using {{{@Bind}}} annotaion during
+conversion process.
+
+= How does this work =
+
+Loading of html-document is handled by [http://www.jdom.org/ jdom] library, so html must be valid xml.
+
+Next, dom-model is converted to the tree of tags, ready to produce swing components. After that
+tree of swing component is being built.
+
+= Usage =
+Loading of dom-model is done with
+{{{
+InputStream in = ...;
+DomModel model = DomLoader.loadModel(in);
+}}}
+
+To built swing-components tree use
+{{{
+DomConverter.toSwing(model);
+}}}
+
+
+next you must get root swing component from body tag:
+{{{
+model.getRootTag().getChildByName("body").getComponent()
+}}}
+root swing element is associated with body tag.
+
+Also you can get any tag by it's id:
+{{{
+model.getTagById("someId");
+}}}
+
+== Auto binding ==
+You can automatically load dom-model for some object (which is a controller for some form) and assign
+swing components to object's fields:
+{{{
+package foo;
+
+public class LoginForm {
+
+   @Bind("login")
+   private JTextField loginText;
+
+   public LoginForm() {
+        try {
+            Binder.bind(this);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+   }
+
+}
+}}}
+
+{{{Binder.bind(this)}}} loads html document, located at the same place, where class is located and which has
+the same name, for an example above the full name would be {{{"/foo/LoginForm.html"}}}
+
+{{{@Bind("login")}}} annotation tells, that the field, marked with this annotation will be assigned
+a swing component, associated with the tag with id, equals to the value of the annotation ("login" in the example).
+
+== Selecting component with selectors ==
+Можно выбрать компоненты dom-модели с помощью селекторов:
+{{{
+InputStream in = ...
+DomModel model = DomLoader.loadModel(in);
+for (JComponent c : model.select(".button")) {
+   c.setEnabled(false);
+}
+}}}
+
+= Components =
+
+== Common attributes ==
+For any component you can assign it's properties by providing attributes in associated tag or by specifying
+css styles. Below are common properties (for all tags):
+
+  * {{{id}}} - component identifier
+  * {{{display}}} - identifier of the layout manager for the component, associated with tag. Defaults to {{{flow (java.awt.BorderLayout)}}}), `div` defaults to {{{border (java.awt.BorderLayout)}}}).
+  * {{{align}}} - this is constraint for this component in parent's layout manager. Each layout manager has corresponding support-class, which role is to convert text values of this attribute to suitable values of layout manager. For example, support class for {{{java.awt.BorderLayout}}} converts strings `top`, `bottom`, `left`, `right`, `center` into `BorderLayout.NORTH`, `BorderLayout.SOUTH` etc accordingly
+  * {{{text-align}}} - layout specific. Used to align on left/right side (but can be ignored, if layout manager doesn't supports aligning)
+  * {{{vertial-align}}} - layout specific. Used to align on top/bottom side (but can be ignored, if layout manager doesn't supports aligning)
+  * {{{type}}} - depends on tag. Used to specify the type of component to produce. Examples: {{{<input type="text" /> -> JTextField}}}, {{{<input type="button" /> -> JButton}}}
+  * {{{width}}} - component's width, layout specific
+  * {{{height}}} - component's height, layout specific
+  * {{{style}}} - this is treated as properties list, but in form of css
+  * {{{text}}} - text of the component. Method {{{setText(String)}}} is called for this property. If there's no such methos, warning is printed to log.
+  * {{{opaque}}} - opacity. Same as {{{JComponent.opaque}}}. Values: `true` or `false`
+  * {{{icon}}} - component's icon. Method {{{setIcon(Icon)}}} is called for this property. If there's no such methos, warning is printed to log. Value - icons path (icon must be available for  {{{getClass().getResource("url"))}}}.
+  * {{{border}}} - component's border. Value - border description (see border section for details)
+  * {{{color}}} - component's color. Method {{{JComponent.setForeground(Color)}}} is called for this property
+  * {{{background-color}}} - component's background color. Method {{{JComponent.setBackground(Color)}}} is called for this property
+  * {{{font-size}}} - component's font size in pixels.
+  * {{{font-weight}}} - component's font weight. Default's to default component style (JLabel prints text in bold, for example). Values: `normal`, `bold`, `bolder`, `lighter`.
+  * {{{font-style}}} - component's font style. If value is `italic`, font will be italic.
+  * {{{font-family}}} - component's font family.
+
+== body ==
+Tag is converted to `javax.swing.JPanel`. `java.awt.FlowLayout` is used as layout manager by default.
+
+== div ==
+Tag is converted to `javax.swing.JPanel`. `java.awt.BorderLayout` is used as layout manager by default.
+
+== form ==
+Tag is converted to `javax.swing.JPanel`. `net.miginfocom.swing.MigLayout` is used as layout manager by default.
+
+== glue ==
+Tag is converted to the component, that is returned from
+{{{
+javax.swing.Box.createHorizontalGlue();
+}}}
+for  {{{type="horizontal"}}}, or
+{{{
+javax.swing.Box.createVerticalGlue();
+}}}
+for {{{type="vertical"}}}. Default `type` value is `vertical`.
+
+Used within tags with {{{BoxLayout}}} layout
+
+Example:
+{{{
+<glue type="horizontal"/>
+}}}
+
+== img ==
+Tag is converted to `javax.swing.JLabel`. Value of the `src` attribute is copied to `icon` attribute, so,
+an icon, specified as `src` value will be component's icon (see common properties)
+
+Example
+{{{
+<img src="/img/login-icon.gif"/>
+}}}
+
+== input ==
+According to `type` value converts to
+  * {{{type="text"}}} - JTextField
+  * {{{type="password"}}} - JPasswordField
+  * {{{type="button"}}} - JButton
+  * {{{type="checkbox"}}} - JCheckBox
+  * {{{type="radio"}}} - JRadioButton
+Converts to `JTextField` by default.
+{{{
+<input type="button" text="OK"/>
+}}}
+
+
+If resulting component is subclass of `JTextComponent`, then the contents of the tag will be component's text.
+{{{
+<input type="text">Initial text</input>
+}}}
+
+== object ==
+Tag is converted to the component which classname is specified with `classid` attribute.
+Example:
+{{{
+<object classid="javax.swing.JButton" text="OK"/>
+}}}
+
+== p ==
+Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
+If `content` equals to `html`, then the content of the tag is surrounded with {{{<html>}}} before and {{{</html>}}} after,
+so `JLabel` will produce html. If `content` equals to `text` or is empty,
+then the tag content is just assigned as a component's text.
+
+Example:
+{{{
+<p>Login:</p>
+<p content="html"><![CDATA[<u>Login:</u>]]></p>
+<p content="text"><![CDATA[<html><u>Login:</u></html>]]></p>
+}}}
+
+
+
+== span ==
+Tag is converted to `javax.swing.JPanel`. `java.awt.FlowLayout` is used as layout manager by default.
+
+Example:
+{{{
+<span style="text-align:right">
+   <input type="button" text="OK"/>
+   <input type="button" text="Cancel"/>
+</span>
+}}}
+
+== scroll ==
+Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are
+more than 1 child tags, warning will be printed to the log.
+
+Example:
+{{{
+<scroll>
+<component type="javax.swing.JTable"/>
+</scroll>
+}}}
+
+
+== split ==
+Tag is converted to `JSplitPane`.
+
+Tag supports attributes:
+  * {{{orientation}}} - values: horizontal, vertical
+  * {{{divider-size}}} - as in JSplitPane
+  * {{{divider-position}}} - as in JSplitPane. Value is in pixels (100) or in percents (50%)
+
+
+Tag can has no more than 2 child components. Childs are placed according to their `align` preperty:
+  * {{{left}}} - component goes to left panel
+  * {{{top}}} - component goes to top panel
+  * {{{right}}} - component goes to right panel
+  * {{{bottom}}} - component goes to bottom panel
+
+If first child doesn't have `align` property, then first child goes to left panel, second - to right panel.
+
+Example:
+{{{
+<split orientation="horizontal" style="divider-size: 2;divider-position: 200;">
+
+    <scroll>
+        <textarea>Left</textarea>
+    </scroll>
+
+    <scroll>
+        <textarea>Right</textarea>
+    </scroll>
+
+</split>
+}}}
+
+
+== strut ==
+Tag is converted to the component, that is returned from
+{{{
+javax.swing.Box.createHorizontalStrut(w)
+}}}
+for {{{type="horizontal"}}}, or
+{{{
+javax.swing.Box.createVerticalStrut(h)
+}}}
+for {{{type="vertical"}}}. `type` has default value `vertical`.
+
+Used within tags with {{{BoxLayout}}} layout
+
+{{{w}}} and {{{h}}} - are values of attributes `width` и `height` accordingly.
+
+Example:
+{{{
+<strut type="horizontal" style="width: 12"/>
+<strut type="vertical" height="12"/>
+}}}
+
+== table ==
+Tag is converted to `javax.swing.JPanel`, with [https://tablelayout.dev.java.net/ tableLayout] as layout manager.
+
+Supported attributes
+ * {{{x-tablelayout-column-sizes}}} - column sizes in [[https://tablelayout.dev.java.net/ tableLayout]] manner
+ * {{{x-tablelayout-row-sizes}}} - row sizes in [[https://tablelayout.dev.java.net/ tableLayout]] manner
+ * {{{cellspacing}}} - space between cells in pixels
+
+Example:
+{{{
+<table style="x-tablelayout-column-sizes: preferred fill; x-tablelayout-row-sizes: preferred">
+   <tr>
+      <td><p>Login:</p></td>
+      <td><input type="text"/></td>
+   </tr>
+</table>
+}}}
+
+If you skip {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}),
+then corresponding attribute will be counted dynamicly: maximum width (height) is recorder for each cell
+and later is used as column width (row height).
+
+You must remember that
+{{{
+preferred < number < fill
+}}}
+
+Default size is {{{preferred}}}. So, if you specify {{{width}}} ({{{height}}}) for any cell with numeric value,
+then this value will override {{{preferred}}}. Similarly value {{{fill}}} overrides any numeric value and {{{preferred}}}.
+
+Pay attention that specifying {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}) automatically 
+sets column (row) count (so any column outside column count will be invisible). 
+Column (row) count is cumputed dynamically otherwise. 
+
+Tag `td` supports properties: 
+  * {{{width}}} - cells width, see above
+  * {{{height}}} - cells height, see above
+  * {{{rowspan}}} - rowspan of the cell. Cells with `rowspan>1` are ignored during dynamic count of row height
+  * {{{colspan}}} - colspan of the cell. Cells with `colspan>1` are ignored during dynamic count of column width
+  * {{{text-align}}} - horizontal align. Values: {{{left}}}, {{{right}}}, {{{center}}}, {{{full}}}
+  * {{{vertcal-align}}} - vertical align. Values: {{{top}}}, {{{bottom}}}, {{{center}}}, {{{full}}}
+
+Examples:
+{{{
+<table style="x-tablelayout-row-sizes: preferred preferred preferred preferred; x-tablelayout-column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+
+    <tr>
+        <td style="text-align: right;"><p>Login:</p></td>
+        <td><input type="text">qqq</input></td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Password:</p></td>
+        <td>
+            <input type="text">***</input>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Remember:</p></td>
+        <td>
+            <input type="checkbox"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
+        <td>
+            <table style="x-tablelayout-row-sizes: preferred preferred; x-tablelayout-column-sizes: preferred fill">
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Manager</p></td>
+                </tr>
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Admin</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td rowspan="3" class="top">
+            <img src="/img/login_icon.gif" alt=""/>
+        </td>
+        <td width="fill">
+            <form id="loginForm">
+                <p>Login:</p>
+                <input id="login" type="text" align="wrap"/>
+                <p>Password:</p>
+                <input id="password" type="password" align="wrap" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p id="result" class="red"></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+                <glue type="horizontal"/>
+                <input type="button" text="OK" id="ok" icon="/img/accept.png" />
+                <strut type="horizontal" style="width: 6"/>
+                <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+}}}
+
+== tabs ==
+Tag is converted to `JTabbedPane`.
+
+Tab is created for every direct child component, `title` attribute value is used as tab's title.
+
+Tag supports attributes:
+
+  * {{{tab-position}}} - tabs position. Values: {{{top}}}, {{{bottom}}}, {{{left}}}, {{{right}}}.
+
+
+Example:
+{{{
+<tabs>
+    <div title="Text">
+        <p>Tab 1</p>
+    </div>
+
+    <div title="JEditorPane" style="display:border">
+        <scroll>
+            <component type="javax.swing.JEditorPane"/>
+        </scroll>
+
+    </div>
+</tabs>
+}}}
+
+
+== textarea ==
+Tag is converted to `JTextArea`. Tag's content is used as component's text.
+
+Example:
+{{{
+<scroll>
+   <textarea>Some text</textarea>
+</scroll>
+}}}
+
+= Layout managers =
+Layout manager for a component is assigned using `display` attribute.
+ 
+== border ==
+Means `java.awt.BorderLayout`.
+ 
+Child components are placed according to `align` property:
+  * {{{align="top"}}} - north
+  * {{{align="bottom"}}} - south
+  * {{{align="left"}}} - west
+  * {{{align="right"}}} - east
+  * {{{align="center"}}} - center
+Component is placed in the center by default.
+ 
+`margin` value, written in {{{margin:hgap vgap}}} format, is used as horizontal and vertical gaps.
+ 
+Example: 
+{{{
+<div style="display: border; margin: 6 0">
+   <input type="button" text="ok"/>
+   <input type="button" text="cancel"/>
+</div>
+}}}
+
+
+== box ==
+Means `javax.swing.BoxLayout`.
+
+Direction of child components is specified with `x-boxlayout-direction`:
+ * {{{horizontal}}} - components are placed horizontally
+ * {{{vertical}}} - components are placed vertically
+
+You can use {{{<strut/>}}}  и {{{<glue/>}}} to put spaces between components.
+
+Example:
+{{{
+<div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+   <glue type="horizontal"/>
+   <input type="button" text="OK" id="ok" icon="/img/accept.png" />
+   <strut type="horizontal" style="width: 6"/>
+   <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
+</div>
+}}}
+
+== flow ==
+Means `java.awt.FlowLayout`.
+
+Выравнивание дочерних компонент задается атрибутом text-align:
+Children are aligned according to `text-align`:
+  * {{{center}}} - components are aligned in center
+  * {{{left}}} - components are aligned to the left
+  * {{{center}}} - components are aligned to the right
+
+`margin` value, written in {{{margin:hgap vgap}}} format, is used as horizontal and vertical gaps.
+
+
+Example:
+{{{
+<div style="display: flow; text-align: right; margin: 10 0">
+    <input id="ok" type="button" text="OK"/>
+    <input type="button" text="Cancel"/>
+</div>
+}}}
+
+== mig ==
+Means [http://www.miglayout.com/ net.miginfocom.swing.MigLayout].
+
+Layout constraints are set in {{{x-miglayout-constraints}}} attribute.
+
+Columns constraints are set in  {{{x-miglayout-column-constraints}}} attribute.
+
+Rows constraints are set in  {{{x-miglayout-row-constraints}}} attribute.
+
+Example:
+{{{
+<form id="loginForm" style="x-miglayout-column-constraints: [right]related[grow,fill];">
+   <p>Login:</p>
+   <input id="login" type="text" align="wrap"/>
+   <p>Password:</p>
+   <input id="password" type="password" align="wrap" />
+</form>
+}}}
+
+Tag {{{<form/>}}} uses this layout by default.
+
+== table ==
+Means [https://tablelayout.dev.java.net TableLayout].
+
+Column sizes are set with {{{x-tablelayout-column-sizes}}} attribute.
+
+Row sizes are set with {{{x-tablelayout-row-sizes}}} attribute.
+
+Examples:
+{{{
+<table style="x-tablelayout-row-sizes: preferred preferred preferred preferred; x-tablelayout-column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+
+    <tr>
+        <td style="text-align: right;"><p>Login:</p></td>
+        <td><input type="text">qqq</input></td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Password:</p></td>
+        <td>
+            <input type="text">***</input>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;"><p>Remember:</p></td>
+        <td>
+            <input type="checkbox"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
+        <td>
+            <table style="x-tablelayout-row-sizes: preferred preferred; x-tablelayout-column-sizes: preferred fill">
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Manager</p></td>
+                </tr>
+                <tr>
+                    <td><input type='radio'/></td>
+                    <td><p>Admin</p></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+
+</table>
+
+<div style="display: table; x-tablelayout-row-sizes: preferred preferred; x-tablelayout-column-sizes: 100 fill;">
+   <p align="0 0 c c">1</p>
+   <p align="0 1 c c">2</p>
+   <p align="1 0 c c">3</p>
+   <p align="1 1 c c">4</p>
+</div>
+}}}
+
+Tag {{{<table/>}}} uses this layout.
+
+= Styles =
+Атрибуты тегов можно задать отдельно от самих тегов с помощью тега {{{<style/>}}} внутри тега {{{<head/>}}}, аналогично обычном css стилям.
+Tag attribute can be set separately of the tag by using {{{<style/>}}} within {{{<head/>}}}, as with ordinary
+css styles in html.
+
+Стиль задается в формате css с ограничениями. Поддерживаются следующие типы селекторов:
+Style is set in css format with limited capatibilities. Below are supported selectors:
+  * tag_name
+  * .class_name
+  * #identifier
+
+Example:
+{{{
+<style>
+div {
+   display: border;
+}
+p.error {
+   color: red;
+}
+div.red.top {
+   vertical-align: top;
+   color: red;
+}
+
+#results {
+   color: red;
+}
+</style>
+}}}
+
+There is no difference between tag attributes and css styles.
+So these are identical:
+{{{
+<html>
+<head>
+   <style>
+   .ok {
+      text: ok;
+   }
+   </style>
+</head>
+<body>
+   <input type='button' class='ok'/>
+</body>
+</html>
+}}}
+{{{
+<html>
+<body>
+   <input type='button' style='text:ok'/>
+</body>
+</html>
+}}}
+{{{
+<html>
+<body>
+   <input type='button' text='ok'/>
+</body>
+</html>
+}}}
+`style` attribute values overrides css styles in `style` tag.
+
+
+= Borders =
+С помощью атрибута border можно задать рамку компонента.
+You can set component's border with `border` attribute.
+
+
+Border format:
+{{{
+border_type border_params
+}}}
+
+Supported border types are:
+
+==compound==
+Compount border. 2 parameters: outer border and inner border.
+{{{compound (outer) (inner)}}}
+Example:
+{{{
+compound (empty 12 12 12 12) (compound (line black) (empty 12 12 12 12))
+}}}
+
+
+==empty==
+Empty border. No parameters or 4 integers (insets): `top left bottom right`
+
+
+{{{
+border: empty;
+border: empty 12 12 12 12;
+}}}
+
+
+==etched==
+Etched border. Supported formats:
+{{{
+etched
+etched type
+etched highlight_color shadow_color
+etched type highlight_color shadow_color
+}}}
+where
+  * {{{type}}} - border type ({{{lowered}}}, {{{raised}}})
+  * {{{highlight_color}}} - highlight color in format of {{{ColorFactory.getColor(String)}}}
+  * {{{shadow_color}}} - shadow color in format of {{{ColorFactory.getColor(String)}}}
+
+Examples:
+{{{
+border: etched;
+border: etched lowered;
+border: etched white black;
+border: etched lowered white black;
+}}}
+
+
+==line==
+Line border. Supported formats:
+{{{
+line color
+line color thick
+}}}
+where
+  * {{{color}}} - line color in format of {{{ColorFactory.getColor(String)}}}
+  * {{{thick}}} - line width
+Examples:
+{{{
+border: line black;
+border: line red 2;
+}}}
+
+
+
+==titled==
+Titled border. Supported formats:
+{{{
+titled "caption"
+titled "caption" (inner)
+titled "caption" (inner) justification position
+titled "caption" (inner) justification position (font) color
+}}}
+where
+  * {{{caption}}} - border caption
+  * {{{inner}}} - inner border
+  * {{{justification}}} - horizontal align ({{{left}}}, {{{right}}}, {{{center}}}, {{{leading}}}, {{{trailing}}})
+  * {{{position}}} - vertical align ({{{top}}}, {{{above-top}}}, {{{below-top}}}, {{{bottom}}}, {{{above-bottom}}}, {{{below-bottom}}})
+  * {{{font}}} - caption's font in format of {{{java.awt.Font.decode(String)}}}
+  * {{{color}}} - caption's color in format of {{{ColorFactory.getColor(String)}}}
+Examples:
+{{{
+title "Foo"
+title "Foo" (empty 12 12 12 12)
+title "Foo" (empty 12 12 12 12) left bottom
+title "Foo" (empty 12 12 12 12) left bottom (Arial) red
+}}}
+
+
+
+==Examples==
+{{{
+<body style="border: compound (empty 12 12 12 12) (compound (etched) (empty 12 12 12 12))">
+   <div style="border: line black"><p>Hello</p></div>
+</body>
+}}}
