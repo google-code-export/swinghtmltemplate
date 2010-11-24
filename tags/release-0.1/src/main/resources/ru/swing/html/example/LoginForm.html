@@ -1,0 +1,52 @@
+<html>
+<head>
+    <style type="text/css">
+        .red {
+            color: red;
+        }
+        .top {
+            vertical-align: top;
+        }
+        #loginForm {
+            x-miglayout-column-constraints: [right]related[grow,fill];
+        }
+        body {
+            border: compound (empty 12 12 12 12) (compound (etched) (empty 12 12 12 12));
+        }
+    </style>
+</head>
+<body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
+<table>
+    <tr>
+        <td rowspan="3" class="top">
+            <img src="/img/login_icon.gif" alt=""/>
+        </td>
+        <td width="fill">
+            <form id="loginForm">
+                <p content="html"><![CDATA[<span style="text-decoration:underline;">Login</span>]]></p>
+                <input id="login" type="text" align="wrap"/>
+                <p>Password:</p>
+                <input id="password" type="password" align="wrap" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p id="result" class="red"></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
+                <glue type="horizontal"/>
+                <input type="button" text="OK" id="ok" icon="/img/accept.png" class="button" />
+                <strut type="horizontal" style="width: 6"/>
+                <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png" class="button"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+</body>
+</html>
