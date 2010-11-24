@@ -33,7 +33,7 @@ public class PTest extends TestCase {
         p = new P();
         p.setModel(model);
         p.setContent("foo");
-        p.setAttribute("type", "html");
+        p.setAttribute(P.CONTENT_ATTRIBUTE, "html");
         p.setComponent(p.createComponent());
         assertTrue(p.getComponent() instanceof JLabel);
 
@@ -46,7 +46,7 @@ public class PTest extends TestCase {
         p = new P();
         p.setModel(model);
         p.setContent("foo");
-        p.setAttribute("type", "text");
+        p.setAttribute(P.CONTENT_ATTRIBUTE, "text");
         p.setComponent(p.createComponent());
         assertTrue(p.getComponent() instanceof JLabel);
 

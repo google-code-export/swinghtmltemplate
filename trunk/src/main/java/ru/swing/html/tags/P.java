@@ -3,7 +3,6 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ru.swing.html.DomModel;
 
 import javax.swing.*;
 
@@ -17,6 +16,7 @@ public class P extends Tag {
 
 
     private Log logger = LogFactory.getLog(getClass());
+    public static final String CONTENT_ATTRIBUTE = "content";
 
     @Override
     public JComponent createComponent() {
@@ -29,17 +29,18 @@ public class P extends Tag {
     public void applyAttributes(JComponent component) {
         super.applyAttributes(component);
         JLabel label = (JLabel) component;
-        if ("html".equals(getType())) {
+        String contentType = getAttribute(CONTENT_ATTRIBUTE);
+        if ("html".equals(contentType)) {
             label.setText("<html>"+getContent()+"</html>");
         }
-        else if ("text".equals(getType())) {
+        else if ("text".equals(contentType)) {
             label.setText(getContent());
         }
-        else if (StringUtils.isEmpty(getType())) {
+        else if (StringUtils.isEmpty(contentType)) {
             label.setText(getContent());
         }
         else {
-            logger.warn("Unknown type: "+getType()+", defaulting to text");
+            logger.warn("Unknown type: "+ contentType +", defaulting to text");
             label.setText(getContent());
         }
     }

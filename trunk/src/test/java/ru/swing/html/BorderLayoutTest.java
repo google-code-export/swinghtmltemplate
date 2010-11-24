@@ -20,7 +20,7 @@ public class BorderLayoutTest extends TestCase {
         String html = "<html>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <p type='html'>center</p>" +
+                "   <p content='html'>center</p>" +
                 "   <p align='top'>top</p>" +
                 "   <p align='bottom'>bottom</p>" +
                 "   <p align='left'>left</p>" +
