@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
-import ru.swing.html.DomModel;
 
 import javax.swing.*;
 
@@ -50,6 +49,10 @@ public class SplitPane extends Tag {
     public static final String DIVIDER_SIZE_ATTRIBUTE = "divider-size";
     public static final String DIVIDER_POSITION_ATTRIBUTE = "divider-position";
 
+    @Override
+    public String getName() {
+        return "split";
+    }
 
     @Override
     public JComponent createComponent() {
@@ -64,21 +67,27 @@ public class SplitPane extends Tag {
 
             JSplitPane pane = (JSplitPane) getComponent();
 
-            if (getChildren().size()==2) {
-                JComponent childComponent1 = DomConverter.convertComponent(getChildren().get(0));
-                JComponent childComponent2 = DomConverter.convertComponent(getChildren().get(1));
+            if (getChildren().size()<=2) {
+                JComponent childComponent1 = getChildren().size()>0 ? DomConverter.convertComponent(getChildren().get(0)) : null;
+                JComponent childComponent2 = getChildren().size()>1 ? DomConverter.convertComponent(getChildren().get(1)) : null;
 
-                placeChild(childComponent1, getChildren().get(0).getAlign(), "left");
-                //2го помещаем в свободную ячейку. то есть если первый лег в правую часть, то 2го кладем в левую.
-                if (pane.getLeftComponent()!=null) {
-                    placeChild(childComponent2, getChildren().get(1).getAlign(), "right");
+                if (childComponent1!=null) {
+                    placeChild(childComponent1, getChildren().get(0).getAlign(), "left");
+                    if (childComponent2!=null) {
+                        //2го помещаем в свободную ячейку. то есть если первый лег в правую часть, то 2го кладем в левую.
+                        if (pane.getLeftComponent()!=null) {
+                            placeChild(childComponent2, getChildren().get(1).getAlign(), "right");
+                        }
+                        else {
+                            placeChild(childComponent2, getChildren().get(1).getAlign(), "left");
+                        }
+                    }
                 }
-                else {
-                    placeChild(childComponent2, getChildren().get(1).getAlign(), "left");
-                }
+
             }
-            else {
-                logger.warn("scroll must contain 2 children");
+
+            if (getChildren().size()>2) {
+                logger.warn(getName()+" must not contain more than 2 children");
             }
         }
         else {

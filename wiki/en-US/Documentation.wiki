@@ -1,0 +1,8 @@
+<wiki:toc max_depth="2" />
+= What is all about =
+
+swinghtmltemplate let's you construct gui forms by declaring theirs tamplate using html-like syntax
+
+Templates are stored in external file with ".html" extension, they are loaded in runtime and are coverted to
+swing-components. You can assign these components to some class fields using {{{@Bind}}} annotaion during
+conversion process.
