@@ -16,6 +16,10 @@ import java.util.ArrayList;
  * </pre>
  */
 public class TableLayoutSupport implements LayoutManagerSupport{
+    
+    public static final String CELLSPACING_ATTRIBUTE = "cellspacing";
+    public static final String ROW_SIZES_ATTRIBUTE = "x-tablelayout-row-sizes";
+    public static final String COLUMN_SIZES_ATTRIBUTE = "x-tablelayout-column-sizes";
 
     public void addComponent(JComponent parent, JComponent child, String constraint) {
         parent.add(child, constraint);
@@ -23,12 +27,16 @@ public class TableLayoutSupport implements LayoutManagerSupport{
 
     public LayoutManager createLayout(Tag tag) {
 
-        String colsSizes = tag.getAttribute("column-sizes");
-        String rowsSizes = tag.getAttribute("row-sizes");
+        String colsSizes = tag.getAttribute(COLUMN_SIZES_ATTRIBUTE);
+        String rowsSizes = tag.getAttribute(ROW_SIZES_ATTRIBUTE);
+        String cellspacing = tag.getAttribute(CELLSPACING_ATTRIBUTE);
         double[] cols = parse(colsSizes);
         double[] rows = parse(rowsSizes);
+        int csp = StringUtils.isNumeric(cellspacing) ? new Integer(cellspacing) : 0;
 
         final TableLayout tableLayout = new TableLayout(cols,rows);
+        tableLayout.setHGap(csp);
+        tableLayout.setVGap(csp);
         return tableLayout;
     }
 

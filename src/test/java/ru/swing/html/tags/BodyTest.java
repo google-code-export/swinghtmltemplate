@@ -10,16 +10,16 @@ import java.awt.*;
 /**
  * <pre>
  * User: Penkov Vladimir
- * Date: 23.11.2010
- * Time: 18:47:22
+ * Date: 24.11.2010
+ * Time: 10:55:11
  * </pre>
  */
-public class DivTest extends TestCase {
+public class BodyTest extends TestCase {
+
 
     public void testConvertsToJPanel() throws Exception {
 
-        Div tag = new Div();
-
+        Body tag = new Body();
         JComponent jComponent = DomConverter.convertComponent(tag);
         assertNotNull(jComponent);
         assertEquals(JPanel.class, jComponent.getClass());
@@ -27,15 +27,13 @@ public class DivTest extends TestCase {
 
     }
 
+
     public void testDefaultLayout() throws Exception {
-        DomModel model = new DomModel();
 
-        Div tag = new Div();
-        tag.setModel(model);
-
+        Body tag = new Body();
         JComponent jComponent = DomConverter.convertComponent(tag);
         assertNotNull(jComponent.getLayout());
-        assertEquals(BorderLayout.class, jComponent.getLayout().getClass());
+        assertEquals(FlowLayout.class, jComponent.getLayout().getClass());
 
 
     }

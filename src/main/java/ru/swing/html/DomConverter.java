@@ -93,12 +93,10 @@ public class DomConverter {
         componentTag.setComponent(component);
         //вызываем процедуру применения атрибутов тега к компоненту
         componentTag.applyAttributes(component);
-        if (component!=null) {
-            //инициализируем менеджер компоновки в компоненте
-            componentTag.handleLayout();
-            //обрабатываем дочерние теги
-            componentTag.handleChildren();
-        }      
+        //инициализируем менеджер компоновки в компоненте
+        componentTag.handleLayout();
+        //обрабатываем дочерние теги
+        componentTag.handleChildren();
 
         return component;
     }

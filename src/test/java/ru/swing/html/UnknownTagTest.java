@@ -9,22 +9,24 @@ import java.io.ByteArrayInputStream;
 /**
  * <pre>
  * User: Penkov Vladimir
- * Date: 23.11.2010
- * Time: 18:11:07
+ * Date: 24.11.2010
+ * Time: 11:09:31
  * </pre>
  */
-public class BorderLayoutTest extends TestCase {
+public class UnknownTagTest extends TestCase {
 
-    public void testBorderLayout() throws Exception {
+    public void testParsingOfUnknownTest() throws Exception {
 
         String html = "<html>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <p content='html'>center</p>" +
-                "   <p align='top'>top</p>" +
-                "   <p align='bottom' content='html'><![CDATA[<i>bottom</i>]]></p>" +
-                "   <p align='left'>left</p>" +
-                "   <p align='right'>right</p>" +
+                "   <ul>" +
+                "      <li><p content='html'>center</p></li>" +
+                "      <li><p align='top'>top</p></li>" +
+                "      <li><p align='bottom' content='html'><![CDATA[<i>bottom</i>]]></p></li>" +
+                "      <li><p align='left'>left</p></li>" +
+                "      <li><p align='right'>right</p></li>" +
+                "   </ul>" +
                 "</body>" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
@@ -60,8 +62,6 @@ public class BorderLayoutTest extends TestCase {
         assertTrue(l.getLayoutComponent(root, BorderLayout.EAST) instanceof JLabel);
         label = (JLabel) l.getLayoutComponent(root, BorderLayout.EAST);
         assertEquals("right", label.getText());
-
-
-
+        
     }
 }

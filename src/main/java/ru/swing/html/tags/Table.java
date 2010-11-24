@@ -50,7 +50,7 @@ public class Table extends Tag {
         positionChildren(this);
 
         tableLayoutSupport = new TableLayoutSupport();
-        if (getAttribute("column-sizes")==null) {
+        if (getAttribute(TableLayoutSupport.COLUMN_SIZES_ATTRIBUTE)==null) {
             String columnSizes = "";
             for (int i = 0; i<currentCol; i++) {
                 String w = widths.get(i);
@@ -59,9 +59,9 @@ public class Table extends Tag {
                 }
                 columnSizes+= w +" ";
             }
-            setAttribute("column-sizes", columnSizes);
+            setAttribute(TableLayoutSupport.COLUMN_SIZES_ATTRIBUTE, columnSizes);
         }
-        if (getAttribute("row-sizes")==null) {
+        if (getAttribute(TableLayoutSupport.ROW_SIZES_ATTRIBUTE)==null) {
             String rowSizes = "";
             for (int i = 0; i<currentRow; i++) {
                 String w = heights.get(i);
@@ -70,7 +70,7 @@ public class Table extends Tag {
                 }
                 rowSizes+= w +" ";
             }
-            setAttribute("row-sizes", rowSizes);
+            setAttribute(TableLayoutSupport.ROW_SIZES_ATTRIBUTE, rowSizes);
         }
         getComponent().setLayout(tableLayoutSupport.createLayout(this));
 
@@ -119,7 +119,7 @@ public class Table extends Tag {
             }
             align+=" "+horizAlign+" "+verticalAlign;
 
-            tagAtPosition.setAttribute("align", align);
+            tagAtPosition.setAttribute(ALIGN_ATTRIBUTE, align);
 
             JComponent childComponent = DomConverter.convertComponent(tagAtPosition);
             tableLayoutSupport.addComponent(getComponent(), childComponent, align);

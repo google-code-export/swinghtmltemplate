@@ -46,6 +46,9 @@ public class SplitPane extends Tag {
     private int dividerWidth;
     private Double dividerPercentLocation = null;
     private int dividerLocation = -1;
+    public static final String ORIENTATION_ATTRIBUTE = "orientation";
+    public static final String DIVIDER_SIZE_ATTRIBUTE = "divider-size";
+    public static final String DIVIDER_POSITION_ATTRIBUTE = "divider-position";
 
 
     @Override
@@ -128,7 +131,7 @@ public class SplitPane extends Tag {
 
     @Override
     public void setAttribute(String name, String value) {
-        if ("orientation".equals(name)) {
+        if (ORIENTATION_ATTRIBUTE.equals(name)) {
             if ("vertical".equals(value)) {
                 orientation = JSplitPane.VERTICAL_SPLIT;
             }
@@ -142,10 +145,10 @@ public class SplitPane extends Tag {
                 logger.warn("Unknown orientation: "+value);
             }
         }
-        else if ("divider-size".equals(name)) {
+        else if (DIVIDER_SIZE_ATTRIBUTE.equals(name)) {
             dividerWidth = new Integer(value);
         }
-        else if ("divider-position".equals(name)) {
+        else if (DIVIDER_POSITION_ATTRIBUTE.equals(name)) {
             final int index = value.indexOf("%");
             if (index !=-1) {
                 String val = value.substring(0, index);
