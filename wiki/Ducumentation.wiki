@@ -243,12 +243,13 @@ javax.swing.Box.createVerticalStrut(height)
 Тег преобразуется в панель, в качестве менеджера компоновки которой используется [[https://tablelayout.dev.java.net/ TableLayout]]. 
 
 У тега можно задать атрибуты
- * *column-sizes* - размеры колонок, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
- * *row-sizes* - размеры рядов, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * {{{x-tablelayout-column-sizes}}} - размеры колонок, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * {{{x-tablelayout-row-sizes}}} - размеры рядов, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * {{{cellspacing}}} - расстояние между ячейками в пикселях
 
 Пример:
 {{{
-<table style="column-sizes: preferred fill; row-sizes: preferred">
+<table style="x-tablelayout-column-sizes: preferred fill; x-tablelayout-row-sizes: preferred">
    <tr>
       <td><p>Login:</p></td>
       <td><input type="text"/></td>
@@ -256,28 +257,28 @@ javax.swing.Box.createVerticalStrut(height)
 </table>
 }}}
 
-Если не задавать column-sizes (row-sizes), то соответствующее свойство будет вычисляться динамически: для каждой ячейки запоминается максимальное значение ширины (высоты) и затем оно будет использовано в качестве размера столбца (строки).
+Если не задавать {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}), то соответствующее свойство будет вычисляться динамически: для каждой ячейки запоминается максимальное значение ширины (высоты) и затем оно будет использовано в качестве размера столбца (строки).
 
 При этом следует учитывать, что
 {{{
 preferred < number < fill
 }}}
 
-По умолчанию используется значение preferred. Таким образом, если указать для какой-либо ячейки атрибут width (height) с числовым значением, то это число перекроет значение preferred. Аналогично значение fill перекроет любое числовое значение и значение preferred.
+По умолчанию используется значение {{{preferred}}}. Таким образом, если указать для какой-либо ячейки атрибут {{{width}}} ({{{height}}}) с числовым значением, то это число перекроет значение {{{preferred}}}. Аналогично значение {{{fill}}} перекроет любое числовое значение и значение {{{preferred}}}.
 
-Следует учитывать, что задание column-sizes (row-sizes) для тега {{{table}}} автоматически устанавливает количество столюцов (строк), при динамическом вычислении количество столбцов считается динамически.
+Следует учитывать, что задание {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}) для тега {{{table}}} автоматически устанавливает количество столюцов (строк), при динамическом вычислении количество столбцов считается динамически.
 
 Для ячейки td можно задать следующие свойства:
-  * *width* - ширина столбца, см выше
-  * *height* - высота столбца, см выше
-  * *rowspan* - растягивание ячейки по горизонтали. Для таких ячеек игнорируется значение width
- * *colspan* - растягивание ячейки по вертикали. Для таких ячеек игнорируется значение height
- * text-align - центрирование по горизонтали. Значения: left, right, center, full
- * vertcal-align - центрирование по вертикали. Значения: top, bottom, center, full
+  * {{{width}}} - ширина столбца, см выше
+  * {{{height}}} - высота столбца, см выше
+  * {{{rowspan}}} - растягивание ячейки по горизонтали. Для таких ячеек игнорируется значение {{{width}}}
+  * {{{colspan}}} - растягивание ячейки по вертикали. Для таких ячеек игнорируется значение {{{height}}}
+  * {{{text-align}}} - центрирование по горизонтали. Значения: {{{left}}}, {{{right}}}, {{{center}}}, {{{full}}}
+  * {{{vertcal-align}}} - центрирование по вертикали. Значения: {{{top}}}, {{{bottom}}}, {{{center}}}, {{{full}}}
 
 Примеры:
 {{{
-<table style="row-sizes: preferred preferred preferred preferred; column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
+<table style="x-tablelayout-row-sizes: preferred preferred preferred preferred; x-tablelayout-column-sizes: 100 fill; border: compound (etched) (empty 12 12 12 12)">
 
     <tr>
         <td style="text-align: right;"><p>Login:</p></td>
@@ -298,7 +299,7 @@ preferred < number < fill
     <tr>
         <td style="text-align: right;vertical-align:top"><p>Login as:</p></td>
         <td>
-            <table style="row-sizes: preferred preferred; column-sizes: preferred fill">
+            <table style="x-tablelayout-row-sizes: preferred preferred; x-tablelayout-column-sizes: preferred fill">
                 <tr>
                     <td><input type='radio'/></td>
                     <td><p>Manager</p></td>
