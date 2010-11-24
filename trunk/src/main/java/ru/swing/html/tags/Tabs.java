@@ -28,6 +28,8 @@ import javax.swing.*;
 public class Tabs extends Tag {
     
     private Log logger = LogFactory.getLog(getClass());
+    public static final String TAB_POSITION_ATTRIBUTE = "tab-position";
+
     @Override
     public JComponent createComponent() {
         JTabbedPane c = new JTabbedPane();
@@ -45,7 +47,7 @@ public class Tabs extends Tag {
 
         JTabbedPane tabs = (JTabbedPane) getComponent();
 
-        String tabPlacement = getAttribute("tab-position");
+        String tabPlacement = getAttribute(TAB_POSITION_ATTRIBUTE);
         int tabPlacementPos = JTabbedPane.TOP;
         if (StringUtils.isEmpty(tabPlacement) || "top".equals(tabPlacement)) {
             tabPlacementPos = JTabbedPane.TOP;

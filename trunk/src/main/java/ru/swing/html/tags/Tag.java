@@ -1,5 +1,6 @@
 package ru.swing.html.tags;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.*;
@@ -54,6 +55,7 @@ public class Tag {
     private String fontFamily;
     private Map<String, String> attributes = new HashMap<String, String>();
     public static final String BORDER_ATTRIBUTE = "border";
+    public static final String ALIGN_ATTRIBUTE = "align";
 
     /**
      * Возвращает первый дочерний тег с указанным именем.
@@ -87,7 +89,7 @@ public class Tag {
         else if ("id".equals(name)) {
             setId(value);
         }
-        else if ("align".equals(name)) {
+        else if (ALIGN_ATTRIBUTE.equals(name)) {
             setAlign(value);
         }
         else if ("text-align".equals(name)) {
@@ -138,7 +140,7 @@ public class Tag {
     public void handleLayout() {
         final String layoutName = getDisplay();
         LayoutManagerSupport layoutManagerSupport = null;
-        if (layoutName != null) {
+        if (layoutName != null && component!=null) {
             layoutManagerSupport = LayoutManagerSupportFactory.createLayout(this);
             component.setLayout(layoutManagerSupport.createLayout(this));
         }
@@ -146,14 +148,24 @@ public class Tag {
     }
 
     public void handleChildren() {
-        for (Tag childTag : getChildren()) {
-            JComponent child = DomConverter.convertComponent(childTag);
-            if (getDisplay() != null) {
-                LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(this);
-                layoutManagerSupport.addComponent(component, child, childTag.getAlign());
+        //если для тега нет компонента (например, это неизвестный тег), то найдем первый родительский
+        //тег с непустым компонентом и будет дочерние компоненты добавлять в него
+        JComponent c = getComponent();
+        Tag parent = this;
+        while (c==null && parent!=null) {
+            parent = parent.getParent();
+            if (parent!=null) {
+                c = parent.getComponent();
             }
         }
 
+        for (Tag childTag : getChildren()) {
+            JComponent child = DomConverter.convertComponent(childTag);
+            if (parent!=null && child!=null && c!=null) {
+                LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
+                layoutManagerSupport.addComponent(c, child, childTag.getAlign());
+            }
+        }
     }
 
 
@@ -325,7 +337,7 @@ public class Tag {
     }
 
     public JComponent createComponent() {
-        logger.error("Can't create component for tag "+getName());
+        logger.warn("Can't create component for tag "+getName());
         return null;
     }
 
@@ -340,6 +352,9 @@ public class Tag {
      * @param attributes атрибуты
      */
     private void actualApplyAttributes(JComponent component, Map<String, String> attributes) {
+        if (component==null) {
+            return;
+        }
         for (String attrName : attributes.keySet()) {
 
             final String attrValue = attributes.get(attrName);
@@ -359,7 +374,7 @@ public class Tag {
             else if ("opaque".equals(attrName)) {
                 component.setOpaque(Boolean.parseBoolean(attrValue));
             }
-            else if ("icon".equals(attrName)) {
+            else if ("icon".equals(attrName) && StringUtils.isNotBlank(attrValue)) {
                 Icon icon = new ImageIcon(getClass().getResource(attrValue));
                 try {
                     Method m = component.getClass().getMethod("setIcon", Icon.class);

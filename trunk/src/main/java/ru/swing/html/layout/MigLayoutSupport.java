@@ -14,21 +14,26 @@ import java.awt.*;
  * Time: 0:04:22
  */
 public class MigLayoutSupport implements LayoutManagerSupport {
+
+    public static final String X_MIGLAYOUT_CONSTRAINTS_ATTRIBUTE = "x-miglayout-constraints";
+    public static final String X_MIGLAYOUT_ROW_CONSTRAINTS_ATTRIBUTE = "x-miglayout-row-constraints";
+    public static final String X_MIGLAYOUT_COLUMN_CONSTRAINTS_ATTRIBUTE = "x-miglayout-column-constraints";
+
     public void addComponent(JComponent parent, JComponent child, String constraint) {
         parent.add(child, constraint);
     }
 
     public LayoutManager createLayout(Tag tag) {
         MigLayout migLayout = new MigLayout();
-        String layoutConstraints = tag.getAttribute("x-miglayout-constraints");
+        String layoutConstraints = tag.getAttribute(X_MIGLAYOUT_CONSTRAINTS_ATTRIBUTE);
         if (StringUtils.isNotEmpty(layoutConstraints)) {
             migLayout.setLayoutConstraints(layoutConstraints);
         }
-        String rowConstraints = tag.getAttribute("x-miglayout-row-constraints");
+        String rowConstraints = tag.getAttribute(X_MIGLAYOUT_ROW_CONSTRAINTS_ATTRIBUTE);
         if (StringUtils.isNotEmpty(rowConstraints)) {
             migLayout.setRowConstraints(rowConstraints);
         }
-        String columnConstraints = tag.getAttribute("x-miglayout-column-constraints");
+        String columnConstraints = tag.getAttribute(X_MIGLAYOUT_COLUMN_CONSTRAINTS_ATTRIBUTE);
         if (StringUtils.isNotEmpty(columnConstraints)) {
             migLayout.setColumnConstraints(columnConstraints);
         }

@@ -32,11 +32,12 @@ public class ScrollPane extends Tag {
     public void handleChildren() {
         if (getComponent() instanceof JScrollPane) {
             JScrollPane pane = (JScrollPane) getComponent();
-            if (getChildren().size()==1) {
+            if (getChildren().size()>=1) {
                 JComponent childComponent = DomConverter.convertComponent(getChildren().get(0));
                 pane.setViewportView(childComponent);
             }
-            else {
+
+            if (getChildren().size()>1) {
                 logger.warn("scroll can't contain more then 1 child");
             }
         }
