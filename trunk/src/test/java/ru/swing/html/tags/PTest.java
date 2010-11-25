@@ -56,4 +56,10 @@ public class PTest extends TestCase {
         assertEquals("foo", l.getText());
 
     }
+
+    public void testUnknownType() {
+        P p = new P();
+        p.setType("foo");
+        assertEquals("Unknown type must be resolved to "+JTextField.class, JTextField.class, DomConverter.convertComponent(p).getClass());
+    }
 }

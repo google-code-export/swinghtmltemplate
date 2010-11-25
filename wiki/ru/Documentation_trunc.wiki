@@ -1,4 +1,4 @@
-#summary documentation for release-0.1
+#summary documentation for trunk
 #labels documentation
 
 <wiki:toc max_depth="2" />
@@ -140,7 +140,9 @@ javax.swing.Box.createVerticalGlue();
   * {{{type="button"}}} - JButton
   * {{{type="checkbox"}}} - JCheckBox
   * {{{type="radio"}}} - JRadioButton
-По умолчанию преобразуется в `JTextField`.
+По умолчанию преобразуется в `JTextField`. Если в качестве `type` передать неверную строку, `type` будет считаться
+равным `text`, а в лог будет напечатано предупреждение.
+
 {{{
 <input type="button" text="OK"/>
 }}}

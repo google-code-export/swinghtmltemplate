@@ -22,6 +22,10 @@ public class DomLoader {
         DomModel model = new DomModel();
 
         SAXBuilder builder = new SAXBuilder();
+        //disable validation and loading of external dtd
+        //http://www.jdom.org/docs/faq.html#a0350
+        builder.setValidation(false);
+        builder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         Document doc = builder.build(in);
 
         Element root = doc.getRootElement();

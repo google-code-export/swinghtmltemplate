@@ -71,8 +71,12 @@ public class Binder {
                     try {
                         field.set(component, tag.getComponent());
                         logger.debug("Binded "+id);
-                    } catch (IllegalAccessException e) {
+                    }
+                    catch (IllegalAccessException e) {
                         logger.error("Can't set value for "+id+": "+ e.getMessage(), e);
+                    }
+                    catch (IllegalArgumentException e) {//если тип компонента не совпадает с типом поля
+                        logger.error("Can't set value for "+id+". Component type: "+component.getClass()+", field type: "+field.getType(), e);
                     }
                 }
             }
