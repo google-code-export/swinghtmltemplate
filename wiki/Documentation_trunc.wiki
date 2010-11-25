@@ -108,6 +108,33 @@ css styles. Below are common properties (for all tags):
   * {{{font-style}}} - component's font style. If value is `italic`, font will be italic.
   * {{{font-family}}} - component's font family.
 
+== attribute ==
+Special tag for assigning value to the parent's tag component. Doesn't convert to any swing component.
+
+Supported attributes for tag:
+  * `name` - field name, to which the value will be assigned. Example: `preferredSize`
+  * `value` - value to be assigned, as string
+  * `type` - field type. Full class name. Example, `java.awt.Dimension`
+
+Supported `value` formats according to `type` value:
+  * `type='java.lang.String'` : string, example: <attribute name='name' value='Foo' type='java.lang.String'/>
+  * `type='java.lang.Integer'` : integer, example: <attribute name='width' value='500' type='java.lang.Integer'/>
+  * `type='java.lang.Long'` : long, example: <attribute name='uuid' value='50000' type='java.lang.Long'/>
+  * `type='java.lang.Float'` : float, example: <attribute name='width' value='5.0' type='java.lang.Float'/>
+  * `type='java.lang.Double'` : double, example: <attribute name='width' value='5.0' type='java.lang.Double'/>
+  * `type='java.awt.Dimension'` : 2 integers, separated by spaces, example: <attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>
+  * `type='java.awt.Insets'` : 4 integers, separated by spaces, example: <attribute name='insets' value='5 1 3 4' type='java.awt.Insets'/>
+  
+Example:
+{{{
+<html>
+<body>
+   <attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>
+   <p>Panel has preferred size 500x100px</p>
+</body>
+</html>
+}}}
+
 == body ==
 Tag is converted to `javax.swing.JPanel`. `java.awt.FlowLayout` is used as layout manager by default.
 

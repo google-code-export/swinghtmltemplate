@@ -1,14 +1,18 @@
 package ru.swing.html;
 
-import info.clearthought.layout.TableLayout;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
  * Вспомогательные утилиты.
  */
 public class Utils {
+
+    private static Log logger = LogFactory.getLog(Utils.class);
 
     /**
      * Преобразует строку чисел в массив чисел.
@@ -23,7 +27,7 @@ public class Utils {
         String[] tokens = text.split(" ");
         java.util.List<Integer> sizes = new ArrayList<Integer>();
         for (String t : tokens) {
-            if (StringUtils.isNotEmpty(t)) {
+            if (StringUtils.isNotEmpty(t) && StringUtils.isNumeric(t)) {
                 sizes.add(new Integer(t.trim()));
             }
         }
@@ -84,4 +88,54 @@ public class Utils {
         }
         return outerEnd;
     }
+
+
+    /**
+     * Преобразует строку в объект указанного типа. Если объект не поддерэивается, возвращается null.
+     * @param string строка
+     * @param type тип объекта
+     * @return объект указанного типа или null
+     */
+    public static java.lang.Object convertStringToObject(String string, Class type) {
+        if (String.class.equals(type)) {
+            return string;
+        }
+        else if (Integer.class.equals(type)) {
+            return new Integer(string);
+        }
+        else if (Double.class.equals(type)) {
+            return new Double(string);
+        }
+        else if (Float.class.equals(type)) {
+            return new Float(string);
+        }
+        else if (Long.class.equals(type)) {
+            return new Long(string);
+        }
+        else if (Dimension.class.equals(type)) {
+            int[] tokens = parseIntegers(string);
+            if (tokens!=null && tokens.length==2) {
+                return new Dimension(tokens[0], tokens[1]);
+            }
+            else {
+                logger.warn("Wrong dimension format. Correct format: 'int int'");
+                return null;
+            }
+        }
+        else if (Insets.class.equals(type)) {
+            int[] tokens = parseIntegers(string);
+            if (tokens!=null && tokens.length==4) {
+                return new Insets(tokens[0], tokens[1], tokens[2], tokens[3]);
+            }
+            else {
+                logger.warn("Wrong Insets format. Correct format: 'int int int int'");
+                return null;
+            }
+        }
+        else {
+            logger.warn("Can't convert "+string+" to object: "+type.getName()+" is not supported");
+            return null;
+        }
+    }
+
 }
