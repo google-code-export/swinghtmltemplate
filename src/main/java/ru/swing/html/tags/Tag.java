@@ -56,6 +56,7 @@ public class Tag {
     private Map<String, String> attributes = new HashMap<String, String>();
     public static final String BORDER_ATTRIBUTE = "border";
     public static final String ALIGN_ATTRIBUTE = "align";
+    public static final String TYPE_ATTRIBUTE = "type";
 
     /**
      * Возвращает первый дочерний тег с указанным именем.
@@ -95,7 +96,7 @@ public class Tag {
         else if ("text-align".equals(name)) {
             setTextAlign(value);
         }
-        else if ("type".equals(name)) {
+        else if (TYPE_ATTRIBUTE.equals(name)) {
             setType(value);
         }
         else if ("vertical-align".equals(name)) {

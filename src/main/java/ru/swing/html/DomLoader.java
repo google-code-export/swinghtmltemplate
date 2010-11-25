@@ -3,6 +3,7 @@ package ru.swing.html;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import ru.swing.html.tags.*;
+import ru.swing.html.tags.Attribute;
 import ru.swing.html.tags.Object;
 
 import java.io.IOException;
@@ -70,8 +71,8 @@ public class DomLoader {
      * @return тег
      */
     private static Tag createTag(Element element) {
-        if ("table".equals(element.getName())) {
-            return new Table();
+        if ("attribute".equals(element.getName())) {
+            return new Attribute();
         }
         else if ("body".equals(element.getName())) {
             return new Body();
@@ -94,6 +95,12 @@ public class DomLoader {
         else if ("object".equals(element.getName())) {
             return new Object();
         }
+        else if ("p".equals(element.getName())) {
+            return new P();
+        }
+        else if ("table".equals(element.getName())) {
+            return new Table();
+        }
         else if ("textarea".equals(element.getName())) {
             return new TextArea();
         }
@@ -111,9 +118,6 @@ public class DomLoader {
         }
         else if ("tabs".equals(element.getName())) {
             return new Tabs();
-        }
-        else if ("p".equals(element.getName())) {
-            return new P();
         }
         else {
             return new Tag();

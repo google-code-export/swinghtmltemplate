@@ -70,4 +70,12 @@ public class InputTest extends TestCase {
 
 
     }
+
+    public void testUnknownType() {
+        Input p = new Input();
+        p.setType("foo");
+        JComponent jComponent = DomConverter.convertComponent(p);
+        assertEquals("Unknown type must be resolved to "+JTextField.class, JTextField.class, jComponent.getClass());
+    }
+
 }

@@ -2,6 +2,8 @@ package ru.swing.html;
 
 import junit.framework.TestCase;
 
+import java.awt.*;
+
 /**
  * <pre>
  * User: Penkov Vladimir
@@ -44,5 +46,18 @@ public class UtilsTest extends TestCase {
         assertEquals(2, Utils.fingMatchingClosingBracket("(())", 1));
         assertEquals(3, Utils.fingMatchingClosingBracket("(())", 0));
         assertEquals(5, Utils.fingMatchingClosingBracket("(()())", 0));
+    }
+
+
+    public void testConvertStringToObject() {
+
+        assertEquals("foo", Utils.convertStringToObject("foo", String.class));
+        assertEquals(1, Utils.convertStringToObject("1", Integer.class));
+        assertEquals(2.1f, Utils.convertStringToObject("2.1", Float.class));
+        assertEquals(1.01d, Utils.convertStringToObject("1.01", Double.class));
+        assertEquals(50L, Utils.convertStringToObject("50", Long.class));
+        assertEquals(new Dimension(1, 2), Utils.convertStringToObject("1 2", Dimension.class));
+        assertEquals(new Insets(1, 2, 3, 4), Utils.convertStringToObject("1 2 3 4", Insets.class));
+
     }
 }
