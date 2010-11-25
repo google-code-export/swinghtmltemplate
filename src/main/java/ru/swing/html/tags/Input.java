@@ -1,5 +1,8 @@
 package ru.swing.html.tags;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomModel;
 
 import javax.swing.*;
@@ -13,12 +16,13 @@ import javax.swing.text.JTextComponent;
  */
 public class Input extends Tag {
 
+    private Log logger = LogFactory.getLog(Tag.class);
     @Override
     public JComponent createComponent() {
         String type = getType();
 
         JComponent field;
-        if ("text".equals(type)) {
+        if ("text".equals(type) || StringUtils.isEmpty(type)) {
             field = new JTextField();
         }
         else if ("button".equals(type)) {
@@ -34,6 +38,7 @@ public class Input extends Tag {
             field = new JRadioButton();
         }
         else {
+            logger.warn("Unknown field type: '"+type+"', reseting to 'text'");
             field = new JTextField();
         }
 
