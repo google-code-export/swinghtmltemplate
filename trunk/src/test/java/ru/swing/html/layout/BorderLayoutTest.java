@@ -1,6 +1,9 @@
-package ru.swing.html;
+package ru.swing.html.layout;
 
 import junit.framework.TestCase;
+import ru.swing.html.DomConverter;
+import ru.swing.html.DomLoader;
+import ru.swing.html.DomModel;
 
 import javax.swing.*;
 import java.awt.*;

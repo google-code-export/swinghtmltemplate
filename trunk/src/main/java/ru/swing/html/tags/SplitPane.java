@@ -6,6 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -67,26 +69,34 @@ public class SplitPane extends Tag {
 
             JSplitPane pane = (JSplitPane) getComponent();
 
-            if (getChildren().size()<=2) {
-                JComponent childComponent1 = getChildren().size()>0 ? DomConverter.convertComponent(getChildren().get(0)) : null;
-                JComponent childComponent2 = getChildren().size()>1 ? DomConverter.convertComponent(getChildren().get(1)) : null;
+            List<Tag> childrenWithComponents = new ArrayList<Tag>();
+            for (Tag child : getChildren()) {
+                JComponent childComponent = DomConverter.convertComponent(child);
+                if (childComponent!=null) {
+                    childrenWithComponents.add(child);
+                }
+            }
+
+            if (childrenWithComponents.size()<=2) {
+                JComponent childComponent1 = childrenWithComponents.size()>0 ? childrenWithComponents.get(0).getComponent() : null;
+                JComponent childComponent2 = childrenWithComponents.size()>1 ? childrenWithComponents.get(1).getComponent() : null;
 
                 if (childComponent1!=null) {
-                    placeChild(childComponent1, getChildren().get(0).getAlign(), "left");
+                    placeChild(childComponent1, childrenWithComponents.get(0).getAlign(), "left");
                     if (childComponent2!=null) {
                         //2го помещаем в свободную ячейку. то есть если первый лег в правую часть, то 2го кладем в левую.
                         if (pane.getLeftComponent()!=null) {
-                            placeChild(childComponent2, getChildren().get(1).getAlign(), "right");
+                            placeChild(childComponent2, childrenWithComponents.get(1).getAlign(), "right");
                         }
                         else {
-                            placeChild(childComponent2, getChildren().get(1).getAlign(), "left");
+                            placeChild(childComponent2, childrenWithComponents.get(1).getAlign(), "left");
                         }
                     }
                 }
 
             }
 
-            if (getChildren().size()>2) {
+            if (childrenWithComponents.size()>2) {
                 logger.warn(getName()+" must not contain more than 2 children");
             }
         }

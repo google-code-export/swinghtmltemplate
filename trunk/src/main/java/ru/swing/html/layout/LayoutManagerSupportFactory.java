@@ -14,8 +14,8 @@ public class LayoutManagerSupportFactory {
         String layoutName = tag.getDisplay();
         LayoutManagerSupport res;
 
-        if ("p".equals(tag.getName())) {
-            res = new FlowLayoutSupport();
+        if ("absolute".equals(layoutName)) {
+            res = new AbsoluteLayoutSupport();
         }
         else if ("border".equals(layoutName)) {
             res = new BorderLayoutSupport();

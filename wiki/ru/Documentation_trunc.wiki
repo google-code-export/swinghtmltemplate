@@ -110,15 +110,30 @@ for (JComponent c : model.select(".button")) {
 
 Допустимые форматы `value` в зависимости от значения `type`:
   * `type='java.lang.String'` : строка, пример: <attribute name='name' value='Foo' type='java.lang.String'/>
-  * `type='java.lang.Boolean'` : `true` или `false`, пример: <attribute name='autoscrolls' value='false' type='java.lang.Boolean'/>
-  * `type='java.lang.Integer'` : целое число, пример: <attribute name='width' value='500' type='java.lang.Integer'/>
+  * `type='boolean'` : `true` или `false`, пример: <attribute name='autoscrolls' value='false' type='boolean'/>
+  * `type='int'` : целое число, пример: <attribute name='width' value='500' type='int'/>
+  * `type='long'` : целое число, пример: <attribute name='uuid' value='50000' type='long'/>
+  * `type='float'` : дробное число, пример: <attribute name='width' value='5.0' type='float'/>
+  * `type='double'` : дробное число, пример: <attribute name='width' value='5.0' type='double'/>
+  * `type='short'` : целое число, пример: <attribute name='width' value='5' type='short'/>
+  * `type='byte'` : целое число, пример: <attribute name='width' value='5' type='byte'/>
+  * `type='char'` : символ, пример: <attribute name='mnemonic' value='f' type='char'/>
+  * `type='java.lang.Boolean'` : `true` или `false`, пример: <attribute name='foo' value='false' type='java.lang.Boolean'/>
+  * `type='java.lang.Integer'` : целое число, пример: <attribute name='fooInt' value='500' type='java.lang.Integer'/>
   * `type='java.lang.Long'` : целое число, пример: <attribute name='uuid' value='50000' type='java.lang.Long'/>
   * `type='java.lang.Float'` : дробное число, пример: <attribute name='width' value='5.0' type='java.lang.Float'/>
   * `type='java.lang.Double'` : дробное число, пример: <attribute name='width' value='5.0' type='java.lang.Double'/>
+  * `type='java.lang.Byte'` : целое число, пример: <attribute name='width' value='5' type='java.lang.Byte'/>
+  * `type='java.lang.Short'` : целое число, пример: <attribute name='width' value='5' type='java.lang.Short'/>
+  * `type='java.lang.Charachter'` : символ, пример: <attribute name='mnemonic' value='f' type='java.lang.Charachter'/>
   * `type='java.awt.Dimension'` : 2 целых числа, разделенных пробелом, пример: <attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>
   * `type='java.awt.Insets'` : 4 целых числа, разделенных пробелом, пример: <attribute name='insets' value='5 1 3 4' type='java.awt.Insets'/>
   * `type='java.awt.Point'` : 2 целых числа, разделенных пробелом, пример: <attribute name='location' value='5 1' type='java.awt.Point'/>
   * `type='java.awt.Rectangle'` : 4 целых числа, разделенных пробелом, пример: <attribute name='bounds' value='5 1 3 4' type='java.awt.Rectangle'/>
+
+Следует помнить, что сигнатура методов с примитивными типами отличается от методов с объектами, в качестве
+агрумента. Т.о. `setFoo(java.lang.Integer)` и `setFoo(int)` - это 2 разных метода. Следует правильно
+проставлять значение параметра `type`.
 
 Пример:
 {{{
@@ -426,6 +441,23 @@ preferred < number < fill
 
 = Менеджеры компоновки =
 Менеджер компоновки, используемый в компоненте, задается атрибутом `display`.
+
+== absolute ==
+Соответствует пустому менеджеру компоновки.
+
+Дочерние элементы располагаются в соответствие с границей компонента (getBounds()). Границу
+можно задать с помощью аттрибута align в формате `java.awt.Rectangle`, так и с помощью
+дочернего тега <attribute>. Задание границы с помощью аттрибута `align` имеет более высокий приоритет.
+
+{{{
+<div style='display:absolute'>
+   <p align='10 10 10 10'>block 1</p>
+   <p>
+      <attribute name='bounds' value='30 10 10 10' type='java.awt.Rectangle'/>
+      block 2
+   </p>
+</div>
+}}}
 
 == border ==
 Соответствует менеджеру компоновки java.awt.BorderLayout.

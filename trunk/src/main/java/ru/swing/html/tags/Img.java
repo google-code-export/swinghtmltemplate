@@ -33,8 +33,5 @@ public class Img extends Tag {
     public void handleLayout() {
     }
 
-    @Override
-    public void handleChildren() {
-    }
     
 }

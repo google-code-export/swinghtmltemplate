@@ -89,6 +89,46 @@ public class Utils {
         return outerEnd;
     }
 
+    /**
+     * Преобразует название класса в объект класса. Для примитивных классов возвращается
+     * соответствующий класс-обертка, например, для int вернется Integer.TYPE.
+     *
+     * Поддерживаются следующие простые типы:
+     * boolean, byte, short, int, char, long, float, double 
+     *
+     * @param classname имя класса
+     * @return класс
+     * @throws ClassNotFoundException если класс с указанным именем не найден
+     */
+    public static Class convertStringToClass(String classname) throws ClassNotFoundException {
+        if ("boolean".equals(classname)) {
+            return Boolean.TYPE;
+        }
+        else if ("int".equals(classname)) {
+            return Integer.TYPE;
+        }
+        else if ("float".equals(classname)) {
+            return Float.TYPE;
+        }
+        else if ("double".equals(classname)) {
+            return Double.TYPE;
+        }
+        else if ("char".equals(classname)) {
+            return Character.TYPE;
+        }
+        else if ("long".equals(classname)) {
+            return Long.TYPE;
+        }
+        else if ("short".equals(classname)) {
+            return Short.TYPE;
+        }
+        else if ("byte".equals(classname)) {
+            return Byte.TYPE;
+        }
+        else {
+            return Class.forName(classname);
+        }
+    }
 
     /**
      * Преобразует строку в объект указанного типа. Если объект не поддерэивается, возвращается null.
@@ -100,19 +140,28 @@ public class Utils {
         if (String.class.equals(type)) {
             return string;
         }
-        else if (Integer.class.equals(type)) {
+        else if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
             return new Integer(string);
         }
-        else if (Boolean.class.equals(type)) {
+        else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
             return Boolean.valueOf(string);
         }
-        else if (Double.class.equals(type)) {
+        else if (Short.class.equals(type) || Short.TYPE.equals(type)) {
+            return new Short(string);
+        }
+        else if (Byte.class.equals(type) || Byte.TYPE.equals(type)) {
+            return new Byte(string);
+        }
+        else if (Character.class.equals(type) || Character.TYPE.equals(type)) {
+            return StringUtils.isEmpty(string) ? null : string.charAt(0);
+        }
+        else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
             return new Double(string);
         }
-        else if (Float.class.equals(type)) {
+        else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
             return new Float(string);
         }
-        else if (Long.class.equals(type)) {
+        else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
             return new Long(string);
         }
         else if (Dimension.class.equals(type)) {

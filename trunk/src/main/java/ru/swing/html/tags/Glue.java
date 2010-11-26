@@ -24,7 +24,4 @@ public class Glue extends Tag {
     public void handleLayout() {
     }
 
-    @Override
-    public void handleChildren() {
-    }
 }

@@ -118,15 +118,29 @@ Supported attributes for tag:
 
 Supported `value` formats according to `type` value:
   * `type='java.lang.String'` : string, example: <attribute name='name' value='Foo' type='java.lang.String'/>
+  * `type='boolean'` : `true` или `false`, пример: <attribute name='autoscrolls' value='false' type='boolean'/>
+  * `type='int'` : integer, example: <attribute name='width' value='500' type='int'/>
+  * `type='long'` : long, example: <attribute name='uuid' value='50000' type='long'/>
+  * `type='float'` : float, example: <attribute name='width' value='5.0' type='float'/>
+  * `type='double'` : double, example: <attribute name='width' value='5.0' type='double'/>
+  * `type='short'` : short, example: <attribute name='width' value='5' type='short'/>
+  * `type='byte'` : bute, example: <attribute name='width' value='5' type='byte'/>
+  * `type='char'` : charachter, example: <attribute name='mnemonic' value='f' type='char'/>
   * `type='java.lang.Boolean'` : `true` or `false`, example: <attribute name='autoscrolls' value='false' type='java.lang.Boolean'/>
   * `type='java.lang.Integer'` : integer, example: <attribute name='width' value='500' type='java.lang.Integer'/>
   * `type='java.lang.Long'` : long, example: <attribute name='uuid' value='50000' type='java.lang.Long'/>
   * `type='java.lang.Float'` : float, example: <attribute name='width' value='5.0' type='java.lang.Float'/>
   * `type='java.lang.Double'` : double, example: <attribute name='width' value='5.0' type='java.lang.Double'/>
+  * `type='java.lang.Byte'` : byte, example: <attribute name='width' value='5' type='java.lang.Byte'/>
+  * `type='java.lang.Short'` : short, example: <attribute name='width' value='5' type='java.lang.Short'/>
+  * `type='java.lang.Charachter'` : charachter, example: <attribute name='mnemonic' value='f' type='java.lang.Charachter'/>
   * `type='java.awt.Dimension'` : 2 integers, separated by spaces, example: <attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>
   * `type='java.awt.Insets'` : 4 integers, separated by spaces, example: <attribute name='insets' value='5 1 3 4' type='java.awt.Insets'/>
   * `type='java.awt.Point'` : 2 integers, separated by spaces, example: <attribute name='location' value='5 1' type='java.awt.Point'/>
   * `type='java.awt.Rectangle'` : 4 integers, separated by spaces, example: <attribute name='bounds' value='5 1 3 4' type='java.awt.Rectangle'/>
+
+Pay attention, that methods with primitive types as operands are not equal to methods with objects as operands.
+`setFoo(java.lang.Integer)` is not equal to `setFoo(int)`. You must specify correct `type` value.
 
 Example:
 {{{
@@ -445,6 +459,23 @@ Example:
 = Layout managers =
 Layout manager for a component is assigned using `display` attribute.
  
+== absolute ==
+Means null layout.
+
+Child components are placed according to `getBounds()` value. Bounds can be specified with `align`
+attribute in the format of `java.awt.Rectangle`, or using `<attribute>` child tag. `align` value
+has higher priority than '<attribute>'.
+
+{{{
+<div style='display:absolute'>
+   <p align='10 10 10 10'>block 1</p>
+   <p>
+      <attribute name='bounds' value='30 10 10 10' type='java.awt.Rectangle'/>
+      block 2
+   </p>
+</div>
+}}}
+
 == border ==
 Means `java.awt.BorderLayout`.
  

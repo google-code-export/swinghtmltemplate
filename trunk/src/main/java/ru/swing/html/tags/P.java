@@ -49,9 +49,6 @@ public class P extends Tag {
     public void handleLayout() {
     }
 
-    @Override
-    public void handleChildren() {
-    }
 
 
 }
