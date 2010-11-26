@@ -118,7 +118,7 @@ Supported attributes for tag:
 
 Supported `value` formats according to `type` value:
   * `type='java.lang.String'` : string, example: `<attribute name='name' value='Foo' type='java.lang.String'/>`
-  * `type='boolean'` : `true` или `false`, пример: `<attribute name='autoscrolls' value='false' type='boolean'/>`
+  * `type='boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='boolean'/>`
   * `type='int'` : integer, example: `<attribute name='width' value='500' type='int'/>`
   * `type='long'` : long, example: `<attribute name='uuid' value='50000' type='long'/>`
   * `type='float'` : float, example: `<attribute name='width' value='5.0' type='float'/>`
@@ -190,11 +190,11 @@ Example
 
 == input ==
 According to `type` value converts to
-  * {{{type="text"}}} - JTextField
-  * {{{type="password"}}} - JPasswordField
-  * {{{type="button"}}} - JButton
-  * {{{type="checkbox"}}} - JCheckBox
-  * {{{type="radio"}}} - JRadioButton
+  * {{{type="text"}}} - `JTextField`
+  * {{{type="password"}}} - `JPasswordField`
+  * {{{type="button"}}} - `JButton`
+  * {{{type="checkbox"}}} - `JCheckBox`
+  * {{{type="radio"}}} - `JRadioButton`
 Converts to `JTextField` by default. If `type` equals to unknown string, `type` will be resolved to
 `text`, warning will be printed to log.
 
