@@ -52,12 +52,16 @@ public class UtilsTest extends TestCase {
     public void testConvertStringToObject() {
 
         assertEquals("foo", Utils.convertStringToObject("foo", String.class));
+        assertEquals(Boolean.TRUE, Utils.convertStringToObject("true", Boolean.class));
+        assertEquals(Boolean.FALSE, Utils.convertStringToObject("false", Boolean.class));
         assertEquals(1, Utils.convertStringToObject("1", Integer.class));
         assertEquals(2.1f, Utils.convertStringToObject("2.1", Float.class));
         assertEquals(1.01d, Utils.convertStringToObject("1.01", Double.class));
         assertEquals(50L, Utils.convertStringToObject("50", Long.class));
         assertEquals(new Dimension(1, 2), Utils.convertStringToObject("1 2", Dimension.class));
         assertEquals(new Insets(1, 2, 3, 4), Utils.convertStringToObject("1 2 3 4", Insets.class));
+        assertEquals(new Point(1, 2), Utils.convertStringToObject("1 2", Point.class));
+        assertEquals(new Rectangle(1, 2, 3, 4), Utils.convertStringToObject("1 2 3 4", Rectangle.class));
 
     }
 }
