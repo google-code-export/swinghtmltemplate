@@ -311,8 +311,8 @@ javax.swing.Box.createVerticalStrut(h)
 [https://tablelayout.dev.java.net/ TableLayout].
 
 У тега можно задать атрибуты
- * {{{x-tablelayout-column-sizes}}} - размеры колонок, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
- * {{{x-tablelayout-row-sizes}}} - размеры рядов, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
+ * {{{x-tablelayout-column-sizes}}} - размеры колонок, в формате менеджера компоновки [https://tablelayout.dev.java.net/ TableLayout]
+ * {{{x-tablelayout-row-sizes}}} - размеры рядов, в формате менеджера компоновки [https://tablelayout.dev.java.net/ TableLayout]
  * {{{cellspacing}}} - расстояние между ячейками в пикселях
 
 Пример:
