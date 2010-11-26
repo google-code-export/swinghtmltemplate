@@ -311,8 +311,8 @@ Example:
 Tag is converted to `javax.swing.JPanel`, with [https://tablelayout.dev.java.net/ tableLayout] as layout manager.
 
 Supported attributes
- * {{{x-tablelayout-column-sizes}}} - column sizes in [[https://tablelayout.dev.java.net/ tableLayout]] manner
- * {{{x-tablelayout-row-sizes}}} - row sizes in [[https://tablelayout.dev.java.net/ tableLayout]] manner
+ * {{{x-tablelayout-column-sizes}}} - column sizes in [https://tablelayout.dev.java.net/ tableLayout] manner
+ * {{{x-tablelayout-row-sizes}}} - row sizes in [https://tablelayout.dev.java.net/ tableLayout] manner
  * {{{cellspacing}}} - space between cells in pixels
 
 Example:
