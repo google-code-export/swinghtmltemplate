@@ -308,7 +308,7 @@ javax.swing.Box.createVerticalStrut(h)
 
 == table ==
 Тег преобразуется в панель, в качестве менеджера компоновки которой используется
-[[https://tablelayout.dev.java.net/ TableLayout]].
+[https://tablelayout.dev.java.net/ TableLayout].
 
 У тега можно задать атрибуты
  * {{{x-tablelayout-column-sizes}}} - размеры колонок, в формате менеджера компоновки [[https://tablelayout.dev.java.net/ TableLayout]]
