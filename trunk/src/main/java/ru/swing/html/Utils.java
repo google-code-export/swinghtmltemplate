@@ -103,6 +103,9 @@ public class Utils {
         else if (Integer.class.equals(type)) {
             return new Integer(string);
         }
+        else if (Boolean.class.equals(type)) {
+            return Boolean.valueOf(string);
+        }
         else if (Double.class.equals(type)) {
             return new Double(string);
         }
@@ -129,6 +132,26 @@ public class Utils {
             }
             else {
                 logger.warn("Wrong Insets format. Correct format: 'int int int int'");
+                return null;
+            }
+        }
+        else if (Point.class.equals(type)) {
+            int[] tokens = parseIntegers(string);
+            if (tokens!=null && tokens.length==2) {
+                return new Point(tokens[0], tokens[1]);
+            }
+            else {
+                logger.warn("Wrong Point format. Correct format: 'int int'");
+                return null;
+            }
+        }
+        else if (Rectangle.class.equals(type)) {
+            int[] tokens = parseIntegers(string);
+            if (tokens!=null && tokens.length==4) {
+                return new Rectangle(tokens[0], tokens[1], tokens[2], tokens[3]);
+            }
+            else {
+                logger.warn("Wrong Rectangle format. Correct format: 'int int int int'");
                 return null;
             }
         }
