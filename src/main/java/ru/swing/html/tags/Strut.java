@@ -25,8 +25,5 @@ public class Strut extends Tag {
     public void handleLayout() {
     }
 
-    @Override
-    public void handleChildren() {
-    }
 
 }

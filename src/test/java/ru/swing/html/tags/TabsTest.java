@@ -66,6 +66,46 @@ public class TabsTest extends TestCase {
 
     }
 
+    public void testChildrenAndAttribute() throws Exception {
+        String html = "<html>" +
+                "<head></head>" +
+                "<body style='display: border;'>" +
+                "   <tabs>" +
+                "      <div title='tab1'></div>" +
+                "      <span title='tab2'></span>" +
+                "      <attribute name='selectedIndex' value='1' type='int'/>" +
+                "   </tabs>" +
+                "</body>" +
+                "</html>";
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+        JComponent root = model.getRootTag().getChildByName("body").getComponent();
+
+        assertEquals(1, root.getComponentCount());
+
+        assertEquals(BorderLayout.class, root.getLayout().getClass());
+        BorderLayout l = (BorderLayout) root.getLayout();
+
+        //центральный компонент
+        assertTrue(l.getLayoutComponent(root, BorderLayout.CENTER) instanceof JTabbedPane);
+        JTabbedPane tabs = (JTabbedPane) l.getLayoutComponent(root, BorderLayout.CENTER);
+
+
+        assertEquals(2, tabs.getTabCount());
+
+        assertEquals("tab1", tabs.getTitleAt(0));
+        assertEquals(JPanel.class, tabs.getComponentAt(0).getClass());
+        assertEquals(BorderLayout.class, ((JComponent)tabs.getComponentAt(0)).getLayout().getClass());
+
+        assertEquals("tab2", tabs.getTitleAt(1));
+        assertEquals(JPanel.class, tabs.getComponentAt(1).getClass());
+        assertEquals(FlowLayout.class, ((JComponent)tabs.getComponentAt(1)).getLayout().getClass());
+
+        assertEquals(1, tabs.getSelectedIndex());
+
+    }
+
 
     public void testTabPosition() throws Exception {
 

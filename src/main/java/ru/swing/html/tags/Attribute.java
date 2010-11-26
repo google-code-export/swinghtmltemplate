@@ -48,7 +48,7 @@ public class Attribute extends Tag {
 
 
         try {
-            Class typeClass = Class.forName(type);
+            Class typeClass = Utils.convertStringToClass(type);
 
             java.lang.Object value = Utils.convertStringToObject(valueStr, typeClass);
 

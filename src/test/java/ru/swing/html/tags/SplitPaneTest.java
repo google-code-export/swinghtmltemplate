@@ -5,6 +5,7 @@ import ru.swing.html.DomConverter;
 import ru.swing.html.DomModel;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * <pre>
@@ -98,6 +99,27 @@ public class SplitPaneTest extends TestCase {
         jComponent = (JSplitPane) DomConverter.convertComponent(tag);
         assertEquals(JPanel.class, jComponent.getLeftComponent().getClass());
         assertEquals(JLabel.class, jComponent.getRightComponent().getClass());
+
+        //4 - with <attribute>
+        tag = new SplitPane();
+        tag.setAttribute(SplitPane.ORIENTATION_ATTRIBUTE, "horizontal");
+
+        child1 = new Div();
+        child1.setAttribute(Tag.ALIGN_ATTRIBUTE, "left");
+        child2 = new P();
+        child2.setAttribute(Tag.ALIGN_ATTRIBUTE, "right");
+        Tag child3 = new Attribute();
+        child3.setAttribute(Attribute.NAME_ATTRIBUTE, "bounds");
+        child3.setAttribute(Attribute.VALUE_ATTRIBUTE, "10 11 12 13");
+        child3.setAttribute(Attribute.TYPE_ATTRIBUTE, "java.awt.Rectangle");
+        tag.addChild(child3);
+        tag.addChild(child2);
+        tag.addChild(child1);
+
+        jComponent = (JSplitPane) DomConverter.convertComponent(tag);
+        assertEquals(JPanel.class, jComponent.getLeftComponent().getClass());
+        assertEquals(JLabel.class, jComponent.getRightComponent().getClass());
+        assertEquals(new Rectangle(10, 11, 12, 13), jComponent.getBounds());
 
 
     }

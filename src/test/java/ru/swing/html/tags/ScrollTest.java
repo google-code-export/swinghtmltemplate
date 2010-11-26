@@ -39,7 +39,7 @@ public class ScrollTest extends TestCase {
                 "<body style='display: border;'>" +
                 "   <scroll>" +
                 "      <textarea/>" +
-                "      <object type='javax.swing.JTextPane'/>" +
+                "      <object classid='javax.swing.JTextPane'/>" +
                 "   </scroll>" +
                 "</body>" +
                 "</html>";
@@ -54,6 +54,33 @@ public class ScrollTest extends TestCase {
         //центральный компонент
         assertTrue(l.getLayoutComponent(root, BorderLayout.CENTER) instanceof JScrollPane);
         JScrollPane scroll = (JScrollPane) l.getLayoutComponent(root, BorderLayout.CENTER);
+        assertEquals(JTextArea.class, scroll.getViewport().getComponent(0).getClass());
+
+
+    }
+    public void testAttributes() throws Exception {
+
+        String html = "<html>" +
+                "<head></head>" +
+                "<body style='display: border;'>" +
+                "   <scroll>" +
+                "      <attribute name='bounds' value='10 10 10 10' type='java.awt.Rectangle'/>" +
+                "      <textarea/>" +
+                "   </scroll>" +
+                "</body>" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+        JComponent root = model.getRootTag().getChildByName("body").getComponent();
+
+
+        assertEquals(BorderLayout.class, root.getLayout().getClass());
+        BorderLayout l = (BorderLayout) root.getLayout();
+
+        //центральный компонент
+        assertTrue(l.getLayoutComponent(root, BorderLayout.CENTER) instanceof JScrollPane);
+        JScrollPane scroll = (JScrollPane) l.getLayoutComponent(root, BorderLayout.CENTER);
+        assertEquals(new Rectangle(10, 10, 10, 10), scroll.getBounds());
         assertEquals(JTextArea.class, scroll.getViewport().getComponent(0).getClass());
 
 

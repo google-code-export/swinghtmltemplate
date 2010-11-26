@@ -5,6 +5,8 @@ import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <pre>
@@ -32,12 +34,21 @@ public class ScrollPane extends Tag {
     public void handleChildren() {
         if (getComponent() instanceof JScrollPane) {
             JScrollPane pane = (JScrollPane) getComponent();
-            if (getChildren().size()>=1) {
-                JComponent childComponent = DomConverter.convertComponent(getChildren().get(0));
+
+            List<Tag> childrenWithComponents = new ArrayList<Tag>();
+            for (Tag child : getChildren()) {
+                JComponent childComponent = DomConverter.convertComponent(child);
+                if (childComponent!=null) {
+                    childrenWithComponents.add(child);
+                }
+            }
+
+            if (childrenWithComponents.size()>=1) {
+                JComponent childComponent = childrenWithComponents.get(0).getComponent();
                 pane.setViewportView(childComponent);
             }
 
-            if (getChildren().size()>1) {
+            if (childrenWithComponents.size()>1) {
                 logger.warn("scroll can't contain more then 1 child");
             }
         }
