@@ -1,4 +1,4 @@
-<html>
+<html xmlns:c="http://www.oracle.com/swing">
 
 <head></head>
 
@@ -6,20 +6,20 @@
 
 <div id="rootPanel" style="display:border">
 
-<tabs>
+<c:tabs>
     <div title="Text">
         <p>Tab 1</p>
     </div>
 
     <div title="JEditorPane">
-        <scroll style="border: title EditorPane">
+        <c:scroll style='border: titled "EditorPane"'>
             <object classid="javax.swing.JEditorPane"></object>
-        </scroll>
+        </c:scroll>
 
     </div>
 
 
-</tabs>
+</c:tabs>
 </div>
 
 </body>

@@ -11,6 +11,12 @@ import java.io.InputStream;
 
 public class DomLoader {
 
+    private static LibraryRegistry registry = new LibraryRegistry();
+    static {
+        registry.registerLibrary(null, new HtmlTagFactory());
+        registry.registerLibrary("http://www.w3.org/1999/xhtml", new HtmlTagFactory());
+        registry.registerLibrary("http://www.oracle.com/swing", new SwingTagFactory());
+    }
     /**
      * Загружает dom-модель html-документа.
      * @param in поток, из которого происходит считывание html-документа
@@ -30,7 +36,7 @@ public class DomLoader {
         Document doc = builder.build(in);
 
         Element root = doc.getRootElement();
-        Tag rootTag = createTag(root);
+        Tag rootTag = registry.getTagFactory(root.getNamespaceURI()).createTag(root);
         rootTag.setModel(model);
         model.setRootTag(rootTag);
         parseElement(root, rootTag);
@@ -59,69 +65,11 @@ public class DomLoader {
         //рекурсивно обрабатываем дочерние теги
         for (java.lang.Object o : element.getChildren()) {
             Element child = (Element) o;
-            Tag childTag = createTag(child);
+            Tag childTag = registry.getTagFactory(child.getNamespaceURI()).createTag(child);
             tag.addChild(childTag);
             parseElement(child, childTag);
         }
     }
 
-    /**
-     * Фабрика тегов. Создает тег по имени jdom элемента.
-     * @param element jdom-элемент
-     * @return тег
-     */
-    private static Tag createTag(Element element) {
-        if ("attribute".equals(element.getName())) {
-            return new Attribute();
-        }
-        else if ("body".equals(element.getName())) {
-            return new Body();
-        }
-        else if ("div".equals(element.getName())) {
-            return new Div();
-        }
-        else if ("img".equals(element.getName())) {
-            return new Img();
-        }
-        else if ("form".equals(element.getName())) {
-            return new Form();
-        }
-        else if ("glue".equals(element.getName())) {
-            return new Glue();
-        }
-        else if ("input".equals(element.getName())) {
-            return new Input();
-        }
-        else if ("object".equals(element.getName())) {
-            return new Object();
-        }
-        else if ("p".equals(element.getName())) {
-            return new P();
-        }
-        else if ("table".equals(element.getName())) {
-            return new Table();
-        }
-        else if ("textarea".equals(element.getName())) {
-            return new TextArea();
-        }
-        else if ("scroll".equals(element.getName())) {
-            return new ScrollPane();
-        }
-        else if ("span".equals(element.getName())) {
-            return new Span();
-        }
-        else if ("split".equals(element.getName())) {
-            return new SplitPane();
-        }
-        else if ("strut".equals(element.getName())) {
-            return new Strut();
-        }
-        else if ("tabs".equals(element.getName())) {
-            return new Tabs();
-        }
-        else {
-            return new Tag();
-        }
-    }
 
 }
