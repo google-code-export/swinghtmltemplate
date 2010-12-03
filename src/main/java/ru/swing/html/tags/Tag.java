@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.*;
+import ru.swing.html.css.Selector;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
@@ -148,7 +149,14 @@ public class Tag {
 
     }
 
-    public void handleChildren() {
+    /**
+     * Tag must handle all it's children in this method.
+     * Handle means:
+     * 1. create child
+     * 2. place child using layout manager
+     * @param substitutions substitutions map for domModel
+     */
+    public void handleChildren(Map<Selector, JComponent> substitutions) {
         //если для тега нет компонента (например, это неизвестный тег), то найдем первый родительский
         //тег с непустым компонентом и будет дочерние компоненты добавлять в него
         JComponent c = getComponent();
@@ -161,7 +169,7 @@ public class Tag {
         }
 
         for (Tag childTag : getChildren()) {
-            JComponent child = DomConverter.convertComponent(childTag);
+            JComponent child = DomConverter.convertComponent(childTag, substitutions);
             if (parent!=null && child!=null && c!=null) {
                 LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
                 layoutManagerSupport.addComponent(c, child, childTag.getAlign());

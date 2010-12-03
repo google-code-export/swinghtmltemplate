@@ -17,7 +17,7 @@ import java.io.IOException;
  * Time: 17:48:58
  * </pre>
  */
-public class LoginForm {
+public class LoginForm extends JPanel{
 
     @Bind("login")
     private JTextField login;
@@ -31,9 +31,6 @@ public class LoginForm {
     @Bind("cancel")
     private JButton cancelBtn;
 
-    @Bind("rootPanel")
-    private JPanel rootPanel;
-
     @Bind("result")
     private JLabel result;
 
@@ -41,7 +38,7 @@ public class LoginForm {
 
     public LoginForm() {
         try {
-            model = Binder.bind(this);
+            model = Binder.bind(this, true);
         } catch (JDOMException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -67,9 +64,6 @@ public class LoginForm {
         });
     }
 
-    public JPanel getRootPanel() {
-        return rootPanel;
-    }
 
     public static void main(String[] args) throws JDOMException, IOException {
 
@@ -79,7 +73,7 @@ public class LoginForm {
         f.setSize(400, 200);
 
 
-        f.getContentPane().add(loginForm.getRootPanel());
+        f.getContentPane().add(loginForm);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 

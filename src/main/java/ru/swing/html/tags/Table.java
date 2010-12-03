@@ -3,6 +3,7 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ru.swing.html.css.Selector;
 import ru.swing.html.layout.CellSpan;
 import ru.swing.html.DomConverter;
 import ru.swing.html.layout.SpanMap;
@@ -43,7 +44,7 @@ public class Table extends Tag {
     }
 
     @Override
-    public void handleChildren() {
+    public void handleChildren(Map<Selector, JComponent> substitutions) {
 
         tags.clear();
         //вычисляем позиции всех дочерних элементов
@@ -121,7 +122,7 @@ public class Table extends Tag {
 
             tagAtPosition.setAttribute(ALIGN_ATTRIBUTE, align);
 
-            JComponent childComponent = DomConverter.convertComponent(tagAtPosition);
+            JComponent childComponent = DomConverter.convertComponent(tagAtPosition, substitutions);
             tableLayoutSupport.addComponent(getComponent(), childComponent, align);
         }
 
