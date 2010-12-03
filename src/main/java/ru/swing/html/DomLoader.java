@@ -13,10 +13,16 @@ public class DomLoader {
 
     private static LibraryRegistry registry = new LibraryRegistry();
     static {
-        registry.registerLibrary(null, new HtmlTagFactory());
-        registry.registerLibrary("http://www.w3.org/1999/xhtml", new HtmlTagFactory());
-        registry.registerLibrary("http://www.oracle.com/swing", new SwingTagFactory());
+        registerLibrary(null, new HtmlTagFactory());
+        registerLibrary("http://www.w3.org/1999/xhtml", new HtmlTagFactory());
+        registerLibrary("http://www.oracle.com/swing", new SwingTagFactory());
     }
+
+    
+    public static void registerLibrary(String namespace, TagFactory tagFactory) {
+        registry.registerLibrary(namespace, tagFactory);
+    }
+
     /**
      * Загружает dom-модель html-документа.
      * @param in поток, из которого происходит считывание html-документа

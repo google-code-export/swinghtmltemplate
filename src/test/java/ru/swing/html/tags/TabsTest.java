@@ -30,13 +30,13 @@ public class TabsTest extends TestCase {
     }
 
     public void testChildren() throws Exception {
-        String html = "<html>" +
+        String html = "<html xmlns:c='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <tabs>" +
+                "   <c:tabs>" +
                 "      <div title='tab1'></div>" +
                 "      <span title='tab2'></span>" +
-                "   </tabs>" +
+                "   </c:tabs>" +
                 "</body>" +
                 "</html>";
 
@@ -67,14 +67,14 @@ public class TabsTest extends TestCase {
     }
 
     public void testChildrenAndAttribute() throws Exception {
-        String html = "<html>" +
+        String html = "<html xmlns:c='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <tabs>" +
+                "   <c:tabs>" +
                 "      <div title='tab1'></div>" +
                 "      <span title='tab2'></span>" +
-                "      <attribute name='selectedIndex' value='1' type='int'/>" +
-                "   </tabs>" +
+                "      <c:attribute name='selectedIndex' value='1' type='int'/>" +
+                "   </c:tabs>" +
                 "</body>" +
                 "</html>";
 

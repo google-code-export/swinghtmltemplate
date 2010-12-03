@@ -21,11 +21,11 @@ public class AbsoluteLayoutTest extends TestCase {
     public void testLayout() throws Exception {
 
 
-        String html = "<html>" +
+        String html = "<html xmlns:c='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body style='display: absolute;'>" +
                 "   <p content='html'>" +
-                "      <attribute name='bounds' value='10 15 25 40' type='java.awt.Rectangle'/>" +
+                "      <c:attribute name='bounds' value='10 15 25 40' type='java.awt.Rectangle'/>" +
                 "      1" +
                 "    </p>" +
                 "   <p align='45 15 25 40'>2</p>" +

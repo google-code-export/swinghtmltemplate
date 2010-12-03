@@ -7,6 +7,7 @@ import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
@@ -34,14 +35,21 @@ public class Binder {
         final Class<? extends Object> cl = component.getClass();
         String className = cl.getName();
         //получаем путь к файлу, меняя точки на '/'
-        String path = "/"+className.replaceAll("\\.", "/");
+        String path = "/"+className.replaceAll("\\.", "/") + ".html";
         //загружаем модель
-        DomModel model = DomLoader.loadModel(component.getClass().getResourceAsStream(path+".html"));
-        //преобразуем модель в компоненты
-        DomConverter.toSwing(model);
-        //привязываем модель
-        bind(model, component);
-        return model;        
+        InputStream htmlStream = component.getClass().getResourceAsStream(path);
+        if (htmlStream!=null) {
+            DomModel model = DomLoader.loadModel(htmlStream);
+            //преобразуем модель в компоненты
+            DomConverter.toSwing(model);
+            //привязываем модель
+            bind(model, component);
+            return model;
+        }
+        else {
+            logger.error("Can't find html-document at "+path);
+            return null;
+        }
     }
 
 
