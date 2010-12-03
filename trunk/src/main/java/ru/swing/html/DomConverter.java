@@ -1,13 +1,16 @@
 package ru.swing.html;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.css.CssBlock;
+import ru.swing.html.css.Selector;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +32,16 @@ public class DomConverter {
      * @return корневой swing-компонент
      */
     public static JComponent toSwing(DomModel model) {
+        return toSwing(model, Collections.<Selector, JComponent>emptyMap());
+    }
+
+    /**
+     * Для каждого тега dom-модели производит построение соответствующего swing-компонета.
+     * @param model dom-модель
+     * @param substitutions карта подстановок компонентов. Ключ - селектор, значение - компонент.
+     * @return корневой swing-компонент
+     */
+    public static JComponent toSwing(DomModel model, Map<Selector, JComponent> substitutions) {
 
         Tag html = model.getRootTag();
         Tag head = html.getChildByName("head");
@@ -36,7 +49,7 @@ public class DomConverter {
 
 
         Tag body = html.getChildByName("body");
-        JComponent b = convertComponent(body);
+        JComponent b = convertComponent(body, substitutions);
         return b;
     }
 
@@ -67,6 +80,16 @@ public class DomConverter {
      * @return swing-компонент
      */
     public static JComponent convertComponent(Tag componentTag) {
+        return convertComponent(componentTag, Collections.<Selector, JComponent>emptyMap());
+    }
+
+    /**
+     * Выполняет процедуру преобразования тега dom-модели в swing-компонент.
+     * @param componentTag тег dom-модели
+     * @param substitutions карта подстановок компонентов. Ключ - селектор, значение - компонент.
+     * @return swing-компонент
+     */
+    public static JComponent convertComponent(Tag componentTag, Map<Selector, JComponent> substitutions) {
 
         //если dom-модель тега не null, то попробуем применить на тег таблицу css стилей.
         if (componentTag.getModel()!=null) {
@@ -89,14 +112,24 @@ public class DomConverter {
         }
 
         //вызываем создание тегом компонента
-        JComponent component = componentTag.createComponent();
+        JComponent component = null;
+        //если компонент есть в карте подстановок, то в качестве компонента используем компонент из карты
+        for (Selector selector : substitutions.keySet()) {
+            if (selector.matches(componentTag)) {
+                component = substitutions.get(selector);
+                break;
+            }
+        }
+        if (component==null) {
+            component = componentTag.createComponent();
+        }
         componentTag.setComponent(component);
         //вызываем процедуру применения атрибутов тега к компоненту
         componentTag.applyAttributes(component);
         //инициализируем менеджер компоновки в компоненте
         componentTag.handleLayout();
         //обрабатываем дочерние теги
-        componentTag.handleChildren();
+        componentTag.handleChildren(substitutions);
 
         return component;
     }

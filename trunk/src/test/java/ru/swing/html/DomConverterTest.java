@@ -2,10 +2,14 @@ package ru.swing.html;
 
 import junit.framework.TestCase;
 import ru.swing.html.css.CssBlock;
+import ru.swing.html.css.Selector;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <pre>
@@ -71,6 +75,42 @@ public class DomConverterTest extends TestCase {
 
         Tag p2 = body.getChildren().get(1);
         assertEquals("text", p2.getAttribute("type"));
+
+    }
+
+    public void testSubstitutions() throws Exception {
+
+        JLabel rootLabel = new JLabel("Foo");
+
+        String html = "<html>" +
+                "<head>" +
+                "<style>" +
+                "p {" +
+                "   type: text;" +
+                "}" +
+                "</style>" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "   <p type='html' id='rootLabel'>center</p>" +
+                "   <p align='top'>top</p>" +
+                "   <p align='bottom'>bottom</p>" +
+                "   <p align='left'>left</p>" +
+                "   <p align='right'>right</p>" +
+                "</body>" +
+                "</html>";
+
+        Map<Selector, JComponent> substitutions = new HashMap<Selector, JComponent>();
+        substitutions.put(new Selector("#rootLabel"), rootLabel);
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model, substitutions);
+        Tag body = model.getRootTag().getChildByName("body");
+
+        JPanel rootPanel = (JPanel) body.getComponent();
+        BorderLayout l = (BorderLayout) rootPanel.getLayout();
+        JLabel centerLabel = (JLabel) l.getLayoutComponent(BorderLayout.CENTER);
+
+        assertEquals(centerLabel, rootLabel);
 
     }
 }

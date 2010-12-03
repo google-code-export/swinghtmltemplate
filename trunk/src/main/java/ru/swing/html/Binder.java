@@ -3,6 +3,7 @@ package ru.swing.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
+import ru.swing.html.css.Selector;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -10,41 +11,61 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Вспомогательный класс для привязки dom-модели к классу с полями, помеченными аннотацией @Bind
+ * Helper class for binding dom-model to component. Component's fields may be annotated with @Bind annotation.
  */
 public class Binder {
 
     private static Log logger = LogFactory.getLog(Binder.class);
 
+
     /**
-     * Создает модель для объекта и выполняет привязку к модели.
-     * dom-модель загружается из файла, совпадающего с именем класса, расширением html,
-     * и лежащего в том же месте, где и класс.
+     * Creates new dom-model for component and binds model to component.
+     * dom-model is loaded from file, whose name equals to component's classname and which is located
+     * at the same place, as component's class.
      *
-     * Например, для класса foo.Foo будет загружен файл /foo/Foo.html
-     *
-     * @param component объект, к которому выполняется привязка dom-модели
-     * @return dom-модель html-документа
+     * For example, for component of class foo.Foo, file /foo/Foo.html will be used
+
+     * @param component object, to whom dom-model will be binded
+     * @return dom-model
      * @throws JDOMException
      * @throws IOException
      */
     public static DomModel bind(Object component) throws JDOMException, IOException {
-        //получаем имя класса
-        final Class<? extends Object> cl = component.getClass();
+        return bind(component, false);
+    }
+
+
+    /**
+     * Creates new dom-model for component and binds model to component.
+     * dom-model is loaded from file, whose name equals to component's classname and which is located
+     * at the same place, as component's class.
+     *
+     * For example, for component of class foo.Foo, file /foo/Foo.html will be used
+     *
+     * If useControllerAsRoot==true and component extends javax.swing.JComponent, then component
+     * will be used as root component (it will substitute &lt;body&gt;'s component),
+     *
+     * @param component object, to whom dom-model will be binded
+     * @param useControllerAsRoot if true, use component as root component in dom-model
+     * @return dom-model
+     * @throws JDOMException
+     * @throws IOException
+     */
+    public static DomModel bind(Object component, boolean useControllerAsRoot) throws JDOMException, IOException {
+        //get classname
+        final Class<?> cl = component.getClass();
         String className = cl.getName();
-        //получаем путь к файлу, меняя точки на '/'
+        //create file path, replace dots with '/'
         String path = "/"+className.replaceAll("\\.", "/") + ".html";
-        //загружаем модель
+        //load model
         InputStream htmlStream = component.getClass().getResourceAsStream(path);
         if (htmlStream!=null) {
             DomModel model = DomLoader.loadModel(htmlStream);
-            //преобразуем модель в компоненты
-            DomConverter.toSwing(model);
-            //привязываем модель
-            bind(model, component);
-            return model;
+            return bind(component, useControllerAsRoot, model);
         }
         else {
             logger.error("Can't find html-document at "+path);
@@ -52,29 +73,88 @@ public class Binder {
         }
     }
 
+    /**
+     *
+     * Binds component to dom-model.
+     * If useControllerAsRoot==true and component extends javax.swing.JComponent, then component
+     * will be used as root component (it will substitute &lt;body&gt;'s component),
+     *
+     * @param component object, to whom dom-model will be binded
+     * @param useControllerAsRoot if true, use component as root component in dom-model
+     * @param model dom-model to use
+     * @return dom-model
+     * @throws JDOMException
+     * @throws IOException
+     */
+    public static DomModel bind(Object component, boolean useControllerAsRoot, DomModel model) throws JDOMException, IOException {
+        Map<Selector, JComponent> substitutions = new HashMap<Selector, JComponent>();
+        if (useControllerAsRoot && component instanceof JComponent) {
+            Selector selector = new Selector("body");
+            substitutions.put(selector, (JComponent) component);
+        }
+        model = bind(component, useControllerAsRoot, model, substitutions);
+        return model;
+    }
 
     /**
-     * Привязывает dom-модель к объекту. Всем полям, помеченным аннотацией @Bind, будет присвоен компонент, тег
-     * которого имеет идентификатор, указаный в качестве значения аннотации.
-     * @param model dom-модель
-     * @param component объект, к которому привязывается dom-модель
+     * Binds component to dom-model.
+     * If useControllerAsRoot==true and component extends javax.swing.JComponent, then component
+     * will be used as root component (it will substitute &lt;body&gt;'s component).
+     *
+     * Substitutions is a collection of selectors as keys and components as values.
+     * Each tag in dom-model is checked for matching
+     * a selector, if tag matches when selectors value (component) will be used as tag's component,
+     * rather then creating new one.
+     *
+     * @param component object, to whom dom-model will be binded
+     * @param useControllerAsRoot if true, use component as root component in dom-model
+     * @param model dom-model to use
+     * @param substitutions substitutions map
+     * @return dom-model
+     * @throws JDOMException
+     * @throws IOException
+     */
+    public static DomModel bind(Object component,
+                                boolean useControllerAsRoot,
+                                DomModel model, Map<Selector,
+                                JComponent> substitutions)
+            throws JDOMException, IOException {
+
+        if (useControllerAsRoot && component instanceof JComponent) {
+            Selector selector = new Selector("body");
+            substitutions.put(selector, (JComponent) component);
+        }
+        //convert dom-model to swing components
+        DomConverter.toSwing(model, substitutions);
+        //tie model
+        bind(model, component);
+        return model;
+    }
+
+
+    /**
+     * Ties dom-model to objects. Any fiels, marked with @Bind will be assigned component, whose tag has
+     * id equals to @Bind's value.
+     *
+     * @param model dom-model
+     * @param component object, to whom model is tied
      */
     public static void bind(DomModel model, Object component) {
         //получаем поля класса
         Field[] fields = component.getClass().getDeclaredFields();
         for (Field field : fields) {
-            //если поле помечено аннотацией @Bind
+            //if field is annotated with @Bind
             Annotation a = field.getAnnotation(Bind.class);
             if (a!=null) {
-                //получаем значение идентификатора из аннотации
+                //get annotation value
                 String id = ((Bind)a).value();
-                //получаем тег с указанным идентификатором
+                //get tag with such id
                 Tag tag = model.getTagById(id);
                 if (tag == null) {
                     logger.warn("Can't bind "+id+": no component with such id found");
                 }
                 else {
-                    //присваиваем компонент
+                    //assign component
                     field.setAccessible(true);
                     try {
                         field.set(component, tag.getComponent());
@@ -83,7 +163,7 @@ public class Binder {
                     catch (IllegalAccessException e) {
                         logger.error("Can't set value for "+id+": "+ e.getMessage(), e);
                     }
-                    catch (IllegalArgumentException e) {//если тип компонента не совпадает с типом поля
+                    catch (IllegalArgumentException e) {//if component type is not the same as field type
                         logger.error("Can't set value for "+id+". Component type: "+component.getClass()+", field type: "+field.getType(), e);
                     }
                 }

@@ -4,10 +4,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
+import ru.swing.html.css.Selector;
 
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -64,14 +66,14 @@ public class SplitPane extends Tag {
     }
     
     @Override
-    public void handleChildren() {
+    public void handleChildren(Map<Selector, JComponent> substitutions) {
         if (getComponent() instanceof JSplitPane) {
 
             JSplitPane pane = (JSplitPane) getComponent();
 
             List<Tag> childrenWithComponents = new ArrayList<Tag>();
             for (Tag child : getChildren()) {
-                JComponent childComponent = DomConverter.convertComponent(child);
+                JComponent childComponent = DomConverter.convertComponent(child, substitutions);
                 if (childComponent!=null) {
                     childrenWithComponents.add(child);
                 }

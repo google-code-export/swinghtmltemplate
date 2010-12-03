@@ -72,5 +72,20 @@ public class Selector {
         return false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Selector selector = (Selector) o;
+
+        if (selectors != null ? !selectors.equals(selector.selectors) : selector.selectors != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return selectors != null ? selectors.hashCode() : 0;
+    }
 }

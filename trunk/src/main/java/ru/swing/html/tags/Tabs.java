@@ -4,9 +4,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
-import ru.swing.html.DomModel;
+import ru.swing.html.css.Selector;
 
 import javax.swing.*;
+import java.util.Map;
 
 /**
  * <p>
@@ -70,12 +71,12 @@ public class Tabs extends Tag {
     }
 
     @Override
-    public void handleChildren() {
+    public void handleChildren(Map<Selector, JComponent> substitutions) {
         
         JTabbedPane tabs = (JTabbedPane) getComponent();
         
         for (Tag child : getChildren()) {
-            JComponent childComponent = DomConverter.convertComponent(child);
+            JComponent childComponent = DomConverter.convertComponent(child, substitutions);
             if (childComponent!=null) {
                 tabs.addTab(child.getAttribute("title"), childComponent);
             }

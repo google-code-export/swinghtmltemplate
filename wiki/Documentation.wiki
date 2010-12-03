@@ -73,7 +73,7 @@ the same name, for an example above the full name would be {{{"/foo/LoginForm.ht
 a swing component, associated with the tag with id, equals to the value of the annotation ("login" in the example).
 
 == Selecting component with selectors ==
-Можно выбрать компоненты dom-модели с помощью селекторов:
+You can select components from dom-model using selectors:
 {{{
 InputStream in = ...
 DomModel model = DomLoader.loadModel(in);

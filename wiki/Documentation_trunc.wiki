@@ -29,6 +29,44 @@ To built swing-components tree use
 DomConverter.toSwing(model);
 }}}
 
+You can self-create some components and pass them to converter, so these components will be used
+as corresponding tag components, rather than creating new ones:
+{{{
+JLabel rootLabel = new JLabel("Foo");
+
+String html = "<html>" +
+        "<head>" +
+        "<style>" +
+        "p {" +
+        "   type: text;" +
+        "}" +
+        "</style>" +
+        "</head>" +
+        "<body style='display: border;'>" +
+        "   <p type='html' id='rootLabel'>center</p>" +
+        "   <p align='top'>top</p>" +
+        "   <p align='bottom'>bottom</p>" +
+        "   <p align='left'>left</p>" +
+        "   <p align='right'>right</p>" +
+        "</body>" +
+        "</html>";
+
+//create substitutions map
+Map<Selector, JComponent> substitutions = new HashMap<Selector, JComponent>();
+//add substitution for tag with id='rootLabel'
+substitutions.put(new Selector("#rootLabel"), rootLabel);
+
+DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+DomConverter.toSwing(model, substitutions);
+Tag body = model.getRootTag().getChildByName("body");
+
+JPanel rootPanel = (JPanel) body.getComponent();
+BorderLayout l = (BorderLayout) rootPanel.getLayout();
+JLabel centerLabel = (JLabel) l.getLayoutComponent(BorderLayout.CENTER);
+
+assertEquals(centerLabel, rootLabel);
+}}}
+
 
 next you must get root swing component from body tag:
 {{{
@@ -71,6 +109,34 @@ the same name, for an example above the full name would be {{{"/foo/LoginForm.ht
 
 {{{@Bind("login")}}} annotation tells, that the field, marked with this annotation will be assigned
 a swing component, associated with the tag with id, equals to the value of the annotation ("login" in the example).
+
+
+
+Also, you can make object a root component of dom-model. The object must extend `JComponent`:
+{{{
+package foo;
+
+public class LoginForm extends JPanel {
+
+   @Bind("login")
+   private JTextField loginText;
+
+   public LoginForm() {
+        try {
+            //pass 'true' to use LoginForm as root compponent
+            Binder.bind(this, true);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+   }
+
+}
+}}}
+
+
 
 == Selecting component with selectors ==
 You can select components from dom-model using selector:

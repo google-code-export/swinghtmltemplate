@@ -4,12 +4,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.Utils;
+import ru.swing.html.css.Selector;
 
 import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Тег предназначен для присвоения значений компоненту родительского тега.
@@ -27,7 +27,7 @@ public class Attribute extends Tag {
     }
 
     @Override
-    public void handleChildren() {
+    public void handleChildren(Map<Selector, JComponent> substitutions) {
     }
 
     @Override
