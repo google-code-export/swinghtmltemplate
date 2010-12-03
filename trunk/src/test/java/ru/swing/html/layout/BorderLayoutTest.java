@@ -20,15 +20,15 @@ public class BorderLayoutTest extends TestCase {
 
     public void testBorderLayout() throws Exception {
 
-        String html = "<html>" +
-                "<head></head>" +
-                "<body style='display: border;'>" +
-                "   <p content='html'>center</p>" +
-                "   <p align='top'>top</p>" +
-                "   <p align='bottom' content='html'><![CDATA[<i>bottom</i>]]></p>" +
-                "   <p align='left'>left</p>" +
-                "   <p align='right'>right</p>" +
-                "</body>" +
+        String html = "<html>\n" +
+                "<head></head>\n" +
+                "<body style='display: border;'>\n" +
+                "   <p content='html'>center</p>\n" +
+                "   <p align='top'>top</p>\n" +
+                "   <p align='bottom' content='html'><![CDATA[<i>bottom</i>]]></p>\n" +
+                "   <p align='left'>left</p>\n" +
+                "   <p align='right'>right</p>\n" +
+                "</body>\n" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         DomConverter.toSwing(model);

@@ -36,10 +36,10 @@ public class AttributeTest extends TestCase {
 
     public void testCorrectWorkInHtml() throws Exception {
 
-        String html = "<html>" +
+        String html = "<html xmlns:c='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <attribute name='preferredSize' value='101 102' type='java.awt.Dimension'/>"+
+                "   <c:attribute name='preferredSize' value='101 102' type='java.awt.Dimension'/>"+
                 "   <p content='html'>center</p>" +
                 "   <p align='top'>top</p>" +
                 "   <p align='bottom' content='html'><![CDATA[<i>bottom</i>]]></p>" +

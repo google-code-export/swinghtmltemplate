@@ -34,13 +34,13 @@ public class ScrollTest extends TestCase {
 
     public void testChildInViewport() throws Exception {
 
-        String html = "<html>" +
+        String html = "<html xmlns:c='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <scroll>" +
+                "   <c:scroll>" +
                 "      <textarea/>" +
                 "      <object classid='javax.swing.JTextPane'/>" +
-                "   </scroll>" +
+                "   </c:scroll>" +
                 "</body>" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
@@ -60,13 +60,13 @@ public class ScrollTest extends TestCase {
     }
     public void testAttributes() throws Exception {
 
-        String html = "<html>" +
+        String html = "<html xmlns:c='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body style='display: border;'>" +
-                "   <scroll>" +
-                "      <attribute name='bounds' value='10 10 10 10' type='java.awt.Rectangle'/>" +
+                "   <c:scroll>" +
+                "      <c:attribute name='bounds' value='10 10 10 10' type='java.awt.Rectangle'/>" +
                 "      <textarea/>" +
-                "   </scroll>" +
+                "   </c:scroll>" +
                 "</body>" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));

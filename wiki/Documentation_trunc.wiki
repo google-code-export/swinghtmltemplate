@@ -73,7 +73,7 @@ the same name, for an example above the full name would be {{{"/foo/LoginForm.ht
 a swing component, associated with the tag with id, equals to the value of the annotation ("login" in the example).
 
 == Selecting component with selectors ==
-Можно выбрать компоненты dom-модели с помощью селекторов:
+You can select components from dom-model using selector:
 {{{
 InputStream in = ...
 DomModel model = DomLoader.loadModel(in);
@@ -83,6 +83,25 @@ for (JComponent c : model.select(".button")) {
 }}}
 
 = Components =
+
+All tags are splitted into libraries, each one identified by namespace.
+All html tags are located at default library with empty namespace. They are also available in
+'http://www.w3.org/1999/xhtml' namespace library. These html markups will produce identical results:
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body>
+  <p>Foo</p>
+</body>
+</html>
+}}}
+
+{{{
+<html>
+<body>
+  <p>Foo</p>
+</body>
+</html>
+}}}
 
 == Common attributes ==
 For any component you can assign it's properties by providing attributes in associated tag or by specifying
@@ -108,78 +127,19 @@ css styles. Below are common properties (for all tags):
   * {{{font-style}}} - component's font style. If value is `italic`, font will be italic.
   * {{{font-family}}} - component's font family.
 
-== attribute ==
-Special tag for assigning value to the parent's tag component. Doesn't convert to any swing component.
 
-Supported attributes for tag:
-  * `name` - field name, to which the value will be assigned. Example: `preferredSize`
-  * `value` - value to be assigned, as string
-  * `type` - field type. Full class name. Example, `java.awt.Dimension`
+== default namespace ==
 
-Supported `value` formats according to `type` value:
-  * `type='java.lang.String'` : string, example: `<attribute name='name' value='Foo' type='java.lang.String'/>`
-  * `type='boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='boolean'/>`
-  * `type='int'` : integer, example: `<attribute name='width' value='500' type='int'/>`
-  * `type='long'` : long, example: `<attribute name='uuid' value='50000' type='long'/>`
-  * `type='float'` : float, example: `<attribute name='width' value='5.0' type='float'/>`
-  * `type='double'` : double, example: `<attribute name='width' value='5.0' type='double'/>`
-  * `type='short'` : short, example: `<attribute name='width' value='5' type='short'/>`
-  * `type='byte'` : bute, example: `<attribute name='width' value='5' type='byte'/>`
-  * `type='char'` : charachter, example: `<attribute name='mnemonic' value='f' type='char'/>`
-  * `type='java.lang.Boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='java.lang.Boolean'/>`
-  * `type='java.lang.Integer'` : integer, example: `<attribute name='width' value='500' type='java.lang.Integer'/>`
-  * `type='java.lang.Long'` : long, example: `<attribute name='uuid' value='50000' type='java.lang.Long'/>`
-  * `type='java.lang.Float'` : float, example: `<attribute name='width' value='5.0' type='java.lang.Float'/>`
-  * `type='java.lang.Double'` : double, example: `<attribute name='width' value='5.0' type='java.lang.Double'/>`
-  * `type='java.lang.Byte'` : byte, example: `<attribute name='width' value='5' type='java.lang.Byte'/>`
-  * `type='java.lang.Short'` : short, example: `<attribute name='width' value='5' type='java.lang.Short'/>`
-  * `type='java.lang.Charachter'` : charachter, example: `<attribute name='mnemonic' value='f' type='java.lang.Charachter'/>`
-  * `type='java.awt.Dimension'` : 2 integers, separated by spaces, example: `<attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>`
-  * `type='java.awt.Insets'` : 4 integers, separated by spaces, example: `<attribute name='insets' value='5 1 3 4' type='java.awt.Insets'/>`
-  * `type='java.awt.Point'` : 2 integers, separated by spaces, example: `<attribute name='location' value='5 1' type='java.awt.Point'/>`
-  * `type='java.awt.Rectangle'` : 4 integers, separated by spaces, example: `<attribute name='bounds' value='5 1 3 4' type='java.awt.Rectangle'/>`
-
-Pay attention, that methods with primitive types as operands are not equal to methods with objects as operands.
-`setFoo(java.lang.Integer)` is not equal to `setFoo(int)`. You must specify correct `type` value.
-
-Example:
-{{{
-<html>
-<body>
-   <attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>
-   <p>Panel has preferred size 500x100px</p>
-</body>
-</html>
-}}}
-
-== body ==
+=== body ===
 Tag is converted to `javax.swing.JPanel`. `java.awt.FlowLayout` is used as layout manager by default.
 
-== div ==
+=== div ===
 Tag is converted to `javax.swing.JPanel`. `java.awt.BorderLayout` is used as layout manager by default.
 
-== form ==
+=== form ===
 Tag is converted to `javax.swing.JPanel`. `net.miginfocom.swing.MigLayout` is used as layout manager by default.
 
-== glue ==
-Tag is converted to the component, that is returned from
-{{{
-javax.swing.Box.createHorizontalGlue();
-}}}
-for  {{{type="horizontal"}}}, or
-{{{
-javax.swing.Box.createVerticalGlue();
-}}}
-for {{{type="vertical"}}}. Default `type` value is `vertical`.
-
-Used within tags with {{{BoxLayout}}} layout
-
-Example:
-{{{
-<glue type="horizontal"/>
-}}}
-
-== img ==
+=== img ===
 Tag is converted to `javax.swing.JLabel`. Value of the `src` attribute is copied to `icon` attribute, so,
 an icon, specified as `src` value will be component's icon (see common properties)
 
@@ -188,7 +148,7 @@ Example
 <img src="/img/login-icon.gif"/>
 }}}
 
-== input ==
+=== input ===
 According to `type` value converts to
   * {{{type="text"}}} - `JTextField`
   * {{{type="password"}}} - `JPasswordField`
@@ -208,14 +168,14 @@ If resulting component is subclass of `JTextComponent`, then the contents of the
 <input type="text">Initial text</input>
 }}}
 
-== object ==
+=== object ===
 Tag is converted to the component which classname is specified with `classid` attribute.
 Example:
 {{{
 <object classid="javax.swing.JButton" text="OK"/>
 }}}
 
-== p ==
+=== p ===
 Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
 If `content` equals to `html`, then the content of the tag is surrounded with {{{<html>}}} before and {{{</html>}}} after,
 so `JLabel` will produce html. If `content` equals to `text` or is empty,
@@ -230,7 +190,7 @@ Example:
 
 
 
-== span ==
+=== span ===
 Tag is converted to `javax.swing.JPanel`. `java.awt.FlowLayout` is used as layout manager by default.
 
 Example:
@@ -241,73 +201,8 @@ Example:
 </span>
 }}}
 
-== scroll ==
-Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are
-more than 1 child tags, warning will be printed to the log.
 
-Example:
-{{{
-<scroll>
-<component type="javax.swing.JTable"/>
-</scroll>
-}}}
-
-
-== split ==
-Tag is converted to `JSplitPane`.
-
-Tag supports attributes:
-  * {{{orientation}}} - values: horizontal, vertical
-  * {{{divider-size}}} - as in JSplitPane
-  * {{{divider-position}}} - as in JSplitPane. Value is in pixels (100) or in percents (50%)
-
-
-Tag can has no more than 2 child components. Childs are placed according to their `align` preperty:
-  * {{{left}}} - component goes to left panel
-  * {{{top}}} - component goes to top panel
-  * {{{right}}} - component goes to right panel
-  * {{{bottom}}} - component goes to bottom panel
-
-If first child doesn't have `align` property, then first child goes to left panel, second - to right panel.
-
-Example:
-{{{
-<split orientation="horizontal" style="divider-size: 2;divider-position: 200;">
-
-    <scroll>
-        <textarea>Left</textarea>
-    </scroll>
-
-    <scroll>
-        <textarea>Right</textarea>
-    </scroll>
-
-</split>
-}}}
-
-
-== strut ==
-Tag is converted to the component, that is returned from
-{{{
-javax.swing.Box.createHorizontalStrut(w)
-}}}
-for {{{type="horizontal"}}}, or
-{{{
-javax.swing.Box.createVerticalStrut(h)
-}}}
-for {{{type="vertical"}}}. `type` has default value `vertical`.
-
-Used within tags with {{{BoxLayout}}} layout
-
-{{{w}}} and {{{h}}} - are values of attributes `width` и `height` accordingly.
-
-Example:
-{{{
-<strut type="horizontal" style="width: 12"/>
-<strut type="vertical" height="12"/>
-}}}
-
-== table ==
+=== table ===
 Tag is converted to `javax.swing.JPanel`, with [https://tablelayout.dev.java.net/ tableLayout] as layout manager.
 
 Supported attributes
@@ -337,11 +232,11 @@ preferred < number < fill
 Default size is {{{preferred}}}. So, if you specify {{{width}}} ({{{height}}}) for any cell with numeric value,
 then this value will override {{{preferred}}}. Similarly value {{{fill}}} overrides any numeric value and {{{preferred}}}.
 
-Pay attention that specifying {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}) automatically 
-sets column (row) count (so any column outside column count will be invisible). 
-Column (row) count is cumputed dynamically otherwise. 
+Pay attention that specifying {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}) automatically
+sets column (row) count (so any column outside column count will be invisible).
+Column (row) count is cumputed dynamically otherwise.
 
-Tag `td` supports properties: 
+Tag `td` supports properties:
   * {{{width}}} - cells width, see above
   * {{{height}}} - cells height, see above
   * {{{rowspan}}} - rowspan of the cell. Cells with `rowspan>1` are ignored during dynamic count of row height
@@ -419,7 +314,149 @@ Examples:
 
 }}}
 
-== tabs ==
+=== textarea ===
+Tag is converted to `JTextArea`. Tag's content is used as component's text.
+
+Example:
+{{{
+<scroll>
+   <textarea>Some text</textarea>
+</scroll>
+}}}
+
+
+
+== 'http://www.oracle.com/swing' namespace ==
+
+=== attribute ===
+Special tag for assigning value to the parent's tag component. Doesn't convert to any swing component.
+
+Supported attributes for tag:
+  * `name` - field name, to which the value will be assigned. Example: `preferredSize`
+  * `value` - value to be assigned, as string
+  * `type` - field type. Full class name. Example, `java.awt.Dimension`
+
+Supported `value` formats according to `type` value:
+  * `type='java.lang.String'` : string, example: `<attribute name='name' value='Foo' type='java.lang.String'/>`
+  * `type='boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='boolean'/>`
+  * `type='int'` : integer, example: `<attribute name='width' value='500' type='int'/>`
+  * `type='long'` : long, example: `<attribute name='uuid' value='50000' type='long'/>`
+  * `type='float'` : float, example: `<attribute name='width' value='5.0' type='float'/>`
+  * `type='double'` : double, example: `<attribute name='width' value='5.0' type='double'/>`
+  * `type='short'` : short, example: `<attribute name='width' value='5' type='short'/>`
+  * `type='byte'` : bute, example: `<attribute name='width' value='5' type='byte'/>`
+  * `type='char'` : charachter, example: `<attribute name='mnemonic' value='f' type='char'/>`
+  * `type='java.lang.Boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='java.lang.Boolean'/>`
+  * `type='java.lang.Integer'` : integer, example: `<attribute name='width' value='500' type='java.lang.Integer'/>`
+  * `type='java.lang.Long'` : long, example: `<attribute name='uuid' value='50000' type='java.lang.Long'/>`
+  * `type='java.lang.Float'` : float, example: `<attribute name='width' value='5.0' type='java.lang.Float'/>`
+  * `type='java.lang.Double'` : double, example: `<attribute name='width' value='5.0' type='java.lang.Double'/>`
+  * `type='java.lang.Byte'` : byte, example: `<attribute name='width' value='5' type='java.lang.Byte'/>`
+  * `type='java.lang.Short'` : short, example: `<attribute name='width' value='5' type='java.lang.Short'/>`
+  * `type='java.lang.Charachter'` : charachter, example: `<attribute name='mnemonic' value='f' type='java.lang.Charachter'/>`
+  * `type='java.awt.Dimension'` : 2 integers, separated by spaces, example: `<attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>`
+  * `type='java.awt.Insets'` : 4 integers, separated by spaces, example: `<attribute name='insets' value='5 1 3 4' type='java.awt.Insets'/>`
+  * `type='java.awt.Point'` : 2 integers, separated by spaces, example: `<attribute name='location' value='5 1' type='java.awt.Point'/>`
+  * `type='java.awt.Rectangle'` : 4 integers, separated by spaces, example: `<attribute name='bounds' value='5 1 3 4' type='java.awt.Rectangle'/>`
+
+Pay attention, that methods with primitive types as operands are not equal to methods with objects as operands.
+`setFoo(java.lang.Integer)` is not equal to `setFoo(int)`. You must specify correct `type` value.
+
+Example:
+{{{
+<html xmlns:c="http://www.oracle.com/swing">
+<body>
+   <c:attribute name='preferredSize' value='500 100' type='java.awt.Dimension'/>
+   <p>Panel has preferred size 500x100px</p>
+</body>
+</html>
+}}}
+
+=== glue ===
+Tag is converted to the component, that is returned from
+{{{
+javax.swing.Box.createHorizontalGlue();
+}}}
+for  {{{type="horizontal"}}}, or
+{{{
+javax.swing.Box.createVerticalGlue();
+}}}
+for {{{type="vertical"}}}. Default `type` value is `vertical`.
+
+Used within tags with {{{BoxLayout}}} layout
+
+Example:
+{{{
+<c:glue type="horizontal"/>
+}}}
+
+=== scroll ===
+Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are
+more than 1 child tags, warning will be printed to the log.
+
+Example:
+{{{
+<c:scroll>
+    <object classid="javax.swing.JTable"/>
+</c:scroll>
+}}}
+
+
+=== split ===
+Tag is converted to `JSplitPane`.
+
+Tag supports attributes:
+  * {{{orientation}}} - values: horizontal, vertical
+  * {{{divider-size}}} - as in JSplitPane
+  * {{{divider-position}}} - as in JSplitPane. Value is in pixels (100) or in percents (50%)
+
+
+Tag can has no more than 2 child components. Childs are placed according to their `align` preperty:
+  * {{{left}}} - component goes to left panel
+  * {{{top}}} - component goes to top panel
+  * {{{right}}} - component goes to right panel
+  * {{{bottom}}} - component goes to bottom panel
+
+If first child doesn't have `align` property, then first child goes to left panel, second - to right panel.
+
+Example:
+{{{
+<c:split orientation="horizontal" style="divider-size: 2;divider-position: 200;">
+
+    <c:scroll>
+        <textarea>Left</textarea>
+    </c:scroll>
+
+    <c:scroll>
+        <textarea>Right</textarea>
+    </c:scroll>
+
+</c:split>
+}}}
+
+
+=== strut ===
+Tag is converted to the component, that is returned from
+{{{
+javax.swing.Box.createHorizontalStrut(w)
+}}}
+for {{{type="horizontal"}}}, or
+{{{
+javax.swing.Box.createVerticalStrut(h)
+}}}
+for {{{type="vertical"}}}. `type` has default value `vertical`.
+
+Used within tags with {{{BoxLayout}}} layout
+
+{{{w}}} and {{{h}}} - are values of attributes `width` и `height` accordingly.
+
+Example:
+{{{
+<c:strut type="horizontal" style="width: 12"/>
+<c:strut type="vertical" height="12"/>
+}}}
+
+=== tabs ===
 Tag is converted to `JTabbedPane`.
 
 Tab is created for every direct child component, `title` attribute value is used as tab's title.
@@ -431,30 +468,20 @@ Tag supports attributes:
 
 Example:
 {{{
-<tabs>
+<c:tabs>
     <div title="Text">
         <p>Tab 1</p>
     </div>
 
     <div title="JEditorPane" style="display:border">
-        <scroll>
-            <component type="javax.swing.JEditorPane"/>
-        </scroll>
+        <c:scroll>
+            <object classid="javax.swing.JEditorPane"/>
+        </c:scroll>
 
     </div>
-</tabs>
+</c:tabs>
 }}}
 
-
-== textarea ==
-Tag is converted to `JTextArea`. Tag's content is used as component's text.
-
-Example:
-{{{
-<scroll>
-   <textarea>Some text</textarea>
-</scroll>
-}}}
 
 = Layout managers =
 Layout manager for a component is assigned using `display` attribute.
@@ -470,7 +497,7 @@ has higher priority than `<attribute>`.
 <div style='display:absolute'>
    <p align='10 10 10 10'>block 1</p>
    <p>
-      <attribute name='bounds' value='30 10 10 10' type='java.awt.Rectangle'/>
+      <c:attribute name='bounds' value='30 10 10 10' type='java.awt.Rectangle'/>
       block 2
    </p>
 </div>
@@ -510,7 +537,7 @@ You can use {{{<strut/>}}}  и {{{<glue/>}}} to put spaces between components.
 Example:
 {{{
 <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
-   <glue type="horizontal"/>
+   <c:glue type="horizontal"/>
    <input type="button" text="OK" id="ok" icon="/img/accept.png" />
    <strut type="horizontal" style="width: 6"/>
    <input type="button" text="Cancel" id="cancel" icon="/img/cancel.png"/>
@@ -520,7 +547,6 @@ Example:
 == flow ==
 Means `java.awt.FlowLayout`.
 
-Выравнивание дочерних компонент задается атрибутом text-align:
 Children are aligned according to `text-align`:
   * {{{center}}} - components are aligned in center
   * {{{left}}} - components are aligned to the left
@@ -614,11 +640,9 @@ Examples:
 Tag {{{<table/>}}} uses this layout.
 
 = Styles =
-Атрибуты тегов можно задать отдельно от самих тегов с помощью тега {{{<style/>}}} внутри тега {{{<head/>}}}, аналогично обычном css стилям.
 Tag attribute can be set separately of the tag by using {{{<style/>}}} within {{{<head/>}}}, as with ordinary
 css styles in html.
 
-Стиль задается в формате css с ограничениями. Поддерживаются следующие типы селекторов:
 Style is set in css format with limited capatibilities. Below are supported selectors:
   * tag_name
   * .class_name
@@ -678,7 +702,6 @@ So these are identical:
 
 
 = Borders =
-С помощью атрибута border можно задать рамку компонента.
 You can set component's border with `border` attribute.
 
 
