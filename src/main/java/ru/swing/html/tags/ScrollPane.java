@@ -3,7 +3,7 @@ package ru.swing.html.tags;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class ScrollPane extends Tag {
     }
 
     @Override
-    public void handleChildren(Map<Selector, JComponent> substitutions) {
+    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
         if (getComponent() instanceof JScrollPane) {
             JScrollPane pane = (JScrollPane) getComponent();
 

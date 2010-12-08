@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.*;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
@@ -156,7 +156,7 @@ public class Tag {
      * 2. place child using layout manager
      * @param substitutions substitutions map for domModel
      */
-    public void handleChildren(Map<Selector, JComponent> substitutions) {
+    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
         //если для тега нет компонента (например, это неизвестный тег), то найдем первый родительский
         //тег с непустым компонентом и будет дочерние компоненты добавлять в него
         JComponent c = getComponent();

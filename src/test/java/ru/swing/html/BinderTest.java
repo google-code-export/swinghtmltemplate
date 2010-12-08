@@ -1,7 +1,7 @@
 package ru.swing.html;
 
 import junit.framework.TestCase;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,8 +69,8 @@ public class BinderTest extends TestCase {
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         DomConverter.toSwing(model);
 
-        Map<Selector, JComponent> substitutions = new HashMap<Selector, JComponent>();
-        substitutions.put(new Selector("#rootLabel"), label);
+        Map<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
+        substitutions.put(new SelectorGroup("#rootLabel"), label);
 
         Binder.bind(form, true, model, substitutions);
         JComponent root = model.getRootTag().getChildByName("body").getComponent();

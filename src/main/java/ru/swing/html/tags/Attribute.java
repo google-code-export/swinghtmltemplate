@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.Utils;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
@@ -27,7 +27,7 @@ public class Attribute extends Tag {
     }
 
     @Override
-    public void handleChildren(Map<Selector, JComponent> substitutions) {
+    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
     }
 
     @Override

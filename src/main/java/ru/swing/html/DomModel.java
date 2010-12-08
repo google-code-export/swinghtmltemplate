@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.css.CssBlock;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -76,7 +76,7 @@ public class DomModel {
      * @return компоненты, теги которых удовлетворяют селектору.
      */
     public JComponent[] select(String selector) {
-        Selector s = new Selector(selector);
+        SelectorGroup s = new SelectorGroup(selector);
         List<Tag> tags = selectTags(getRootTag(), s);
         List<JComponent> components = new ArrayList<JComponent>(tags.size());
         for (Tag tag : tags) {
@@ -88,7 +88,13 @@ public class DomModel {
         return components.toArray(new JComponent[components.size()]);
     }
 
-    private List<Tag> selectTags(Tag tag, Selector selector) {
+    public Tag[] query(String selector) {
+        SelectorGroup s = new SelectorGroup(selector);
+        List<Tag> tags = selectTags(getRootTag(), s);
+        return tags.toArray(new Tag[tags.size()]);
+    }
+
+    private List<Tag> selectTags(Tag tag, SelectorGroup selector) {
         List<Tag> res = new ArrayList<Tag>();
         if (selector.matches(tag)) {
             res.add(tag);

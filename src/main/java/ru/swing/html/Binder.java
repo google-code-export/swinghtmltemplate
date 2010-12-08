@@ -3,7 +3,7 @@ package ru.swing.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -87,9 +87,9 @@ public class Binder {
      * @throws IOException
      */
     public static DomModel bind(Object component, boolean useControllerAsRoot, DomModel model) throws JDOMException, IOException {
-        Map<Selector, JComponent> substitutions = new HashMap<Selector, JComponent>();
+        Map<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
         if (useControllerAsRoot && component instanceof JComponent) {
-            Selector selector = new Selector("body");
+            SelectorGroup selector = new SelectorGroup("body");
             substitutions.put(selector, (JComponent) component);
         }
         model = bind(component, useControllerAsRoot, model, substitutions);
@@ -116,12 +116,12 @@ public class Binder {
      */
     public static DomModel bind(Object component,
                                 boolean useControllerAsRoot,
-                                DomModel model, Map<Selector,
+                                DomModel model, Map<SelectorGroup,
                                 JComponent> substitutions)
             throws JDOMException, IOException {
 
         if (useControllerAsRoot && component instanceof JComponent) {
-            Selector selector = new Selector("body");
+            SelectorGroup selector = new SelectorGroup("body");
             substitutions.put(selector, (JComponent) component);
         }
         //convert dom-model to swing components

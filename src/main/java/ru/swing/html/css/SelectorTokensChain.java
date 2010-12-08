@@ -1,6 +1,5 @@
 package ru.swing.html.css;
 
-import org.apache.commons.lang.StringUtils;
 import ru.swing.html.tags.Tag;
 
 import java.util.*;
@@ -32,11 +31,14 @@ public class SelectorTokensChain {
         relationWithNext.put(token, relation);
     }
 
+    public void setRelationType(SelectorToken token, SelectorTokenRelation relation) {
+        relationWithNext.put(token, relation);
+    }
 
     public boolean matches(Tag tag) {
         //1ый элемент должен совпадать с тегом
         SelectorToken current = tokens.get(0);
-        boolean res = checkTagMatchesToken(tag, current);
+        boolean res = current.matches(tag);
         if (res) {
 
             Tag currentTag = tag;
@@ -51,7 +53,7 @@ public class SelectorTokensChain {
                 if (SelectorTokenRelation.PARENT.equals(relationWithPrevious)) {
                     //родительский тег должен удовлетворять текущему токену
                     Tag parentTag = currentTag.getParent();
-                    if (!checkTagMatchesToken(parentTag, current)) {
+                    if (!current.matches(parentTag)) {
                         return false;
                     }
                     else {
@@ -64,7 +66,7 @@ public class SelectorTokensChain {
                     currentTag = currentTag.getParent();
                     boolean found = false;
                     while (!found && currentTag!=null) {
-                        found = checkTagMatchesToken(currentTag, current);
+                        found = current.matches(currentTag);
                         if (!found) {
                             currentTag = currentTag.getParent();
                         }
@@ -92,7 +94,7 @@ public class SelectorTokensChain {
                     Tag sublingTag = parentTag.getChildren().get(index-1);
 
 
-                    if (!checkTagMatchesToken(sublingTag, current)) {
+                    if (!current.matches(sublingTag)) {
                         return false;
                     }
                     else {
@@ -110,34 +112,4 @@ public class SelectorTokensChain {
 
     }
 
-    private boolean checkTagMatchesToken(Tag tag, SelectorToken current) {
-        boolean res = true;
-
-        if (StringUtils.isNotEmpty(current.getName()) && !"*".equals(current.getName()) && !current.getName().equals(tag.getName())) {
-            res = false;
-        }
-
-        if (StringUtils.isNotEmpty(current.getId()) && !current.getId().equals(tag.getId())) {
-            res = false;
-        }
-
-        if (current.getClasses()!=null) {
-            String classStr = tag.getAttribute("class");
-            if (StringUtils.isNotEmpty(classStr)) {
-                String[] classes = classStr.split(" ");
-                //нужно чтобы все классы, указанные в селекторе, присутствовали в атрибуте class тега
-                if (classes!=null) {
-                    Set<String> classesSet = new HashSet<String>(Arrays.asList(classes));
-
-                    if (!classesSet.containsAll(Arrays.asList(current.getClasses()))) {
-                        res = false;
-                    }
-                }
-            }
-            else {//если у тега не указан класс, то он точно не попадает
-                res = false;
-            }
-        }
-        return res;
-    }
 }
