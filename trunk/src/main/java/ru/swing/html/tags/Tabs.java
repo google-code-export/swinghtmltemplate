@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 
 import javax.swing.*;
 import java.util.Map;
@@ -71,7 +71,7 @@ public class Tabs extends Tag {
     }
 
     @Override
-    public void handleChildren(Map<Selector, JComponent> substitutions) {
+    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
         
         JTabbedPane tabs = (JTabbedPane) getComponent();
         

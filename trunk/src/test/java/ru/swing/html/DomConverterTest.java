@@ -2,7 +2,7 @@ package ru.swing.html;
 
 import junit.framework.TestCase;
 import ru.swing.html.css.CssBlock;
-import ru.swing.html.css.Selector;
+import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -99,8 +99,8 @@ public class DomConverterTest extends TestCase {
                 "</body>" +
                 "</html>";
 
-        Map<Selector, JComponent> substitutions = new HashMap<Selector, JComponent>();
-        substitutions.put(new Selector("#rootLabel"), rootLabel);
+        Map<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
+        substitutions.put(new SelectorGroup("#rootLabel"), rootLabel);
 
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         DomConverter.toSwing(model, substitutions);

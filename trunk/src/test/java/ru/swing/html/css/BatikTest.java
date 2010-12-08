@@ -12,7 +12,7 @@ public class BatikTest {
 
     public static void main(String[] args) throws IOException {
         Parser p = new Parser();
-        SelectorList l = p.parseSelectors("div li > p[id=qq]");
+        SelectorList l = p.parseSelectors("a[ss~='ss']");
         System.out.println(l);
     }
 }

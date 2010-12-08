@@ -15,16 +15,16 @@ import java.util.Map;
  */
 public class CssBlock {
 
-    private List<Selector> selectors;
+    private List<SelectorGroup> selectors;
     private Map<String, String> styles = new HashMap<String, String>();
 
-    public CssBlock(List<Selector> selectors, Map<String, String> styles) {
+    public CssBlock(List<SelectorGroup> selectors, Map<String, String> styles) {
         this.selectors = selectors;
         this.styles = styles;
     }
 
     public boolean matches(Tag tag) {
-        for (Selector selector : selectors) {
+        for (SelectorGroup selector : selectors) {
             final boolean match = selector.matches(tag);
             if (match) {
                 return true;

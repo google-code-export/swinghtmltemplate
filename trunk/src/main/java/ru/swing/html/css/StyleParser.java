@@ -53,9 +53,9 @@ public class StyleParser {
             String selectorsString = m.group(1);
             String styles = m.group(2);
             String[] selectorsArray = selectorsString.split(",");
-            List<Selector> selectors = new ArrayList<Selector>();
+            List<SelectorGroup> selectors = new ArrayList<SelectorGroup>();
             for (String s : selectorsArray) {
-                selectors.add(new Selector(s));
+                selectors.add(new SelectorGroup(s));
             }
 
             Map<String, String> styleAttrs = extractStyles(styles);
