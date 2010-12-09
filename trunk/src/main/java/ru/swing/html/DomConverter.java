@@ -1,5 +1,6 @@
 package ru.swing.html;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.css.CssBlock;
@@ -8,6 +9,8 @@ import ru.swing.html.css.StyleParser;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +70,39 @@ public class DomConverter {
                 for (String cssBlock : cssBlocks) {
                     CssBlock block = StyleParser.parseCssBlock(cssBlock);
                     model.addGlobalStyle(block);
+                }
+            }
+            else if ("link".equals(headChild.getName()) && "stylesheet".equals(headChild.getAttribute("rel"))) {
+                String filename = headChild.getAttribute("href");
+                if (StringUtils.isEmpty(filename)) {
+                    return;
+                }
+
+                //if absolute path
+                if (filename.startsWith("/")) {
+                    //getClassLoader().getResourceAsStream понимает пути без ведущего /, например,
+                    //"ru/swing/html/example/loginform.css"
+                    filename = filename.substring(1);
+                }
+                //if relative path - substitute path from dom model path
+                else {
+                    //todo convert relative to absolute
+                }
+                InputStream in = DomConverter.class.getClassLoader().getResourceAsStream(filename);
+                if (in!=null) {
+                    try {
+                        String css = Utils.readStringIntoString(in);
+                        List<String> cssBlocks = StyleParser.extractCssBlocks(css);
+                        for (String cssBlock : cssBlocks) {
+                            CssBlock block = StyleParser.parseCssBlock(cssBlock);
+                            model.addGlobalStyle(block);
+                        }
+                    } catch (IOException e) {
+                        logger.warn("Can't read css file: "+filename);
+                    }
+                }
+                else {
+                    logger.warn("css file: "+filename+" not found");
                 }
             }
         }
