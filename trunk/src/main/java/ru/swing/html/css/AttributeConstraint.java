@@ -14,13 +14,13 @@ public enum AttributeConstraint {
      */
     EQUALS,
     /**
-     * E[foo~="warning"]	Matches any E element whose "foo" attribute value is a list of space-separated values,
-     * one of which is exactly equal to "warning".
+     * E[lang|="en"]	Matches any E element whose "lang" attribute has a hyphen-separated list of values beginning
+     * (from the left) with "en".
      */
     STARTS_WITH,
     /**
-     * E[lang|="en"]	Matches any E element whose "lang" attribute has a hyphen-separated list of values beginning
-     * (from the left) with "en".
+     * E[foo~="warning"]	Matches any E element whose "foo" attribute value is a list of space-separated values,
+     * one of which is exactly equal to "warning".
      */
     HAS_VALUE
 

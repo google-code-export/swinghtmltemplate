@@ -709,11 +709,18 @@ Tag {{{<table/>}}} uses this layout.
 Tag attribute can be set separately of the tag by using {{{<style/>}}} within {{{<head/>}}}, as with ordinary
 css styles in html.
 
-Style is set in css format with limited capatibilities. Below are supported selectors:
+Style is set in css format. Almost all CSS2 selectors supported, examples:
+  * *
   * tag_name
-  * .class_name
+  * tag_name[attr='value']
+  * tag_name[attr=value]
+  * tag_name[attr|=value]
+  * tag_name[attr~=value]
+  * *[attr~=value]
+  * *.foo.red
+  * .class_name.class2
   * #identifier
-
+Pseudo-elements and pseudo-classes are not supported (as there is no need in them).
 Example:
 {{{
 <style>
