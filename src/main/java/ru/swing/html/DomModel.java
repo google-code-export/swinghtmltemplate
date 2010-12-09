@@ -88,6 +88,11 @@ public class DomModel {
         return components.toArray(new JComponent[components.size()]);
     }
 
+    /**
+     * Selects tags using selector
+     * @param selector selector string (comma separated selectors)
+     * @return matched tags
+     */
     public Tag[] query(String selector) {
         SelectorGroup s = new SelectorGroup(selector);
         List<Tag> tags = selectTags(getRootTag(), s);

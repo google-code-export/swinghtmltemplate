@@ -1,0 +1,12 @@
+.red {
+    color: red;
+}
+.top {
+    vertical-align: top;
+}
+#loginForm {
+    x-miglayout-column-constraints: [right]related[grow,fill];
+}
+body {
+    border: compound (empty 12 12 12 12) (compound (etched) (empty 12 12 12 12));
+}
