@@ -6,10 +6,19 @@ import ru.swing.html.tags.Tag;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 08.12.2010
- * Time: 22:44:19
+ * Описывает условие, налагаемое на аттрибуты тега в токене селектора.
+ * Содержит название атрибута, его значение (может быть null) и условие на совпадение.
+ * Например, для
+ * <pre>
+ * a[name='foo']
+ * </pre>
+ * значения полей:
+ * <ul>
+ *    <li>название - name</li>
+ *    <li>значение - foo</li>
+ *    <li>условие на совпадение - AttributeConstraint.EQUALS</li>
+ * </ul>
+ *
  */
 public class AttributeMatcher {
 
@@ -19,10 +28,17 @@ public class AttributeMatcher {
 
     public AttributeMatcher(String name, String value, AttributeConstraint constraint) {
         this.name = name;
+        //переданное значение разбиваем на подстроки по пробелу, для того, чтобы
+        //проверять совпадение на наличие
         values = extractValues(value);
         this.constraint = constraint;
     }
 
+    /**
+     * Разбивает строку на подстроки по пробелу.
+     * @param value строка
+     * @return список подстрок или пустой список, если строка - пустая или null
+     */
     private List<String> extractValues(String value) {
         List<String> values;
         if (StringUtils.isEmpty(value)) {

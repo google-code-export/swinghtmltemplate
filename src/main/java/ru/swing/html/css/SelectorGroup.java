@@ -5,8 +5,7 @@ import ru.swing.html.tags.Tag;
 import java.util.*;
 
 /**
- * Поддерживаемые типы селекторов:
- * p#id.class1.class2, p.class3, .class4, #id, 
+ * Группа селекторов, разделенных запятыми.
  */
 public class SelectorGroup {
 
