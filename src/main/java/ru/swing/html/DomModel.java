@@ -25,6 +25,7 @@ public class DomModel {
     private List<CssBlock> globalStyles = new ArrayList<CssBlock>();
     private Tag rootTag;
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
+    private String sourcePath;
 
     /**
      * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;html%gt;.
@@ -127,4 +128,19 @@ public class DomModel {
         return globalStyles;
     }
 
+    /**
+     * Возвращает путь до документа, из которого была загружена данная модель.
+     * @return путь до документа
+     */
+    public String getSourcePath() {
+        return sourcePath;
+    }
+
+    /**
+     * Устанавливает путь до документа, из которого была загружена данная модель.
+     * @param sourcePath путь до документа
+     */
+    public void setSourcePath(String sourcePath) {
+        this.sourcePath = sourcePath;
+    }
 }
