@@ -44,24 +44,18 @@ public class LoginForm extends JPanel{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        init();
     }
 
-    public void init() {
-        okBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                for (JComponent c : model.select(".button")) {
-                    c.setEnabled(false);
-                }
-                result.setText("Logging in user "+login.getText());
-            }
-        });
 
-        cancelBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                result.setText("Cancel clicked");
-            }
-        });
+    public void onCancelClick(JComponent component) {
+        result.setText("Cancel clicked");
+    }
+
+    public void onOkClick() {
+        for (JComponent c : model.select(".button")) {
+            c.setEnabled(false);
+        }
+        result.setText("Logging in user "+login.getText());
     }
 
 
