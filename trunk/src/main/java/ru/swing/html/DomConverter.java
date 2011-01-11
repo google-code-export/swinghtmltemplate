@@ -9,6 +9,7 @@ import ru.swing.html.css.StyleParser;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -85,9 +86,19 @@ public class DomConverter {
                     filename = filename.substring(1);
                 }
                 //if relative path - substitute path from dom model path
-                else {
-                    //todo convert relative to absolute
+                else if (StringUtils.isNotEmpty(model.getSourcePath())) {
+                    String parentPath = model.getSourcePath();
+                    int indexOfFilename = parentPath.lastIndexOf('/');
+                    if (indexOfFilename>=0) {
+                        parentPath = parentPath.substring(0, indexOfFilename);
+                    }
+                    if (parentPath.startsWith("/")) {
+                        parentPath = parentPath.substring(1);
+                    }
+
+                    filename = parentPath + "/" + filename;
                 }
+
                 InputStream in = DomConverter.class.getClassLoader().getResourceAsStream(filename);
                 if (in!=null) {
                     try {

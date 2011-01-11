@@ -65,6 +65,7 @@ public class Binder {
         InputStream htmlStream = component.getClass().getResourceAsStream(path);
         if (htmlStream!=null) {
             DomModel model = DomLoader.loadModel(htmlStream);
+            model.setSourcePath(path);
             return bind(component, useControllerAsRoot, model);
         }
         else {
