@@ -37,6 +37,9 @@ public class HtmlTagFactory implements TagFactory {
         else if ("input".equals(element.getName())) {
             return new Input();
         }
+        else if ("label".equals(element.getName())) {
+            return new Label();
+        }
         else if ("object".equals(element.getName())) {
             return new Object();
         }
