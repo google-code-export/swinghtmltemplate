@@ -1,5 +1,6 @@
 package ru.swing.html;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
@@ -7,10 +8,14 @@ import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -168,6 +173,52 @@ public class Binder {
                         logger.error("Can't set value for "+id+". Component type: "+component.getClass()+", field type: "+field.getType(), e);
                     }
                 }
+            }
+        }
+        attach(model, component);
+    }
+
+
+    public static void attach(DomModel model, final Object component) {
+        for (final Tag tag : model.query("*")) {
+            String onclick = tag.getAttribute("onclick");
+            if (StringUtils.isNotEmpty(onclick)) {
+
+                onclick = onclick.replaceAll("\\(\\);?", "");
+                Method[] methods = component.getClass().getDeclaredMethods();
+                for (final Method m : methods) {
+                    if (m.getName().equals(onclick)) {
+
+                        Class[] types = m.getParameterTypes();
+                        final Object val;
+                        if (types!=null && types.length==1 && types[0]==JComponent.class) {
+                            val = tag.getComponent();
+                        }
+                        else {
+                            val = null;
+                        }
+
+                        tag.getComponent().addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                try {
+                                    if (val==null) {
+                                        m.invoke(component);
+                                    }
+                                    else {
+                                        m.invoke(component, val);
+                                    }
+                                } catch (IllegalAccessException e1) {
+                                    logger.error("Failed to execute method '"+m+"' as mouse handler for tag "+tag, e1);
+                                } catch (InvocationTargetException e1) {
+                                    logger.error("Failed to execute method '"+m+"' as mouse handler for tag "+tag, e1);
+                                }
+                            }
+                        });
+
+                    }
+                }
+
             }
         }
     }
