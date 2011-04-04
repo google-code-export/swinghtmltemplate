@@ -172,52 +172,8 @@ public class Binder {
                 }
             }
         }
-        attach(model, component);
     }
 
 
-    public static void attach(DomModel model, final Object component) {
-        for (final Tag tag : model.query("*")) {
-            String onclick = tag.getAttribute("onclick");
-            if (StringUtils.isNotEmpty(onclick)) {
-
-                onclick = onclick.replaceAll("\\(\\);?", "");
-                Method[] methods = component.getClass().getDeclaredMethods();
-                for (final Method m : methods) {
-                    if (m.getName().equals(onclick)) {
-
-                        Class[] types = m.getParameterTypes();
-                        final Object val;
-                        if (types!=null && types.length==1 && types[0]==JComponent.class) {
-                            val = tag.getComponent();
-                        }
-                        else {
-                            val = null;
-                        }
-
-                        tag.getComponent().addMouseListener(new MouseAdapter() {
-                            @Override
-                            public void mouseClicked(MouseEvent e) {
-                                try {
-                                    if (val==null) {
-                                        m.invoke(component);
-                                    }
-                                    else {
-                                        m.invoke(component, val);
-                                    }
-                                } catch (IllegalAccessException e1) {
-                                    logger.error("Failed to execute method '"+m+"' as mouse handler for tag "+tag, e1);
-                                } catch (InvocationTargetException e1) {
-                                    logger.error("Failed to execute method '"+m+"' as mouse handler for tag "+tag, e1);
-                                }
-                            }
-                        });
-
-                    }
-                }
-
-            }
-        }
-    }
 
 }
