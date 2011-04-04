@@ -515,4 +515,10 @@ public class Tag {
     public void setModel(DomModel model) {
         this.model = model;
     }
+
+    /**
+     * This method is called in DomConverter after all tags are parsed and converted to components.
+     */
+    public void afterComponentsConverted() {
+    }
 }

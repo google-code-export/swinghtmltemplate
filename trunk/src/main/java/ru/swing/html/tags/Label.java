@@ -35,6 +35,19 @@ public class Label extends Tag {
     public void handleLayout() {
     }
 
-
-
+    @Override
+    public void afterComponentsConverted() {
+        super.afterComponentsConverted();
+        String targetId = getAttribute("for");
+        if (StringUtils.isNotEmpty(targetId)) {
+            Tag targetTag = getModel().getTagById(targetId);
+            if (targetTag!=null && targetTag.getComponent()!=null) {
+                JLabel label = (JLabel) getComponent();
+                label.setLabelFor(targetTag.getComponent());
+            }
+            else {
+                logger.warn("Can't find target with id '"+targetId+"' for label");
+            }
+        }
+    }
 }

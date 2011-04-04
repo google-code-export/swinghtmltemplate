@@ -47,7 +47,7 @@ public class LoginForm extends JPanel{
     }
 
 
-    public void onCancelClick(JComponent component) {
+    public void onCancelClick(ActionEvent e) {
         result.setText("Cancel clicked");
     }
 
