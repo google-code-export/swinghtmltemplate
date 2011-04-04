@@ -705,6 +705,45 @@ Examples:
 
 Tag {{{<table/>}}} uses this layout.
 
+
+
+= Events =
+Different event listeners can be attached to components. Supported event types are:
+ * `onclick` - it can be assigned to `javax.swing.AbstractButton` descendants. An corresponding method in controller is invoked on click.
+
+
+== onclick ==
+Make sure an controller is binded to a model.
+A method, whose name is equal to `onclick` value, is searched in controller. You can make 2 type of methods:
+ * no-params (is searched first)
+ * 1-param (java.awt.ActionEvent) (is searched if there's no no-param method)
+{{{
+<html>
+   <head></head>
+   <body>
+      <input type='button' onclick='foo' text='Click me!'/>
+   </body>
+</html>
+}}}
+{{{
+public class Foo {
+   public Foo() {
+      try {
+          model = Binder.bind(this, true);
+      } catch (JDOMException e) {
+          e.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+   }
+
+   public void foo() {
+      System.out.println("Foo is clicked");
+   }
+}
+}}}
+
+
 = Styles =
 Tag attribute can be set separately of the tag by using {{{<style/>}}} within {{{<head/>}}}, as with ordinary
 css styles in html.
