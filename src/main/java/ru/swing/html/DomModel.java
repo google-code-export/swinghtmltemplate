@@ -24,6 +24,7 @@ public class DomModel {
     private Log logger = LogFactory.getLog(getClass());
     private List<CssBlock> globalStyles = new ArrayList<CssBlock>();
     private Tag rootTag;
+    private Object controller;
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
     private String sourcePath;
 
@@ -142,5 +143,21 @@ public class DomModel {
      */
     public void setSourcePath(String sourcePath) {
         this.sourcePath = sourcePath;
+    }
+
+    /**
+     * Returns controller this model is binded to.
+     * @return controller
+     */
+    public Object getController() {
+        return controller;
+    }
+
+    /**
+     * Sets controller this model is binded to.
+     * @return controller
+     */
+    public void setController(Object controller) {
+        this.controller = controller;
     }
 }

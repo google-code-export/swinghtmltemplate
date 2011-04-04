@@ -94,10 +94,6 @@ public class Binder {
      */
     public static DomModel bind(Object component, boolean useControllerAsRoot, DomModel model) throws JDOMException, IOException {
         Map<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
-        if (useControllerAsRoot && component instanceof JComponent) {
-            SelectorGroup selector = new SelectorGroup("body");
-            substitutions.put(selector, (JComponent) component);
-        }
         model = bind(component, useControllerAsRoot, model, substitutions);
         return model;
     }
@@ -130,6 +126,7 @@ public class Binder {
             SelectorGroup selector = new SelectorGroup("body");
             substitutions.put(selector, (JComponent) component);
         }
+        model.setController(component);
         //convert dom-model to swing components
         DomConverter.toSwing(model, substitutions);
         //tie model
