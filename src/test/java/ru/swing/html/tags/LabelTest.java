@@ -1,10 +1,14 @@
 package ru.swing.html.tags;
 
 import junit.framework.TestCase;
+import org.jdom.JDOMException;
 import ru.swing.html.DomConverter;
+import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
 
 import javax.swing.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * <pre>
@@ -29,6 +33,24 @@ public class LabelTest extends TestCase {
         JLabel l = (JLabel) jComponent;
         assertEquals("foo", l.getText());
 
+
+    }
+
+    public void testForAttr() throws Exception {
+        String html =
+                "<html>\n" +
+                "<head></head>\n" +
+                "<body>\n" +
+                "   <label id='lbl' for='btn'>Label</label>" +
+                "   <input id='btn' type='button' onclick='foo'/>" +
+                "</body>\n" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+
+        JButton btn = (JButton) model.getTagById("btn").getComponent();
+        JLabel lbl = (JLabel) model.getTagById("lbl").getComponent();
+        assertEquals(btn, lbl.getLabelFor());
 
     }
 

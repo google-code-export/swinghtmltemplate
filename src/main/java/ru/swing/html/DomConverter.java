@@ -52,6 +52,9 @@ public class DomConverter {
 
         Tag body = html.getChildByName("body");
         JComponent b = convertComponent(body, substitutions);
+        for (Tag tag : model.query("*")) {
+            tag.afterComponentsConverted();
+        }
         return b;
     }
 
