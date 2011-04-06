@@ -8,8 +8,12 @@ import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
+import ru.swing.html.tags.event.ClickDelegator;
+import ru.swing.html.tags.event.DocumentDelegator;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.font.TextAttribute;
@@ -59,7 +63,8 @@ public class Tag {
     public static final String BORDER_ATTRIBUTE = "border";
     public static final String ALIGN_ATTRIBUTE = "align";
     public static final String TYPE_ATTRIBUTE = "type";
-    private ClickDelegator clickActionListener;
+    private ClickDelegator clickDelegator;
+    private DocumentDelegator documentDelegator;
 
     /**
      * Возвращает первый дочерний тег с указанным именем.
@@ -460,18 +465,45 @@ public class Tag {
                 if (method!=null) {
                     //добавляем слушатель, который вызывает метод
                     AbstractButton b = (AbstractButton) component;
-                    if (clickActionListener!=null) {
-                        b.removeActionListener(clickActionListener);
+                    if (clickDelegator !=null) {
+                        b.removeActionListener(clickDelegator);
                     }
-                    clickActionListener = new ClickDelegator(method, controller);
-                    b.addActionListener(clickActionListener);
+                    clickDelegator = new ClickDelegator(controller, method);
+                    b.addActionListener(clickDelegator);
                 }
                 else {
-                    logger.warn("Can't find method " +onclickMethod);
+                    logger.warn("Can't find method " +onclickMethod+" in class "+controller.getClass().getName());
                 }
             }
+        }
 
 
+        //если задан атрибут щтсрфтпу и компонент - это текстовое поле (то есть у нее есть документ),
+        //то значение атрибута - название метода в контроллере, который необходимо
+        //вызвать при изменении документа
+        final String onchangeMethod = getAttribute("onchange");
+        if (StringUtils.isNotEmpty(onchangeMethod) && (component instanceof JTextComponent)) {
+
+            final Object controller = model.getController();
+            if (controller!=null) {
+
+                //находим требуемый метод
+                Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, DocumentEvent.class);
+
+                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                if (method!=null) {
+                    //добавляем слушатель, который вызывает метод
+                    JTextComponent b = (JTextComponent) component;
+                    if (documentDelegator!=null) {
+                        b.getDocument().removeDocumentListener(documentDelegator);
+                    }
+                    documentDelegator = new DocumentDelegator(controller, method);
+                    b.getDocument().addDocumentListener(documentDelegator);
+                }
+                else {
+                    logger.warn("Can't find method " +onchangeMethod+" in class "+controller.getClass().getName());
+                }
+            }
         }
 
 

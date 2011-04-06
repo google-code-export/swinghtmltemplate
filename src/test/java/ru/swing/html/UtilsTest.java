@@ -98,4 +98,30 @@ public class UtilsTest extends TestCase {
         assertEquals(new Rectangle(1, 2, 3, 4), Utils.convertStringToObject("1 2 3 4", Rectangle.class));
 
     }
+
+
+    public void testFindActionMethod() throws Exception {
+        assertNotNull(Utils.findActionMethod(Foo.class, "foo", null));
+        assertNotNull(Utils.findActionMethod(Foo1.class, "foo", Integer.class));
+        assertNull(Utils.findActionMethod(Foo1.class, "foo1", Integer.class));
+    }
+
+    /**
+     * Test class for testing Utils.findActionMethod().
+     */
+    public class Foo {
+
+        public void foo() {}
+
+    }
+
+    /**
+     * Test class for testing Utils.findActionMethod().
+     */
+    public class Foo1 {
+
+        public void foo(Integer i) {}
+
+    }
+
 }

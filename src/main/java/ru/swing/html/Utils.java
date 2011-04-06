@@ -265,7 +265,7 @@ public class Utils {
         } catch (NoSuchMethodException e1) {
             //2. ищем метод, который принимает параметром объект ActionEvent
             try {
-                method = controllerClass.getDeclaredMethod(name, ActionEvent.class);
+                method = controllerClass.getDeclaredMethod(name, param);
             } catch (NoSuchMethodException e) {
                 method = null;
             }

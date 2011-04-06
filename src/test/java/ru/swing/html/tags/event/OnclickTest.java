@@ -1,4 +1,4 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.event;
 
 import junit.framework.TestCase;
 import ru.swing.html.Binder;
@@ -65,7 +65,7 @@ public class OnclickTest  extends TestCase {
     }
 
 
-    class TestClick {
+    public class TestClick {
         public int count = 0;
 
         public void foo() {
@@ -75,7 +75,7 @@ public class OnclickTest  extends TestCase {
     }
 
 
-    class TestClick2 {
+    public class TestClick2 {
 
         public String text = "none";
 
