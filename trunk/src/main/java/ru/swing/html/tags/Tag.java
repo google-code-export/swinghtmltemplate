@@ -12,7 +12,6 @@ import ru.swing.html.layout.LayoutManagerSupportFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.lang.*;
 import java.lang.Object;
@@ -60,6 +59,7 @@ public class Tag {
     public static final String BORDER_ATTRIBUTE = "border";
     public static final String ALIGN_ATTRIBUTE = "align";
     public static final String TYPE_ATTRIBUTE = "type";
+    private ClickDelegator clickActionListener;
 
     /**
      * Возвращает первый дочерний тег с указанным именем.
@@ -453,52 +453,22 @@ public class Tag {
             final Object controller = model.getController();
             if (controller!=null) {
 
-                Class controllerClass = controller.getClass();
-                Object[] params = null;
                 //находим требуемый метод
-                Method method;
-                try {
-                    //1. ищем метод без параметров
-                    method = controllerClass.getDeclaredMethod(onclickMethod);
-
-                } catch (NoSuchMethodException e1) {
-                    //2. ищем метод, который принимает параметром объект ActionEvent
-                    try {
-                        method = controllerClass.getDeclaredMethod(onclickMethod, ActionEvent.class);
-                        params = new Object[1];
-                    } catch (NoSuchMethodException e) {
-                        method = null;
-                        logger.warn("Can't find method " +onclickMethod);
-                    }
-                }
+                Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
 
                 //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
                 if (method!=null) {
-                    final Method finalM = method;
-                    final Object[] finalP = params;
                     //добавляем слушатель, который вызывает метод
                     AbstractButton b = (AbstractButton) component;
-                    b.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            try {
-                                if (finalP==null) {
-                                    finalM.invoke(controller);
-                                }
-                                else {
-                                    finalP[0] = e;
-                                    finalM.invoke(controller, finalP);
-                                }
-                            } catch (IllegalAccessException e1) {
-                                logger.warn("Can't invoke method " + onclickMethod, e1);
-                            } catch (InvocationTargetException e1) {
-                                logger.warn("Can't invoke method " + onclickMethod, e1);
-                            }
-                        }
-                    });
+                    if (clickActionListener!=null) {
+                        b.removeActionListener(clickActionListener);
+                    }
+                    clickActionListener = new ClickDelegator(method, controller);
+                    b.addActionListener(clickActionListener);
                 }
-
-
-
+                else {
+                    logger.warn("Can't find method " +onclickMethod);
+                }
             }
 
 
@@ -521,4 +491,5 @@ public class Tag {
      */
     public void afterComponentsConverted() {
     }
+
 }

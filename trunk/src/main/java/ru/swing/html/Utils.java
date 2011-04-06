@@ -5,7 +5,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -243,6 +245,32 @@ public class Utils {
         } else {
             return "";
         }
+    }
+
+    /**
+     * Ищет метод в классе контроллера с указанным именем. Сначала ищется
+     * метод без параметров, если такой не найден, ищется метод с параметром указанного типа.
+     * @param controllerClass класс контроллера, в котором ищется метод
+     * @param name название метода
+     * @param param тип параметра
+     * @return найденный метод или null, если метод не найден
+     */
+    public static Method findActionMethod(Class controllerClass, String name, Class param) {
+        //находим требуемый метод
+        Method method;
+        try {
+            //1. ищем метод без параметров
+            method = controllerClass.getDeclaredMethod(name);
+
+        } catch (NoSuchMethodException e1) {
+            //2. ищем метод, который принимает параметром объект ActionEvent
+            try {
+                method = controllerClass.getDeclaredMethod(name, ActionEvent.class);
+            } catch (NoSuchMethodException e) {
+                method = null;
+            }
+        }
+        return method;
     }
 
 }
