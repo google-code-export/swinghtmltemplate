@@ -780,14 +780,14 @@ Tag attribute can be set separately of the tag by using {{{<style/>}}} within {{
 css styles in html.
 
 Style is set in css format. Almost all CSS2 selectors supported, examples:
-  * *
+  * `*`
   * tag_name
   * tag_name[attr='value']
   * tag_name[attr=value]
   * tag_name[attr|=value]
   * tag_name[attr~=value]
   * *[attr~=value]
-  * *.foo.red
+  * `*.foo.red`
   * .class_name.class2
   * #identifier
 Pseudo-elements and pseudo-classes are not supported (as there is no need in them).
