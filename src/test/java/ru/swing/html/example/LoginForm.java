@@ -4,6 +4,7 @@ import org.jdom.JDOMException;
 import ru.swing.html.Bind;
 import ru.swing.html.Binder;
 import ru.swing.html.DomModel;
+import ru.swing.html.ModelElement;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -36,6 +37,9 @@ public class LoginForm extends JPanel{
 
     private DomModel model;
 
+    @ModelElement("account")
+    private Account account = new Account();
+
     public LoginForm() {
         try {
             model = Binder.bind(this, true);
@@ -55,7 +59,7 @@ public class LoginForm extends JPanel{
         for (JComponent c : model.select(".button")) {
             c.setEnabled(false);
         }
-        result.setText("Logging in user "+login.getText());
+        result.setText("Logging in user "+account.getName());
     }
 
 

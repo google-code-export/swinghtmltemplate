@@ -3,6 +3,7 @@ package ru.swing.html;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdesktop.beansbinding.*;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
@@ -26,6 +27,7 @@ public class DomModel {
     private Tag rootTag;
     private Object controller;
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
+    private Map<String, Object> model = new HashMap<String, Object>();
     private String sourcePath;
 
     /**
@@ -155,9 +157,25 @@ public class DomModel {
 
     /**
      * Sets controller this model is binded to.
-     * @return controller
+     * @param controller
      */
     public void setController(Object controller) {
         this.controller = controller;
+    }
+
+    /**
+     * Adds element to the model at the specified name.
+     * @param name name of the element
+     * @param element the element
+     */
+    public void addModelElement(String name, Object element) {
+        model.put(name, element);
+    }
+
+    public void bind(String elPath, JComponent component, BeanProperty componentProperty) {
+        ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
+        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE,
+                model, beanProperty, component, componentProperty);
+        binding.bind();
     }
 }
