@@ -127,12 +127,42 @@ public class Binder {
             substitutions.put(selector, (JComponent) component);
         }
         model.setController(component);
+        //extract model elements and put them to dom model
+        Map<String, Object> modelElements = extractModelElements(component);
+        for (String name : modelElements.keySet()) {
+            model.addModelElement(name, modelElements.get(name));
+        }
         //convert dom-model to swing components
         DomConverter.toSwing(model, substitutions);
         //tie model
         bind(model, component);
         return model;
     }
+
+
+    public static Map<String, Object> extractModelElements(Object controler) {
+        Map<String, Object> res = new HashMap<String, Object>();
+        //получаем поля класса
+        Field[] fields = controler.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            //if field is annotated with @Bind
+            Annotation a = field.getAnnotation(ModelElement.class);
+            if (a!=null) {
+                //get annotation value
+                String id = ((ModelElement)a).value();
+                Object fieldValue;
+                try {
+                    field.setAccessible(true);
+                    fieldValue = field.get(controler);
+                    res.put(id, fieldValue);
+                } catch (IllegalAccessException e) {
+                    logger.warn("Can't read value of the field "+field.getName());
+                }
+            }
+        }
+        return res;
+    }
+
 
 
     /**

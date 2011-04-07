@@ -3,6 +3,7 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdesktop.beansbinding.BeanProperty;
 import ru.swing.html.DomModel;
 
 import javax.swing.*;
@@ -53,5 +54,23 @@ public class Input extends Tag {
             JTextComponent c = (JTextComponent) getComponent();
             c.setText(getContent());
         }
+
+        //perform binding
+        if (StringUtils.isNotEmpty(getAttribute("value"))) {
+            String el = getAttribute("value");
+            BeanProperty componentProperty;
+            String type = getType();
+
+            if ("text".equals(type) || StringUtils.isEmpty(type)) {
+                componentProperty = BeanProperty.create("text");
+            }
+            else {
+                componentProperty = BeanProperty.create("text");
+            }
+
+            getModel().bind(el, getComponent(), componentProperty);
+        }
+
+
     }
 }
