@@ -10,6 +10,36 @@ Templates are stored in external file with ".html" extension, they are loaded in
 swing-components. You can assign these components to some class fields using {{{@Bind}}} annotaion during
 conversion process.
 
+= Installation =
+Add the following too your pom.xml:
+{{{
+    <dependencies>
+        <dependency>
+            <groupId>com.googlecode.swinghtmltemplate</groupId>
+            <artifactId>swinghtmltemplate</artifactId>
+            <version>0.2</version>
+        </dependency>
+    </dependencies>
+
+
+    <repositories>
+        <repository>
+            <id>swinghtmltemplate</id>
+            <name>Swing html template repo</name>
+            <url>http://swinghtmltemplate.googlecode.com/svn/maven-repository</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+}}}
+
+
 = How does this work =
 
 Loading of html-document is handled by [http://www.jdom.org/ jdom] library, so html must be valid xml.
