@@ -215,11 +215,11 @@ Account object will be added as model element under the `account` key.
 Components values can be synced with model elements (if they support this).
 These components support binding:
 
-  * <input type='text'/>
-  * <input type='password'/>
-  * <input type='checkbox'/>
-  * <spinner/>
-  * <textarea/>
+  * `<input type='text'/>`
+  * `<input type='password'/>`
+  * `<input type='checkbox'/>`
+  * `<spinner/>`
+  * `<textarea/>`
 You can bind component to model element using `value` attribute. Specify EL expression for the needed property:
 {{{
 <html>
