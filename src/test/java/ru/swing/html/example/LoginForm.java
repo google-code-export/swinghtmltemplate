@@ -9,6 +9,8 @@ import ru.swing.html.ModelElement;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 
 /**
@@ -19,6 +21,8 @@ import java.io.IOException;
  * </pre>
  */
 public class LoginForm extends JPanel{
+
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     @Bind("login")
     private JTextField login;
@@ -61,6 +65,16 @@ public class LoginForm extends JPanel{
         }
         result.setText("Logging in user "+account.getName());
     }
+
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
 
 
     public static void main(String[] args) throws JDOMException, IOException {

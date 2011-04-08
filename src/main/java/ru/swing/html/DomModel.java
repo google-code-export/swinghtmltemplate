@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableMap;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
@@ -27,7 +29,7 @@ public class DomModel {
     private Tag rootTag;
     private Object controller;
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
-    private Map<String, Object> model = new HashMap<String, Object>();
+    private Map<String, Object> model = ObservableCollections.observableMap(new HashMap<String, Object>());
     private String sourcePath;
 
     /**
