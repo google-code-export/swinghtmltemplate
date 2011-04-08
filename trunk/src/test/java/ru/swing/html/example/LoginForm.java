@@ -22,19 +22,6 @@ import java.io.IOException;
  */
 public class LoginForm extends JPanel{
 
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-    @Bind("login")
-    private JTextField login;
-
-    @Bind("password")
-    private JPasswordField password;
-
-    @Bind("ok")
-    private JButton okBtn;
-
-    @Bind("cancel")
-    private JButton cancelBtn;
 
     @Bind("result")
     private JLabel result;
@@ -80,6 +67,7 @@ public class LoginForm extends JPanel{
     public static void main(String[] args) throws JDOMException, IOException {
 
         LoginForm loginForm = new LoginForm();
+        loginForm.getAccount().setName("John Doe");
 
         JFrame f = new JFrame("Test");
         f.setSize(400, 200);

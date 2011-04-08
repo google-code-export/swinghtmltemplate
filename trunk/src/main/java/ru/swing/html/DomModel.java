@@ -175,6 +175,20 @@ public class DomModel {
     }
 
     /**
+     * Вызывает #bind() с типом синхронизации AutoBinding.UpdateStrategy.READ_WRITE
+     * @param elPath описывает свойство элемента модели, которое следует синхронизировать.
+     * @param component компонент, с которым следует выполнять синхронизацию.
+     * @param componentProperty свойства компонента, которое требуется синхронизировать.
+     * @see #bind(String, javax.swing.JComponent, org.jdesktop.beansbinding.BeanProperty, org.jdesktop.beansbinding.AutoBinding.UpdateStrategy)
+     */
+    public void bind(String elPath, JComponent component, BeanProperty componentProperty) {
+        ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
+        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE,
+                model, beanProperty, component, componentProperty);
+        binding.bind();
+    }
+
+    /**
      * <p>
      * Синхронизирует элемент модели с компонентом. Элемент должен быть предварительно помещен в модель с помощью
      * метода #addModelElement.
@@ -189,11 +203,11 @@ public class DomModel {
      * @param elPath описывает свойство элемента модели, которое следует синхронизировать.
      * @param component компонент, с которым следует выполнять синхронизацию.
      * @param componentProperty свойства компонента, которое требуется синхронизировать.
+     * @param type тип синхронизации
      */
-    public void bind(String elPath, JComponent component, BeanProperty componentProperty) {
+    public void bind(String elPath, JComponent component, BeanProperty componentProperty, AutoBinding.UpdateStrategy type) {
         ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE,
-                model, beanProperty, component, componentProperty);
+        Binding binding = Bindings.createAutoBinding(type, model, beanProperty, component, componentProperty);
         binding.bind();
     }
 }

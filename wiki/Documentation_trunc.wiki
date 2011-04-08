@@ -229,6 +229,9 @@ You can bind component to model element using `value` attribute. Specify EL expr
 </html>
 }}}
 
+Binding is done with [http://kenai.com/projects/betterbeansbinding/pages/Home betterbeansbinding].
+
+
 == Selecting component with selectors ==
 You can select components from dom-model using selector:
 {{{
