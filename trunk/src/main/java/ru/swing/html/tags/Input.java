@@ -17,7 +17,7 @@ import javax.swing.text.JTextComponent;
  */
 public class Input extends Tag {
 
-    private Log logger = LogFactory.getLog(Tag.class);
+    private Log logger = LogFactory.getLog(getClass());
     @Override
     public JComponent createComponent() {
         String type = getType();
@@ -61,8 +61,11 @@ public class Input extends Tag {
             BeanProperty componentProperty;
             String type = getType();
 
-            if ("text".equals(type) || StringUtils.isEmpty(type)) {
+            if ("text".equals(type) || "password".equals(type) || StringUtils.isEmpty(type)) {
                 componentProperty = BeanProperty.create("text");
+            }
+            else if ("checkbox".equals(type)) {
+                componentProperty = BeanProperty.create("selected");
             }
             else {
                 componentProperty = BeanProperty.create("text");

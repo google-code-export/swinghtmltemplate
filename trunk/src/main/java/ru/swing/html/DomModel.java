@@ -172,6 +172,22 @@ public class DomModel {
         model.put(name, element);
     }
 
+    /**
+     * <p>
+     * Синхронизирует элемент модели с компонентом. Элемент должен быть предварительно помещен в модель с помощью
+     * метода #addModelElement.
+     * </p>
+     * <p>
+     *     elPath задается в формате EL, например, ${foo.name}, где
+     *     <ul>
+     *         <li>foo - имя элемента модели</li>
+     *         <li>name - свойства объекта foo, подлежащее синхронизации</li>
+     *     </ul>
+     * </p>
+     * @param elPath описывает свойство элемента модели, которое следует синхронизировать.
+     * @param component компонент, с которым следует выполнять синхронизацию.
+     * @param componentProperty свойства компонента, которое требуется синхронизировать.
+     */
     public void bind(String elPath, JComponent component, BeanProperty componentProperty) {
         ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
         Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE,
