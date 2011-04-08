@@ -4,6 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
+import org.jdesktop.el.ELContext;
+import org.jdesktop.el.ValueExpression;
+import org.jdesktop.el.impl.ExpressionFactoryImpl;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableMap;
 import ru.swing.html.css.CssBlock;
@@ -31,6 +34,7 @@ public class DomModel {
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
     private Map<String, Object> model = ObservableCollections.observableMap(new HashMap<String, Object>());
     private String sourcePath;
+    private Map<String, Map<String, Binding>> bindingsByModelElementName = new HashMap<String, Map<String, Binding>>();
 
     /**
      * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;html%gt;.
@@ -182,10 +186,7 @@ public class DomModel {
      * @see #bind(String, javax.swing.JComponent, org.jdesktop.beansbinding.BeanProperty, org.jdesktop.beansbinding.AutoBinding.UpdateStrategy)
      */
     public void bind(String elPath, JComponent component, BeanProperty componentProperty) {
-        ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
-        Binding binding = Bindings.createAutoBinding(AutoBinding.UpdateStrategy.READ_WRITE,
-                model, beanProperty, component, componentProperty);
-        binding.bind();
+        bind(elPath, component, componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);
     }
 
     /**
@@ -206,8 +207,50 @@ public class DomModel {
      * @param type тип синхронизации
      */
     public void bind(String elPath, JComponent component, BeanProperty componentProperty, AutoBinding.UpdateStrategy type) {
+        //extract model element name from elPath
+        //elPath looks like ${foo.name}, where 'foo' is model element name
+        String key = null;
+        if (StringUtils.isNotEmpty(elPath) && elPath.startsWith("\\${")) {
+            int closingPos = elPath.indexOf("}", 2);
+            String el = elPath.substring(2, closingPos);
+            int dotIndex = el.indexOf('.');
+            if (dotIndex<0) {
+                dotIndex = el.length();
+            }
+            key = el.substring(0, dotIndex);
+            if (bindingsByModelElementName.get(key)!=null) {
+                Map<String, Binding> map = bindingsByModelElementName.get(key);
+                if (map.get(elPath)!=null) {
+                    map.get(elPath).unbind();
+                    logger.debug("Unbinded model element: "+map.get(elPath).toString());
+                }
+            }
+
+        }
+
         ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
         Binding binding = Bindings.createAutoBinding(type, model, beanProperty, component, componentProperty);
         binding.bind();
+        logger.debug("Binded "+elPath);
+
+        if (key!=null) {
+            Map<String, Binding> bindings = bindingsByModelElementName.get(key);
+            if (bindings==null) {
+                bindings = new HashMap<String, Binding>();
+                bindingsByModelElementName.put(key, bindings);
+            }
+            bindings.put(elPath, binding);
+        }
+    }
+
+
+    public void unbindModelElement(String key) {
+        if (bindingsByModelElementName.containsKey(key)) {
+            Map<String, Binding> bindings = bindingsByModelElementName.get(key);
+            for (Binding b : bindings.values()) {
+                b.unbind();
+                logger.debug("Unbinded model element: "+b.toString());
+            }
+        }
     }
 }
