@@ -155,6 +155,7 @@ public class Binder {
                     field.setAccessible(true);
                     fieldValue = field.get(controler);
                     res.put(id, fieldValue);
+                    logger.trace("Found model element from controller's annotated property: "+id);
                 } catch (IllegalAccessException e) {
                     logger.warn("Can't read value of the field "+field.getName());
                 }

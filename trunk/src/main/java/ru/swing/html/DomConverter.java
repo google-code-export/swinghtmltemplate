@@ -45,6 +45,7 @@ public class DomConverter {
      */
     public static JComponent toSwing(DomModel model, Map<SelectorGroup, JComponent> substitutions) {
 
+        logger.trace("Converting dom model to swing components");
         Tag html = model.getRootTag();
         Tag head = html.getChildByName("head");
         parseHead(model, head);

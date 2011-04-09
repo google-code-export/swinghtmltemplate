@@ -60,6 +60,8 @@ public class LoginForm extends JPanel{
 
     public void setAccount(Account account) {
         this.account = account;
+        model.addModelElement("account", account);
+        model.rebindModelElement("account");
     }
 
 
@@ -67,7 +69,9 @@ public class LoginForm extends JPanel{
     public static void main(String[] args) throws JDOMException, IOException {
 
         LoginForm loginForm = new LoginForm();
-        loginForm.getAccount().setName("John Doe");
+        Account acc = new Account();
+        acc.setName("John Doe");
+        loginForm.setAccount(acc);
 
         JFrame f = new JFrame("Test");
         f.setSize(400, 200);
