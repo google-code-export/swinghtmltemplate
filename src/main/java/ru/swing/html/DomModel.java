@@ -210,7 +210,7 @@ public class DomModel {
         //extract model element name from elPath
         //elPath looks like ${foo.name}, where 'foo' is model element name
         String key = null;
-        if (StringUtils.isNotEmpty(elPath) && elPath.startsWith("\\${")) {
+        if (StringUtils.isNotEmpty(elPath) && elPath.startsWith("${")) {
             int closingPos = elPath.indexOf("}", 2);
             String el = elPath.substring(2, closingPos);
             int dotIndex = el.indexOf('.');
@@ -244,12 +244,18 @@ public class DomModel {
     }
 
 
-    public void unbindModelElement(String key) {
+    public void rebindModelElement(String key) {
+        logger.trace("Rebinding all bindings of '"+key+"' model element.");
         if (bindingsByModelElementName.containsKey(key)) {
             Map<String, Binding> bindings = bindingsByModelElementName.get(key);
-            for (Binding b : bindings.values()) {
+            bindingsByModelElementName.remove(key);
+            //unbind old bindings and bean new ones
+            for (String elPath : bindings.keySet()) {
+                Binding b = bindings.get(elPath);
                 b.unbind();
-                logger.debug("Unbinded model element: "+b.toString());
+                logger.debug("Unbinded binding: " + elPath);
+
+                bind(elPath, (JComponent) b.getTargetObject(), (BeanProperty) b.getTargetProperty());
             }
         }
     }
