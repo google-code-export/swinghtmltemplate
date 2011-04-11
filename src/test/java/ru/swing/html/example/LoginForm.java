@@ -59,9 +59,9 @@ public class LoginForm extends JPanel{
     }
 
     public void setAccount(Account account) {
+        Object old = this.account;
         this.account = account;
-        model.addModelElement("account", account);
-        model.rebindModelElement("account");
+        firePropertyChange("account", old, account);
     }
 
 
