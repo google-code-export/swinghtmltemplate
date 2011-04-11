@@ -4,16 +4,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
-import org.jdesktop.el.ELContext;
-import org.jdesktop.el.ValueExpression;
-import org.jdesktop.el.impl.ExpressionFactoryImpl;
 import org.jdesktop.observablecollections.ObservableCollections;
-import org.jdesktop.observablecollections.ObservableMap;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +33,20 @@ public class DomModel {
     private Map<String, Object> model = ObservableCollections.observableMap(new HashMap<String, Object>());
     private String sourcePath;
     private Map<String, Map<String, Binding>> bindingsByModelElementName = new HashMap<String, Map<String, Binding>>();
+
+    private PropertyChangeListener controllerPCL = new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+            String key = evt.getPropertyName();
+            if (model.containsKey(key)) {
+                replaceModelElement(key, evt.getNewValue());
+            }
+        }
+    };
+
+    private void replaceModelElement(String key, Object newValue) {
+        model.put(key, newValue);
+        rebindModelElement(key);
+    }
 
     /**
      * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;html%gt;.
@@ -166,7 +178,17 @@ public class DomModel {
      * @param controller
      */
     public void setController(Object controller) {
+        if (this.controller!=null) {
+            if (BeanUtils.supportsBoundProperties(controller.getClass())) {
+                BeanUtils.removePropertyChangeListener(controller, controllerPCL);
+                logger.trace("Removed property change listener from controller "+controller.getClass());
+            }
+        }
         this.controller = controller;
+        if (BeanUtils.supportsBoundProperties(controller.getClass())) {
+            BeanUtils.addPropertyChangeListener(controller, controllerPCL);
+            logger.trace("Added property change listener to controller "+controller.getClass());
+        }
     }
 
     /**
