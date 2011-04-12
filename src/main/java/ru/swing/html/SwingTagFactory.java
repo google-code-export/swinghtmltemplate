@@ -34,6 +34,12 @@ public class SwingTagFactory implements TagFactory {
         else if ("spinner".equals(element.getName())) {
             return new Spinner();
         }
+        else if ("dataTable".equals(element.getName())) {
+            return new DataTable();
+        }
+        else if ("column".equals(element.getName())) {
+            return new Column();
+        }
         else {
             logger.warn("Unknown tag: "+element.getNamespacePrefix()+":"+element.getName());
             return null;
