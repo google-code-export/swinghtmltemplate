@@ -1,0 +1,26 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <link type="text/css" rel="stylesheet" href="loginform.css"/>
+</head>
+<body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
+
+<c:scroll>
+    <c:dataTable value="${model.items}">
+        <c:column value="${name}" title="Name"/>
+        <c:column value="I'm ${age} years old" title="Age text" />
+        <c:column value="${age}" title="Age" type='java.lang.Integer' readonly="false"/>
+        <c:column value="${active}" title="Active" type='java.lang.Boolean' readonly="false"/>
+        <c:column value="${color}" title="Color" renderer='ru.swing.html.example.utils.ColorTableCellRenderer'/>
+    </c:dataTable>
+</c:scroll>
+
+<div align="bottom" style="display:box;x-box-orientation:horizontal;">
+    <input type="button" onclick="onClick" text="Add"/>
+    <c:strut width='6' type='horizontal'/>
+    <input type="button" onclick="onClick2" text="Modify"/>
+    <c:glue/>
+</div>
+
+</body>
+</html>

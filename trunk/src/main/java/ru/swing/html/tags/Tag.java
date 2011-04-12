@@ -524,4 +524,21 @@ public class Tag {
     public void afterComponentsConverted() {
     }
 
+
+    public String toString() {
+        List<String> pathToRoot = new ArrayList<String>();
+        Tag pos = this;
+        while (pos!=null) {
+            StringBuilder sb = new StringBuilder(pos.getName());
+            if (StringUtils.isNotEmpty(pos.getId())) {
+                sb.append("[#").append(pos.getId()).append("]");
+            }
+            pathToRoot.add(sb.toString());
+            pos = pos.getParent();
+        }
+
+        Collections.reverse(pathToRoot);
+        return StringUtils.join(pathToRoot.iterator(), " > ");
+
+    }
 }

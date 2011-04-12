@@ -281,4 +281,9 @@ public class DomModel {
             }
         }
     }
+
+
+    public Map<String, Object> getModelElements() {
+        return model;
+    }
 }
