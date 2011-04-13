@@ -207,7 +207,7 @@ public class DomModel {
      * @param componentProperty свойства компонента, которое требуется синхронизировать.
      * @see #bind(String, javax.swing.JComponent, org.jdesktop.beansbinding.BeanProperty, org.jdesktop.beansbinding.AutoBinding.UpdateStrategy)
      */
-    public void bind(String elPath, JComponent component, BeanProperty componentProperty) {
+    public void bind(String elPath, JComponent component, Property componentProperty) {
         bind(elPath, component, componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);
     }
 
@@ -228,7 +228,7 @@ public class DomModel {
      * @param componentProperty свойства компонента, которое требуется синхронизировать.
      * @param type тип синхронизации
      */
-    public void bind(String elPath, JComponent component, BeanProperty componentProperty, AutoBinding.UpdateStrategy type) {
+    public void bind(String elPath, JComponent component, Property componentProperty, AutoBinding.UpdateStrategy type) {
         //extract model element name from elPath
         //elPath looks like ${foo.name}, where 'foo' is model element name
         String key = null;

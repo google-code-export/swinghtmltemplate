@@ -37,6 +37,9 @@ public class SwingTagFactory implements TagFactory {
         else if ("dataTable".equals(element.getName())) {
             return new DataTable();
         }
+        else if ("formTable".equals(element.getName())) {
+            return new FormTable();
+        }
         else if ("column".equals(element.getName())) {
             return new Column();
         }
