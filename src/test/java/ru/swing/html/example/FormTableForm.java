@@ -4,6 +4,7 @@ import org.jdom.JDOMException;
 import ru.swing.html.Binder;
 import ru.swing.html.DomModel;
 import ru.swing.html.ModelElement;
+import ru.swing.html.example.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,21 @@ public class FormTableForm extends JPanel {
     @ModelElement("person")
     private Person person;
 
+    @ModelElement("colorEditor")
+    private ColorTableCellEditor colorEditor = new ColorTableCellEditor();
+
+    @ModelElement("spinnerEditor")
+    private SpinnerEditor spinnerEditor = new SpinnerEditor();
+
+    @ModelElement("booleanEditor")
+    private BooleanEditor checkboxEditor = new BooleanEditor();
+
+    @ModelElement("colorRenderer")
+    private ColorTableCellRenderer colorRenderer = new ColorTableCellRenderer();
+
+    @ModelElement("booleanRenderer")
+    private BooleanRenderer checkboxCellRenderer = new BooleanRenderer();
+
     public FormTableForm() {
 
         person = new Person();
@@ -44,7 +60,7 @@ public class FormTableForm extends JPanel {
         FormTableForm form = new FormTableForm();
 
         JFrame f = new JFrame("Test");
-        f.setSize(400, 200);
+        f.setSize(500, 200);
 
         f.getContentPane().add(form);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,7 +96,6 @@ public class FormTableForm extends JPanel {
             Object old = this.name;
             this.name = name;
             pcs.firePropertyChange("name", old, name);
-            System.out.println("Updated name: "+name);
         }
 
         public String getLastName() {

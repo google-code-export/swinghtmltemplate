@@ -4,15 +4,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.AutoBinding;
-import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.ELProperty;
 import ru.swing.html.Utils;
-import ru.swing.html.components.CellProperty;
+import ru.swing.html.components.CompoundTableEditor;
+import ru.swing.html.components.CompoundTableRenderer;
 import ru.swing.html.components.TableCellBinding;
 import ru.swing.html.css.SelectorGroup;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import java.lang.*;
 import java.lang.Object;
@@ -86,6 +88,14 @@ public class FormTable extends Tag {
         model.setColumnCount(columnCount);
         table.setModel(model);
 
+        CompoundTableEditor editor = new CompoundTableEditor();
+        editor.setDefaultEditor(table.getDefaultEditor(Object.class));
+        table.setDefaultEditor(Object.class, editor);
+
+        CompoundTableRenderer renderer = new CompoundTableRenderer();
+        renderer.setDefaultRenderer(table.getDefaultRenderer(Object.class));
+        table.setDefaultRenderer(Object.class, renderer);
+
         //set column autoresize mode
         if (StringUtils.isNotEmpty(getAutoresize())) {
             int mode = table.getAutoResizeMode();
@@ -116,6 +126,7 @@ public class FormTable extends Tag {
             if ("tr".equals(tag.getName())) {
                 currentColumn = 0;
 
+                int maxHeight = table.getRowHeight(currentRow);
                 for (Tag cell : tag.getChildren()) {
                     if ("td".equals(cell.getName())) {
                         String value = cell.getAttribute("value");
@@ -127,6 +138,7 @@ public class FormTable extends Tag {
                             model.setValueAt(cell.getContent(), currentRow, currentColumn);
                         }
 
+                        //set column width
                         TableColumnModel columnModel = table.getColumnModel();
                         if (StringUtils.isNotEmpty(cell.getAttribute("width"))) {
                             Integer w = (Integer) Utils.convertStringToObject(cell.getAttribute("width"), Integer.class);
@@ -135,8 +147,57 @@ public class FormTable extends Tag {
                             logger.trace(toString()+": set column width="+w+" for column "+currentColumn);
                         }
 
+                        //set row height
+                        if (StringUtils.isNotEmpty(cell.getAttribute("height"))) {
+                            Integer h = (Integer) Utils.convertStringToObject(cell.getAttribute("height"), Integer.class);
+                            if (h>maxHeight) {
+                                maxHeight = h;
+                            }
+                        }
+
+                        //install editor
+                        String editorAttr = cell.getAttribute("editor");
+                        if (StringUtils.isNotEmpty(editorAttr)) {
+                            ELProperty rendererProperty = ELProperty.create(editorAttr);
+                            Object editorVal = rendererProperty.getValue(getModel().getModelElements());
+                            if (editorVal instanceof TableCellEditor) {
+                                editor.addEditor((TableCellEditor) editorVal, currentRow, currentColumn);
+                                logger.trace(toString()+": set cell ["+currentRow+", "+currentColumn+"] editor: '"+editorAttr+"'");
+                            }
+                            else if (editor == null) {
+                                logger.warn(toString()+ ": can't set cell ["+currentRow+", "+currentColumn+"] editor. Object '"+editorAttr + " is null");
+                            }
+                            else {
+                                logger.warn(toString()+ ": can't set cell ["+currentRow+", "+currentColumn+"] editor. Object '"+editorAttr + " is not instance of "+TableCellEditor.class.getName());
+                            }
+
+                        }
+
+                        //install renderer
+                        String rendererAttr = cell.getAttribute("renderer");
+                        if (StringUtils.isNotEmpty(rendererAttr)) {
+                            ELProperty rendererProperty = ELProperty.create(rendererAttr);
+                            Object editorVal = rendererProperty.getValue(getModel().getModelElements());
+                            if (editorVal instanceof TableCellRenderer) {
+                                renderer.addRenderer((TableCellRenderer) editorVal, currentRow, currentColumn);
+                                logger.trace(toString()+": set cell ["+currentRow+", "+currentColumn+"] renderer: '"+rendererAttr+"'");
+                            }
+                            else if (editor == null) {
+                                logger.warn(toString()+ ": can't set cell ["+currentRow+", "+currentColumn+"] renderer. Object '"+rendererAttr + " is null");
+                            }
+                            else {
+                                logger.warn(toString()+ ": can't set cell ["+currentRow+", "+currentColumn+"] renderer. Object '"+rendererAttr + " is not instance of "+TableCellRenderer.class.getName());
+                            }
+
+                        }
+
                         currentColumn++;
                     }
+                }
+                //set row height
+                if (maxHeight!=table.getRowHeight(currentRow)) {
+                    table.setRowHeight(currentRow, maxHeight);
+                    logger.trace(toString()+": set row height="+maxHeight+" for row "+currentRow);
                 }
 
                 currentRow++;
