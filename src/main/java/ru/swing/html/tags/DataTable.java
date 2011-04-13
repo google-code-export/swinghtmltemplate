@@ -15,6 +15,7 @@ import ru.swing.html.layout.LayoutManagerSupportFactory;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 import java.lang.*;
 import java.lang.Object;
 import java.util.List;
@@ -33,6 +34,7 @@ public class DataTable extends Tag {
     private String selectedElement;
     private String selectedElements;
     private String selectionType;
+    private String autoresize;
 
     @Override
     public JComponent createComponent() {
@@ -89,6 +91,28 @@ public class DataTable extends Tag {
             logger.trace(toString()+": binded 'selectedElements' to "+getSelectedElements());
         }
 
+        //set column autoresize mode
+        if (StringUtils.isNotEmpty(getAutoresize())) {
+            int mode = table.getAutoResizeMode();
+            if ("off".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_OFF;
+            }
+            else if ("all".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_ALL_COLUMNS;
+            }
+            else if ("last".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_LAST_COLUMN;
+            }
+            else if ("next".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_NEXT_COLUMN;
+            }
+            else if ("auto".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS;
+            }
+            logger.trace(toString()+": set autoResizeMode to "+getAutoresize());
+            table.setAutoResizeMode(mode);
+        }
+
         JTableBinding binding = SwingBindings.createJTableBinding(AutoBinding.UpdateStrategy.READ_WRITE, values, (JTable) getComponent());
         logger.trace(toString()+": created binding on property '"+getValue()+"'");
 
@@ -105,7 +129,6 @@ public class DataTable extends Tag {
 
                 cb.setColumnName(col.getTitle());
                 cb.setEditable(col.isEditable());
-
 
                 //set column class
                 String type = col.getType();
@@ -209,6 +232,25 @@ public class DataTable extends Tag {
 
     }
 
+    @Override
+    public void afterComponentsConverted() {
+        //set columns width
+        JTable table = (JTable) getComponent();
+        TableColumnModel model = table.getColumnModel();
+        int i = 0;
+        for (Tag childTag : getChildren()) {
+            if (childTag instanceof Column) {
+
+                Column col = (Column) childTag;
+                if (StringUtils.isNotEmpty(col.getWidth())) {
+                    model.getColumn(i).setWidth((Integer) Utils.convertStringToObject(col.getWidth(), Integer.class));
+                    model.getColumn(i).setPreferredWidth((Integer) Utils.convertStringToObject(col.getWidth(), Integer.class));
+                }
+                i++;
+            }
+
+        }
+    }
 
     @Override
     public void setAttribute(String name, String value) {
@@ -224,6 +266,9 @@ public class DataTable extends Tag {
         }
         else if ("selectiontype".equals(name)) {
             setSelectionType(value);
+        }
+        else if ("autoresize".equals(name)) {
+            setAutoresize(value);
         }
     }
 
@@ -257,5 +302,13 @@ public class DataTable extends Tag {
 
     public void setSelectedElements(String selectedElements) {
         this.selectedElements = selectedElements;
+    }
+
+    public String getAutoresize() {
+        return autoresize;
+    }
+
+    public void setAutoresize(String autoresize) {
+        this.autoresize = autoresize;
     }
 }

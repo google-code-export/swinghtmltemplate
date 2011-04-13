@@ -7,13 +7,14 @@
 
 <c:scroll align="center">
     <c:dataTable value="${model.items}"
+                 autoresize="last"
                  selectionType="multiple"
                  selectedElements="${model.selectedPersons}"
                  selectedElement="${model.selectedPerson}">
 
-        <c:column value="${name}" title="Name"/>
-        <c:column value="${age}" title="Age" type='java.lang.Integer' readonly="false"/>
-        <c:column value="${active}" title="Active" type='java.lang.Boolean' readonly="false"/>
+        <c:column value="${name}" title="Name" width='250'/>
+        <c:column value="${age}" title="Age" type='java.lang.Integer' readonly="false" width='30'/>
+        <c:column value="${active}" title="Active" type='java.lang.Boolean' readonly="false" width="20"/>
         <c:column value="${color}" title="Color" readonly='false' editor="${colorEditor}" renderer="${colorRenderer}"/>
         
     </c:dataTable>
