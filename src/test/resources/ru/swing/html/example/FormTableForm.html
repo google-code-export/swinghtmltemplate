@@ -6,7 +6,7 @@
 <body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
 
 <c:scroll align="center">
-    <c:formTable autoresize='off' showHeader='false'>
+    <c:formTable autoresize='last' showHeader='false'>
 
         <tr>
             <td width="150" readonly="true">Name</td>
@@ -26,8 +26,8 @@
             <td readonly="true">Color</td>
             <td height="50" value="${person.color}" renderer='${colorRenderer}' editor="${colorEditor}"></td>
 
-            <td readonly='true'></td>
-            <td readonly='true'></td>
+            <td readonly='true'>Комментарий</td>
+            <td editor="${textAreaEditor}"></td>
         </tr>
 
     </c:formTable>

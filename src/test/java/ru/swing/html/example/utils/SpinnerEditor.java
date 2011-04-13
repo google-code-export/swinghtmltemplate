@@ -9,8 +9,7 @@ import java.util.EventObject;
 /**
  * http://www.exampledepot.com/egs/javax.swing.table/Spinner.html
  */
-public class SpinnerEditor extends AbstractCellEditor
-        implements TableCellEditor {
+public class SpinnerEditor extends AbstractCellEditor implements TableCellEditor {
     final JSpinner spinner = new JSpinner();
 
     public SpinnerEditor() {
