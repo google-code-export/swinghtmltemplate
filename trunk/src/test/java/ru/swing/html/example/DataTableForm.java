@@ -1,11 +1,15 @@
 package ru.swing.html.example;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import org.jdom.JDOMException;
 import ru.swing.html.Binder;
 import ru.swing.html.DomModel;
 import ru.swing.html.ModelElement;
+import ru.swing.html.example.utils.ColorTableCellEditor;
+import ru.swing.html.example.utils.ColorTableCellRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,9 +30,17 @@ public class DataTableForm extends JPanel {
 
     private DomModel domModel;
 
+    @ModelElement("colorRenderer")
+    private ColorTableCellRenderer colorRenderer = new ColorTableCellRenderer();
+
+    @ModelElement("colorEditor")
+    private ColorTableCellEditor colorEditor = new ColorTableCellEditor();
+
     @ModelElement("model")
     private Model model = new Model();
-    
+
+    private Log logger = LogFactory.getLog(getClass());
+
     public DataTableForm() {
         try {
             domModel = Binder.bind(this, true);
@@ -64,9 +76,21 @@ public class DataTableForm extends JPanel {
         }
     }
 
+
+    public ColorTableCellRenderer getColorRenderer() {
+        return colorRenderer;
+    }
+
+    public void setColorRenderer(ColorTableCellRenderer colorRenderer) {
+        this.colorRenderer = colorRenderer;
+    }
+
     public class Model {
+
         private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
         private List<Person> items = ObservableCollections.observableList(new ArrayList<Person>());
+        private Person selectedPerson;
+        private List<Person> selectedPersons;
 
         public List<Person> getItems() {
             return items;
@@ -76,6 +100,26 @@ public class DataTableForm extends JPanel {
             this.items = items;
         }
 
+        public Person getSelectedPerson() {
+            return selectedPerson;
+        }
+
+        public void setSelectedPerson(Person selectedPerson) {
+            Object old = this.selectedPerson;
+            this.selectedPerson = selectedPerson;
+            pcs.firePropertyChange("selectedPerson", old, selectedPerson);
+            logger.debug("Set selected person: "+selectedPerson);
+        }
+
+        public List<Person> getSelectedPersons() {
+            return selectedPersons;
+        }
+
+        public void setSelectedPersons(List<Person> selectedPersons) {
+            this.selectedPersons = selectedPersons;
+            logger.debug("Set selected persons: "+selectedPersons);
+        }
+
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             pcs.addPropertyChangeListener(listener);
         }
@@ -83,6 +127,7 @@ public class DataTableForm extends JPanel {
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             pcs.removePropertyChangeListener(listener);
         }
+
     }
 
     public class Person {
@@ -138,6 +183,16 @@ public class DataTableForm extends JPanel {
 
         public void removePropertyChangeListener(PropertyChangeListener listener) {
             pcs.removePropertyChangeListener(listener);
+        }
+
+        @Override
+        public String toString() {
+            return "Person{" +
+                    "name='" + name + '\'' +
+                    ", age=" + age +
+                    ", active=" + active +
+                    ", color=" + color +
+                    '}';
         }
     }
 }

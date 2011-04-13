@@ -253,7 +253,7 @@ public class DomModel {
         ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
         Binding binding = Bindings.createAutoBinding(type, model, beanProperty, component, componentProperty);
         binding.bind();
-        logger.debug("Binded "+elPath);
+        logger.debug("Binded '"+elPath+"'");
 
         if (key!=null) {
             Map<String, Binding> bindings = bindingsByModelElementName.get(key);

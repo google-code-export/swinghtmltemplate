@@ -449,6 +449,29 @@ public class Tag {
 
 
 
+        if (StringUtils.isNotEmpty(getTextAlign())) {
+            float alignment = JComponent.CENTER_ALIGNMENT;
+            if ("left".equals(getTextAlign())) {
+                alignment = JComponent.LEFT_ALIGNMENT;
+            }
+            else if ("right".equals(getTextAlign())) {
+                alignment = JComponent.RIGHT_ALIGNMENT;
+            }
+            component.setAlignmentX(alignment);
+        }
+
+        if (StringUtils.isNotEmpty(getVerticalAlign())) {
+            float alignment = JComponent.CENTER_ALIGNMENT;
+            if ("top".equals(getVerticalAlign())) {
+                alignment = JComponent.TOP_ALIGNMENT;
+            }
+            else if ("bottom".equals(getVerticalAlign())) {
+                alignment = JComponent.BOTTOM_ALIGNMENT;
+            }
+            component.setAlignmentY(alignment);
+        }
+
+
         //если задан атрибут onclick и компонент - это кнопка (то есть ее можно нажать),
         //то значение атрибута - название метода в контроллере, который необходимо
         //вызвать при нажатии

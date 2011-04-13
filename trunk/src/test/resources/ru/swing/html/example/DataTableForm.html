@@ -5,22 +5,29 @@
 </head>
 <body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
 
-<c:scroll>
-    <c:dataTable value="${model.items}">
+<c:scroll align="center">
+    <c:dataTable value="${model.items}"
+                 selectionType="multiple"
+                 selectedElements="${model.selectedPersons}"
+                 selectedElement="${model.selectedPerson}">
+
         <c:column value="${name}" title="Name"/>
-        <c:column value="I'm ${age} years old" title="Age text" />
         <c:column value="${age}" title="Age" type='java.lang.Integer' readonly="false"/>
         <c:column value="${active}" title="Active" type='java.lang.Boolean' readonly="false"/>
-        <c:column value="${color}" title="Color" renderer='ru.swing.html.example.utils.ColorTableCellRenderer'/>
+        <c:column value="${color}" title="Color" readonly='false' editor="${colorEditor}" renderer="${colorRenderer}"/>
+        
     </c:dataTable>
 </c:scroll>
 
-<div align="bottom" style="display:box;x-box-orientation:horizontal;">
-    <input type="button" onclick="onClick" text="Add"/>
-    <c:strut width='6' type='horizontal'/>
-    <input type="button" onclick="onClick2" text="Modify"/>
-    <c:glue/>
-</div>
+<div align='bottom' style="display:box;x-boxlayout-direction: vertical;">
+    <p content='el' style="text-align:left;">My name is ${model.selectedPerson.name}, i'm ${model.selectedPerson.age} years old</p>
 
+    <div style="display:box;text-align:left;">
+        <input type="button" onclick="onClick" text="Add"/>
+        <c:strut width='6' type='horizontal'/>
+        <input type="button" onclick="onClick2" text="Modify"/>
+        <c:glue/>
+    </div>
+</div>
 </body>
 </html>
