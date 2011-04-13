@@ -41,6 +41,9 @@ public class FormTableForm extends JPanel {
     @ModelElement("booleanRenderer")
     private BooleanRenderer checkboxCellRenderer = new BooleanRenderer();
 
+    @ModelElement("textAreaEditor")
+    private TextAreaEditor textAreaEditor = new TextAreaEditor();
+
     public FormTableForm() {
 
         person = new Person();
