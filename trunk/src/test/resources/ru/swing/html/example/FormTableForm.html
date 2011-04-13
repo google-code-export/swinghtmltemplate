@@ -9,15 +9,25 @@
     <c:formTable autoresize='off' showHeader='false'>
 
         <tr>
-            <td width="150" readonly="true">Имя</td>
+            <td width="150" readonly="true">Name</td>
             <td width="50" value='${person.name}'></td>
 
-            <td width="150" readonly="true">Фамилия</td>
+            <td width="150" readonly="true">Last name</td>
             <td width="50" value='${person.lastName}'></td>
         </tr>
         <tr>
-            <td readonly="true">Возраст</td>
-            <td value="${person.age}"></td>
+            <td readonly="true">Age</td>
+            <td value="${person.age}" editor="${spinnerEditor}"></td>
+
+            <td readonly="true">Active</td>
+            <td value="${person.active}" editor="${booleanEditor}" renderer="${booleanRenderer}"></td>
+        </tr>
+        <tr>
+            <td readonly="true">Color</td>
+            <td height="50" value="${person.color}" renderer='${colorRenderer}' editor="${colorEditor}"></td>
+
+            <td readonly='true'></td>
+            <td readonly='true'></td>
         </tr>
 
     </c:formTable>
