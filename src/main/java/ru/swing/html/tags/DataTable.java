@@ -67,15 +67,6 @@ public class DataTable extends Tag {
             logger.trace(toString()+": set selection mode: "+getSelectionType());
         }
 
-        //get items for table model
-        ELProperty beanProperty = ELProperty.create(getValue());
-        Object propertyValue = beanProperty.getValue(getModel().getModelElements());
-        if (!(propertyValue instanceof java.util.List)) {
-            logger.warn(toString()+": dataTable must be binded to the property of type "+List.class.getName());
-            return;
-        }
-        List<Object> values = (List<Object>) propertyValue;
-
 
         //bind selected row
         if (StringUtils.isNotEmpty(getSelectedElement())) {
@@ -83,7 +74,7 @@ public class DataTable extends Tag {
             getModel().bind(getSelectedElement(), getComponent(), selectedElement);
             logger.trace(toString()+": binded 'selectedElement' to "+getSelectedElement());
         }
-        
+
         //bind selected rows
         if (StringUtils.isNotEmpty(getSelectedElements())) {
             BeanProperty selectedElement = BeanProperty.create("selectedElements");
@@ -113,8 +104,22 @@ public class DataTable extends Tag {
             table.setAutoResizeMode(mode);
         }
 
+
+
+        //get items for table model
+        ELProperty beanProperty = ELProperty.create(getValue());
+        Object propertyValue = beanProperty.getValue(getModel().getModelElements());
+        if (!(propertyValue instanceof java.util.List)) {
+            logger.warn(toString()+": dataTable must be binded to the property of type "+List.class.getName());
+            return;
+        }
+        List<Object> values = (List<Object>) propertyValue;
+
         JTableBinding binding = SwingBindings.createJTableBinding(AutoBinding.UpdateStrategy.READ_WRITE, values, (JTable) getComponent());
         logger.trace(toString()+": created binding on property '"+getValue()+"'");
+
+
+
 
         for (Tag childTag : getChildren()) {
 

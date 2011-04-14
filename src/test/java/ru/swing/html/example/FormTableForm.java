@@ -47,7 +47,7 @@ public class FormTableForm extends JPanel {
     public FormTableForm() {
 
         person = new Person();
-        person.setName("Foo");
+        person.setName("Foo111");
 
         try {
             domModel = Binder.bind(this, true);
