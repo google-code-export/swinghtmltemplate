@@ -1,0 +1,393 @@
+#summary Details on how to implement "Create project" form
+#labels example
+
+Lets implement the form, I've found using google:
+
+http://captcha.biz/images/help/java/screenshot007_t.jpg
+
+The result:
+
+http://swinghtmltemplate.googlecode.com/files/createprojectform.png
+
+First we'll create model for data. It is simple java bean with properties for every input element in the form:
+{{{
+package ru.swing.html.example.createproject;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
+/**
+* Data model for "Create project" form.
+*/
+public class Model {
+
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private String name; //the name of the project
+    private boolean useDefaultPath; //shoult project use default path
+    private String path; //the path for the project
+    private String runtime; //selected runtime
+    private String version; //selected version
+    private String configuration; //selected configuration
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isUseDefaultPath() {
+        return useDefaultPath;
+    }
+
+    public void setUseDefaultPath(boolean useDefaultPath) {
+        this.useDefaultPath = useDefaultPath;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getRuntime() {
+        return runtime;
+    }
+
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(String configuration) {
+        this.configuration = configuration;
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "name='" + name + '\'' +
+                ", useDefaultPath=" + useDefaultPath +
+                ", path='" + path + '\'' +
+                ", runtime='" + runtime + '\'' +
+                ", version='" + version + '\'' +
+                ", configuration='" + configuration + '\'' +
+                '}';
+    }
+}
+}}}
+
+
+Next we'll make a markup for our form:
+{{{
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <title></title>
+    <style type="text/css">
+        #earPanel * {
+            enabled: false;
+        }
+        body * {
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body style="display:border;">
+
+    <!--Top white panel with image-->
+    <div align="top" style="background-color:white;">
+        <div style="background-color:white;">
+            <p content='html'><![CDATA[
+                &nbsp;<b>Dynamic Web project</b><br>
+                &nbsp;&nbsp;&nbsp;Create a standalone Dynamic Web project or add it to a new or existing Enterprise Application]]>
+            </p>
+        </div>
+        <img align='right' src="/img/create_project_logo.png"/>
+    </div>
+
+    <div style="border: empty 12 12 12 12;">
+
+        <div align="top" style="display: box;x-boxlayout-direction: vertical">
+
+            <!--Project name input-->
+            <div style="margin: 6 6;">
+                <label align='left'>Project name:</label>
+                <input type='text' value="${model.name}"/>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Project contents block-->
+            <div style='border: compound (titled "Project contents" (etched)) (empty 6 6 6 6);'>
+                <table cellspacing="6">
+                    <tr>
+                        <td colspan="3">
+                            <div>
+                                <input id='default' align='left'
+                                       value="${model.useDefaultPath}"
+                                       type="checkbox" onclick="onDefaultPathClick"/>
+                                <label for="default">Use default</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p class='pathElement'>Directory:</p></td>
+                        <td width='fill'>
+                            <input id='path' class='pathElement' type='text' value="${model.path}"/>
+                        </td>
+                        <td><input class='pathElement' type='button' text="Browse..."/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Target runtime block-->
+            <div style='border: compound (titled "Target Runtime" (etched)) (empty 6 6 6 6); margin: 6 6;'>
+                <c:combobox align='center' selectedElement="${model.runtime}">
+                    <c:selectItems value="${runtimeValues}"/>
+                </c:combobox>
+                <input type='button' align='right' text='New...'/>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Version block-->
+            <div style='border: compound (titled "Dynamic Web Module version" (etched)) (empty 6 6 6 6);'>
+                <c:combobox align='center' selectedElement="${model.version}">
+                    <c:selectItems value="${versionValues}"/>
+                </c:combobox>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Configuration block-->
+            <div style='border: compound (titled "Configuration" (etched)) (empty 6 6 6 6); margin: 6 6;'>
+                <c:combobox align='center' selectedElement="${model.configuration}">
+                    <c:selectItems value="${runtimeValues}"/>
+                </c:combobox>
+                <input type='button' align='right' text='Modify...'/>
+                <p align="bottom" content="html"><![CDATA[A good starting point for working with Apache Tomcat v6.0 runtime.
+                    Additional facets can later be installed to add new functionality to project.]]>
+                </p>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--EAR block-->
+            <div id='earPanel' style='border: compound (titled "EAR membership" (etched)) (empty 6 6 6 6);'>
+                <table cellspacing="6">
+                    <tr>
+                        <td colspan="3">
+                            <div>
+                                <input id='ear' align='left' type="checkbox"/>
+                                <label for="ear">Add project to an EAR</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>EAR Project Name:</p></td>
+                        <td width='fill'><input type='text'>captchaWebEAR</input></td>
+                        <td><input type='button' text="New..."/></td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <c:glue/>
+        </div>
+
+
+    </div>
+
+    <!--Bottom bottons-->
+    <div align="bottom" style="display:border">
+        <div align="top">
+            <hr type="horizontal"/>
+        </div>
+        <div style="border: empty 12 12 12 12;margin: 6 6;">
+
+            <input align='left' type='button' icon="/img/help.gif" style='opaque: true;'>
+                <c:attribute name="borderPainted" value="false" type='boolean'/>
+                <c:attribute name="contentAreaFilled" value="false" type='boolean'/>
+            </input>
+
+            <table align="right" cellspacing="6">
+                <tr>
+                    <td>
+                        <div>
+                            <input align='left' type='button' text="&lt; Back" enabled='false'/>
+                            <input type='button' text="Next &gt;"/>
+                        </div>
+                    </td>
+                    <td>
+                        <input type='button' text="Finish" onclick="onFinish"/>
+                    </td>
+                    <td>
+                        <input type='button' text="Cancel"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+
+
+</body>
+</html>
+}}}
+
+
+Look how image button is done. It is `java.swing.JButton` with disabled border and content area drawing:
+{{{
+<input align='left' type='button' icon="/img/help.gif" style='opaque: true;'>
+    <c:attribute name="borderPainted" value="false" type='boolean'/>
+    <c:attribute name="contentAreaFilled" value="false" type='boolean'/>
+</input>
+}}}
+
+
+"Next" and "Back" buttons are groupped togeather in `div` because they are joined on original form, and "Finish" button
+is separated with space.
+
+
+Block
+{{{
+body * {
+    font-weight: normal;
+}
+}}}
+is needed because swing makes all fonts bold in metal laf on linux.
+
+
+You can resize form. Look how long text is wrapped. This is because of `content="html"` attribute.
+
+Notice, all input elements are binded to controller's properties. Combobox elemetns take their values from
+corresponding model attribute, whose value is set with `<c:selectItems value=''/>` tag (yes, name taken from jsf :) )
+Checkbox has click listener: onDefaultPathClick, so
+the controller's method `public void onDefaultPathClick() {}` will be invoked on checkbox change.
+
+
+"Finish" button also has click listener, `public void onFinish() {}` will be invoked on button click.
+
+
+Last, let's make controller.
+{{{
+package ru.swing.html.example.createproject;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.JDOMException;
+import ru.swing.html.Binder;
+import ru.swing.html.DomModel;
+import ru.swing.html.ModelElement;
+import ru.swing.html.tags.Tag;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * http://captcha.biz/images/help/java/screenshot007_t.jpg
+ */
+public class CreateProjectForm extends JPanel {
+
+    private Log logger = LogFactory.getLog(getClass());
+    private DomModel domModel;
+
+    @ModelElement("runtimeValues")
+    private List<String> runtimeValues = Arrays.asList("Apache Tomcat v5.5", "Apache Tomcat v6.0");
+
+    @ModelElement("versionValues")
+    private List<String> versionValues = Arrays.asList("2.3", "2.4", "2.5");
+
+
+    @ModelElement("model")
+    private Model model = new Model();
+
+    public CreateProjectForm() {
+
+        model.setName("captchaWeb");
+        model.setUseDefaultPath(true);
+        model.setRuntime("Apache Tomcat v6.0");
+        model.setVersion("2.5");
+        model.setConfiguration("Apache Tomcat v6.0");
+
+        try {
+            domModel = Binder.bind(this, true);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        onDefaultPathClick();
+
+    }
+
+
+
+    public void onDefaultPathClick() {
+        JCheckBox box = (JCheckBox) domModel.getTagById("default").getComponent();
+        for (Tag tag : domModel.query(".pathElement")) {
+            tag.getComponent().setEnabled(!box.isSelected());
+        }
+    }
+
+    public void onFinish() {
+        logger.info("Got model: "+model);
+    }
+
+
+    public static void main(String[] args) {
+        CreateProjectForm form = new CreateProjectForm();
+
+        JFrame f = new JFrame("New Dynamic Web Project");
+        f.setSize(800, 700);
+
+        f.getContentPane().add(form);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
+    }
+
+
+}
+}}}
+
+I's quite simple.
+
+The model is exposed to dom model with "model" name. For simplicity we expose combobox elements as
+simple strings.
+
+In onDefaultPathClick method we 1st take checkbox component by id (look at markup, input element has
+an id). Next we take elements by classname and enable/disable them. Label, JTextField and button in "Path" block
+have assigned `class` attribute.
+
+Clicking "Finish" button we can watch the content of the model.
