@@ -15,6 +15,7 @@
 </head>
 <body style="display:border;">
 
+    <!--Top white panel with image-->
     <div align="top" style="background-color:white;">
         <div style="background-color:white;">
             <p content='html'><![CDATA[
@@ -29,6 +30,7 @@
 
         <div align="top" style="display: box;x-boxlayout-direction: vertical">
 
+            <!--Project name input-->
             <div style="margin: 6 6;">
                 <label align='left'>Project name:</label>
                 <input type='text' value="${model.name}"/>
@@ -36,6 +38,7 @@
 
             <c:strut type="vertical" style="height: 6"/>
 
+            <!--Project contents block-->
             <div style='border: compound (titled "Project contents" (etched)) (empty 6 6 6 6);'>
                 <table cellspacing="6">
                     <tr>
@@ -60,7 +63,7 @@
 
             <c:strut type="vertical" style="height: 6"/>
 
-
+            <!--Target runtime block-->
             <div style='border: compound (titled "Target Runtime" (etched)) (empty 6 6 6 6); margin: 6 6;'>
                 <c:combobox align='center' selectedElement="${model.runtime}">
                     <c:selectItems value="${runtimeValues}"/>
@@ -70,6 +73,7 @@
 
             <c:strut type="vertical" style="height: 6"/>
 
+            <!--Version block-->
             <div style='border: compound (titled "Dynamic Web Module version" (etched)) (empty 6 6 6 6);'>
                 <c:combobox align='center' selectedElement="${model.version}">
                     <c:selectItems value="${versionValues}"/>
@@ -78,6 +82,7 @@
 
             <c:strut type="vertical" style="height: 6"/>
 
+            <!--Configuration block-->
             <div style='border: compound (titled "Configuration" (etched)) (empty 6 6 6 6); margin: 6 6;'>
                 <c:combobox align='center' selectedElement="${model.configuration}">
                     <c:selectItems value="${runtimeValues}"/>
@@ -90,6 +95,7 @@
 
             <c:strut type="vertical" style="height: 6"/>
 
+            <!--EAR block-->
             <div id='earPanel' style='border: compound (titled "EAR membership" (etched)) (empty 6 6 6 6);'>
                 <table cellspacing="6">
                     <tr>
@@ -115,6 +121,7 @@
 
     </div>
 
+    <!--Bottom bottons-->
     <div align="bottom" style="display:border">
         <div align="top">
             <hr type="horizontal"/>
