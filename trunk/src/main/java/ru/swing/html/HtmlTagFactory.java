@@ -30,9 +30,8 @@ public class HtmlTagFactory implements TagFactory {
         else if ("form".equals(element.getName())) {
             return new Form();
         }
-        else if ("glue".equals(element.getName())) {
-            logger.warn("glue tag moved to 'http://www.oracle.com/swing' namespace");
-            return new Glue();
+        else if ("hr".equals(element.getName())) {
+            return new Hr();
         }
         else if ("input".equals(element.getName())) {
             return new Input();

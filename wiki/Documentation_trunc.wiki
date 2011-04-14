@@ -280,6 +280,7 @@ css styles. Below are common properties (for all tags):
   * `opaque` - opacity. Same as `JComponent.opaque`. Values: `true` or `false`
   * `icon` - component's icon. Method `setIcon(Icon)` is called for this property. If there's no such methos, warning is printed to log. Value - icons path (icon must be available for  `getClass().getResource("url"))`.
   * `border` - component's border. Value - border description (see border section for details)
+  * `enabled` - enables or disables component
   * `color` - component's color. Method `JComponent.setForeground(Color)` is called for this property
   * `background-color` - component's background color. Method `JComponent.setBackground(Color)` is called for this property
   * `font-size` - component's font size in pixels.
@@ -298,6 +299,10 @@ Tag is converted to `javax.swing.JPanel`. `java.awt.BorderLayout` is used as lay
 
 === form ===
 Tag is converted to `javax.swing.JPanel`. `net.miginfocom.swing.MigLayout` is used as layout manager by default.
+
+=== hr ===
+Tag is converted to `javax.swing.JSeparator`.
+Use  {{{type="horizontal"}}} or {{{type="vertical"}}} for specifying orientation of separator.
 
 === img ===
 Tag is converted to `javax.swing.JLabel`. Value of the `src` attribute is copied to `icon` attribute, so,

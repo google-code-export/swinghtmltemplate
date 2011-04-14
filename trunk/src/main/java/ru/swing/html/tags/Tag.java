@@ -407,36 +407,44 @@ public class Tag {
             else if ("border".equals(attrName)) {
                 component.setBorder(ru.swing.html.BorderFactory.createBorder(this));
             }
+            else if ("enabled".equals(attrName)) {
+                component.setEnabled((Boolean) Utils.convertStringToObject(attrValue, Boolean.class));
+            }
 
 
         }
 
-        if (getFontSize()!=null) {
-            component.setFont(component.getFont().deriveFont(new Float(getFontSize())));
+
+
+        if (component.getFont()!=null) {
+            if (getFontSize()!=null) {
+                component.setFont(component.getFont().deriveFont(new Float(getFontSize())));
+            }
+
+            Map<AttributedCharacterIterator.Attribute, Object> map = new HashMap<AttributedCharacterIterator.Attribute, Object>();
+            if ("bold".equals(getFontWeight()) || "bolder".equals(getFontWeight())) {
+                map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
+            }
+            else if ("normal".equals(getFontWeight()) || "lighter".equals(getFontWeight())) {
+                map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
+            }
+            if (getFontFamily()!=null) {
+                map.put(TextAttribute.FAMILY, getFontFamily());
+            }
+
+            Font font;
+            if (map.size()>0) {
+                font = component.getFont().deriveFont(map);
+            }
+            else {
+                font = component.getFont();
+            }
+            if ("italic".equals(getFontStyle())) {
+                font = font.deriveFont(font.getStyle()+Font.ITALIC);
+            }
+            component.setFont(font);
         }
 
-        Map<AttributedCharacterIterator.Attribute, Object> map = new HashMap<AttributedCharacterIterator.Attribute, Object>();
-        if ("bold".equals(getFontWeight()) || "bolder".equals(getFontWeight())) {
-            map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-        }
-        else if ("normal".equals(getFontWeight()) || "lighter".equals(getFontWeight())) {
-            map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
-        }
-        if (getFontFamily()!=null) {
-            map.put(TextAttribute.FAMILY, getFontFamily());
-        }
-        Font font;
-        if (map.size()>0) {
-            font = component.getFont().deriveFont(map);
-        }
-        else {
-            font = component.getFont();
-        }
-
-        if ("italic".equals(getFontStyle())) {
-            font = font.deriveFont(font.getStyle()+Font.ITALIC);
-        }
-        component.setFont(font);
 
 
         if (getColor()!=null) {
@@ -501,7 +509,7 @@ public class Tag {
         }
 
 
-        //если задан атрибут щтсрфтпу и компонент - это текстовое поле (то есть у нее есть документ),
+        //если задан атрибут onchange и компонент - это текстовое поле (то есть у нее есть документ),
         //то значение атрибута - название метода в контроллере, который необходимо
         //вызвать при изменении документа
         final String onchangeMethod = getAttribute("onchange");

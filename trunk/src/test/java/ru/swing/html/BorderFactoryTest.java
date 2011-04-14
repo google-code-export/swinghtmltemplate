@@ -145,6 +145,14 @@ public class BorderFactoryTest extends TestCase {
         assertEquals(Color.red, titledBorder.getTitleColor());
 
 
+        //1 param
+        borderString = "titled \"Foo:\"";
+        border = BorderFactory.parseBorderString(borderString);
+        assertTrue(border instanceof TitledBorder);
+
+        titledBorder = (TitledBorder) border;
+        assertEquals("Foo:", titledBorder.getTitle());
+
 
 
     }
