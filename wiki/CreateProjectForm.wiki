@@ -225,7 +225,7 @@ Next we'll make a markup for our form:
 
     </div>
 
-    <!--Bottom bottons-->
+    <!--Bottom buttons-->
     <div align="bottom" style="display:border">
         <div align="top">
             <hr type="horizontal"/>
