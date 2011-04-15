@@ -94,7 +94,7 @@ public class NewProjectForm extends JPanel {
                 java.util.List<ProjectType> projects = projectsService.getProjectsByPath(withoutRoot);
                 model.setProjects(projects);
 
-                model.setSelectedProject(new ProjectType());
+                model.setSelectedProject(null);
             }
         }
     }
