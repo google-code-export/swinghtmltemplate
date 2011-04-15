@@ -10,7 +10,7 @@ The result:
 http://swinghtmltemplate.googlecode.com/files/nb_new_project.png
 
 
-We'll create special class for selected project: ProjectType. It hold info on name, description icon path.
+We'll create special class for selected project: `ProjectType`. It hold info on name, description icon path.
 Check [http://code.google.com/p/swinghtmltemplate/source/browse/trunk/src/test/java/ru/swing/html/example/nbnewproject/ProjectType.java ProjectType.java]
 
 Next we will create project service, which will create tree model for project types (there is no cool binding for
@@ -205,6 +205,7 @@ public class NewProjectForm extends JPanel {
         projectsTreeModel = projectsService.createTreeModel();
 
 
+        //enable/disable "Next" button
         model.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (domModel==null) {
@@ -342,3 +343,7 @@ private java.util.List<ProjectType> projects = ObservableCollections.observableL
 }}}
 this is from beans binding project, it allows us to correctly bind elements to list.
 Look at setter, we do not reset the `projects` property, instead we clear collection and use `addAll` to fill it.
+
+
+
+To enable/disable "Next" button, we add property listener to the model.
