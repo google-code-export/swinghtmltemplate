@@ -16,8 +16,14 @@ public class SwingTagFactory implements TagFactory {
         if ("attribute".equals(element.getName())) {
             return new Attribute();
         }
-        if ("glue".equals(element.getName())) {
+        else if ("editorPane".equals(element.getName())) {
+            return new EditorPane();
+        }
+        else if ("glue".equals(element.getName())) {
             return new Glue();
+        }
+        else if ("list".equals(element.getName())) {
+            return new List();
         }
         else if ("scroll".equals(element.getName())) {
             return new ScrollPane();
@@ -48,6 +54,9 @@ public class SwingTagFactory implements TagFactory {
         }
         else if ("selectItems".equals(element.getName())) {
             return new SelectItems();
+        }
+        else if ("tree".equals(element.getName())) {
+            return new Tree();
         }
         else {
             logger.warn("Unknown tag: "+element.getNamespacePrefix()+":"+element.getName());

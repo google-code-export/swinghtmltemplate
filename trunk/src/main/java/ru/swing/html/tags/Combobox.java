@@ -41,7 +41,7 @@ public class Combobox extends Tag {
         if (StringUtils.isNotEmpty(getSelectedElement())) {
             BeanProperty selectedElement = BeanProperty.create("selectedItem");
             getModel().bind(getSelectedElement(), getComponent(), selectedElement);
-            logger.trace(toString()+": binded 'selectedElement' to "+getSelectedElement());
+            logger.trace(toString()+": binded 'selectedItem' to "+getSelectedElement());
         }
 
 

@@ -415,6 +415,10 @@ public class Tag {
         }
 
 
+        if (StringUtils.isNotEmpty(getAttribute("readonly")) && component instanceof JTextComponent) {
+            ((JTextComponent)component).setEditable(!Boolean.valueOf(getAttribute("readonly")));
+        }
+
 
         if (component.getFont()!=null) {
             if (getFontSize()!=null) {
