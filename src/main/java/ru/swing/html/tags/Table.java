@@ -53,7 +53,7 @@ public class Table extends Tag {
         tableLayoutSupport = new TableLayoutSupport();
         if (getAttribute(TableLayoutSupport.COLUMN_SIZES_ATTRIBUTE)==null) {
             String columnSizes = "";
-            for (int i = 0; i<currentCol; i++) {
+            for (int i = 0; i<widths.size(); i++) {
                 String w = widths.get(i);
                 if (w==null) {
                     w = "preferred";
@@ -64,7 +64,7 @@ public class Table extends Tag {
         }
         if (getAttribute(TableLayoutSupport.ROW_SIZES_ATTRIBUTE)==null) {
             String rowSizes = "";
-            for (int i = 0; i<currentRow; i++) {
+            for (int i = 0; i<heights.size(); i++) {
                 String w = heights.get(i);
                 if (w==null) {
                     w = "preferred";
@@ -124,6 +124,7 @@ public class Table extends Tag {
 
             JComponent childComponent = DomConverter.convertComponent(tagAtPosition, substitutions);
             tableLayoutSupport.addComponent(getComponent(), childComponent, align);
+            logger.trace(toString()+ ": added '"+tagAtPosition+"' to '"+align+"'");
         }
 
     }

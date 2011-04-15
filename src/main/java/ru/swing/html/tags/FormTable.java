@@ -177,12 +177,12 @@ public class FormTable extends Tag {
                         String rendererAttr = cell.getAttribute("renderer");
                         if (StringUtils.isNotEmpty(rendererAttr)) {
                             ELProperty rendererProperty = ELProperty.create(rendererAttr);
-                            Object editorVal = rendererProperty.getValue(getModel().getModelElements());
-                            if (editorVal instanceof TableCellRenderer) {
-                                renderer.addRenderer((TableCellRenderer) editorVal, currentRow, currentColumn);
-                                logger.trace(toString()+": set cell ["+currentRow+", "+currentColumn+"] renderer: '"+rendererAttr+"'");
+                            Object rendererVal = rendererProperty.getValue(getModel().getModelElements());
+                            if (rendererVal instanceof TableCellRenderer) {
+                                renderer.addRenderer((TableCellRenderer) rendererVal, currentRow, currentColumn);
+                                logger.trace(toString() + ": set cell [" + currentRow + ", " + currentColumn + "] renderer: '" + rendererAttr + "'");
                             }
-                            else if (editor == null) {
+                            else if (renderer == null) {
                                 logger.warn(toString()+ ": can't set cell ["+currentRow+", "+currentColumn+"] renderer. Object '"+rendererAttr + " is null");
                             }
                             else {

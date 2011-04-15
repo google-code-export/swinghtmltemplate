@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <title></title>
+    <style type="text/css">
+        body * {
+            font-weight: normal;
+        }
+        .title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body style="display:border;">
+
+<div>
+
+
+    <div align="left" style="background-color:#fefef6;">
+        <div style="border: empty 20 20 20 20;background-color:#fefef6;">
+            <p content="html" align="top">
+            <![CDATA[
+                    <b>Steps</b>
+                <hr>
+                <b>1. Choose Project</b><br>
+                2. ...
+            ]]>
+            </p>
+
+        </div>
+        <img src="/img/nb_new_project_bkg.gif" alt="" align="bottom"/>
+    </div>
+
+    <div style="border: empty 6 6 6 6;">
+
+        <table align="center" cellspacing="6">
+            <tr>
+                <td colspan="2">
+                    <div id='titlePanel'>
+                        <p class="title">Choose project</p>
+                        <hr type="horizontal" align="bottom"/>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width="fill">
+                    <div id="categoriesPanel">
+                        <p align="top">Categories:</p>
+                        <c:scroll>
+                            <c:tree value="${projectsTreeModel}" showRoot="false"
+                                    onchange="onCategoryChange"
+                                    showRootHandles="true"/>
+                        </c:scroll>
+                    </div>
+                </td>
+                <td width="fill">
+                    <div id="projectsPanel">
+                        <p align="top">Projects:</p>
+                        <c:scroll>
+                            <c:list renderer="${projectTypeRenderer}" selectedelement="${model.selectedProject}">
+                                <c:selectItems value="${model.projects}"/>
+                            </c:list>
+                        </c:scroll>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" width="fill">
+                    <div id="descriptionPanel">
+                        <p align="top">Description:</p>
+                        <c:scroll>
+                            <c:editorPane value="${model.selectedProject.description}" type='text/html' readonly='true' >
+                                <c:attribute name="preferredSize" value="0 80" type='java.awt.Dimension'/>
+                            </c:editorPane>
+                        </c:scroll>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+</div>
+
+
+
+<!--Bottom buttons-->
+<div align="bottom" style="display:border">
+    <div align="top">
+        <hr type="horizontal"/>
+    </div>
+    <div style="border: empty 12 12 12 12;margin: 6 6;">
+
+
+        <table align="right" cellspacing="6">
+            <tr>
+                <td>
+                    <div>
+                        <input align='left' type='button' text="&lt; Back" enabled='false'/>
+                        <input id='nextBtn' type='button' text="Next &gt;" enabled='false' onclick="onNextClick"/>
+                    </div>
+                </td>
+                <td>
+                    <input id='finishBtn' type='button' text="Finish" enabled='false' />
+                </td>
+                <td>
+                    <input type='button' text="Cancel" />
+                </td>
+                <td>
+                    <input type='button' text="Help"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
