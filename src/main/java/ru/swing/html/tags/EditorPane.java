@@ -23,6 +23,7 @@ public class EditorPane extends Tag  {
         if (StringUtils.isNotEmpty(getType())) {
             c.setContentType(getType());
         }
+        c.setText(getContent());
 
 
         //perform binding
