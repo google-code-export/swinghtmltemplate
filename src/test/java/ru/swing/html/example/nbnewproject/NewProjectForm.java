@@ -51,6 +51,7 @@ public class NewProjectForm extends JPanel {
         projectsTreeModel = projectsService.createTreeModel();
 
 
+        //enable/disable "Next" button
         model.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (domModel==null) {
