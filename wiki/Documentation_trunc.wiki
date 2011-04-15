@@ -549,6 +549,17 @@ Example:
 </html>
 }}}
 
+=== editorPane ===
+Tag is converted to the `javax.swing.JEditorPane`. The content type for the document is set with `type` attribute:
+{{{
+<c:editorPane value="${model.selectedProject.description}" type='text/html' readonly='true' >
+    <c:attribute name="preferredSize" value="0 80" type='java.awt.Dimension'/>
+</c:editorPane>
+}}}
+
+The `value` attibute, if presents, sets the binding for the component. If it is absent, then usual text component
+attributes are applied: the content of the tag is set as component text.
+
 === glue ===
 Tag is converted to the component, that is returned from
 {{{
@@ -566,6 +577,72 @@ Example:
 {{{
 <c:glue type="horizontal"/>
 }}}
+
+
+=== list ===
+Tag is converted to the `javax.swing.JList`.
+
+Currently it supports only one child tag: an `selectItems` tag, which holds the EL for list model. If it doesn't present,
+no model is installed.
+
+List's model is evaluated with jsr-255 binding. Source bean property must be of type `java.util.List`. Use
+`org.jdesktop.observablecollections.ObservableCollections.observableList()` to create observable list, so adding/removing
+elements to/from collection will add/remove elements from JList model.
+
+You can bind selected list element with `selectedElement` attribute. `selectedElements` can be used to bind
+many selected elements. Currently, due to limitations of better beans binding, these are readonly bindings (changing
+model won't update JList selection).
+
+You can set renderer for the list with `renderer` attribute. This must be EL, pointing to the `javax.swing.ListCellRenderer`
+instance.
+
+
+{{{
+//controller
+public class MyPanel {
+
+   @ModelElement("model")
+   private MyPanelModel model;
+
+    @ModelElement("customRenderer")
+    private CustomRenderer projectTypeRenderer = new CustomRenderer();
+
+   ...
+
+   public void foo() {
+      items.add("Line 1");
+      items.add("Line 2");
+   }
+
+
+}
+
+
+//model
+public class MyPanelModel {
+   private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+   private List items = ObservableCollections.observableList(new ArrayList());
+   private String selected;
+   //getters and setters with PropertyChangeSupport firing
+
+   ...
+
+}
+
+//renderer
+public class CustomRenderer extends DefaultListCellRenderer implements ListCellRenderer {
+   ...
+}
+}}}
+
+{{{
+<c:editorPane selectedElement="${model.selected}" renderer="${customRenderer}">
+   <c:selectItems value="${model.items}"/>
+</c:editorPane>
+<input type='button' onclick='foo'/>
+}}}
+
+
 
 === scroll ===
 Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are
