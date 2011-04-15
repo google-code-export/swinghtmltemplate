@@ -1,0 +1,344 @@
+#summary Details on how to implement netbeans "New project" form
+#labels example
+
+Lets implement the form, I've found using google:
+
+http://i175.photobucket.com/albums/w126/hairulazami/simple_swing_loginform_and_getText/java_app00008_500.jpg
+
+The result:
+
+http://swinghtmltemplate.googlecode.com/files/nb_new_project.png
+
+
+We'll create special class for selected project: ProjectType. It hold info on name, description icon path.
+Check [http://code.google.com/p/swinghtmltemplate/source/browse/trunk/src/test/java/ru/swing/html/example/nbnewproject/ProjectType.java ProjectType.java]
+
+Next we will create project service, which will create tree model for project types (there is no cool binding for
+tree in better beans binding, like in dataTable).
+Check [http://code.google.com/p/swinghtmltemplate/source/browse/trunk/src/test/java/ru/swing/html/example/nbnewproject/ProjectsService.java ProjectsService.java]
+
+Next, form markup:
+{{{
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <title></title>
+    <style type="text/css">
+        body * {
+            font-weight: normal;
+        }
+        .title {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body style="display:border;">
+
+<div>
+
+
+    <div align="left" style="background-color:#fefef6;">
+        <div style="border: empty 20 20 20 20;background-color:#fefef6;">
+            <p content="html" align="top">
+            <![CDATA[
+                    <b>Steps</b>
+                <hr>
+                <b>1. Choose Project</b><br>
+                2. ...
+            ]]>
+            </p>
+
+        </div>
+        <img src="/img/nb_new_project_bkg.gif" alt="" align="bottom"/>
+    </div>
+
+    <div style="border: empty 6 6 6 6;">
+
+        <table align="center" cellspacing="6">
+            <tr>
+                <td colspan="2">
+                    <div id='titlePanel'>
+                        <p class="title">Choose project</p>
+                        <hr type="horizontal" align="bottom"/>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width="fill">
+                    <div id="categoriesPanel">
+                        <p align="top">Categories:</p>
+                        <c:scroll>
+                            <c:tree value="${projectsTreeModel}" showRoot="false"
+                                    onchange="onCategoryChange"
+                                    showRootHandles="true"/>
+                        </c:scroll>
+                    </div>
+                </td>
+                <td width="fill">
+                    <div id="projectsPanel">
+                        <p align="top">Projects:</p>
+                        <c:scroll>
+                            <c:list renderer="${projectTypeRenderer}" selectedelement="${model.selectedProject}">
+                                <c:selectItems value="${model.projects}"/>
+                            </c:list>
+                        </c:scroll>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" width="fill">
+                    <div id="descriptionPanel">
+                        <p align="top">Description:</p>
+                        <c:scroll>
+                            <c:editorPane value="${model.selectedProject.description}" type='text/html' readonly='true' >
+                                <c:attribute name="preferredSize" value="0 80" type='java.awt.Dimension'/>
+                            </c:editorPane>
+                        </c:scroll>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+    </div>
+</div>
+
+
+
+<!--Bottom buttons-->
+<div align="bottom" style="display:border">
+    <div align="top">
+        <hr type="horizontal"/>
+    </div>
+    <div style="border: empty 12 12 12 12;margin: 6 6;">
+
+
+        <table align="right" cellspacing="6">
+            <tr>
+                <td>
+                    <div>
+                        <input align='left' type='button' text="&lt; Back" enabled='false'/>
+                        <input id='nextBtn' type='button' text="Next &gt;" enabled='false' onclick="onNextClick"/>
+                    </div>
+                </td>
+                <td>
+                    <input id='finishBtn' type='button' text="Finish" enabled='false' />
+                </td>
+                <td>
+                    <input type='button' text="Cancel" />
+                </td>
+                <td>
+                    <input type='button' text="Help"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
+}}}
+
+elements of the form are placed in table. Left side of the form is done with JLabel with html as text.
+
+Tree gets model from el `${projectsTreeModel}` which resolves to `javax.swing.tree.TreeModel` in controller.
+Selecting a node in tree will invoke `onCategoryChange` method in controller, which will fill projects list.
+
+Projects list is binded to `${model.projects}`, it has custom [http://code.google.com/p/swinghtmltemplate/source/browse/trunk/src/test/java/ru/swing/html/example/nbnewproject/ProjectTypeRenderer.java renderer]. The selected item is binded to
+`${model.selectedProject}`.
+
+Now let's see controller:
+{{{
+package ru.swing.html.example.nbnewproject;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableList;
+import org.jdom.JDOMException;
+import ru.swing.html.Binder;
+import ru.swing.html.DomModel;
+import ru.swing.html.ModelElement;
+import ru.swing.html.tags.Tag;
+
+import javax.swing.*;
+import javax.swing.event.TreeModelEvent;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.IOException;
+import java.util.*;
+import java.util.List;
+
+/**
+ * Netbeans new project
+ * http://i175.photobucket.com/albums/w126/hairulazami/simple_swing_loginform_and_getText/java_app00008_500.jpg
+ */
+public class NewProjectForm extends JPanel {
+
+    private Log logger = LogFactory.getLog(getClass());
+    private DomModel domModel;
+
+    @ModelElement("projectsTreeModel")
+    private TreeModel projectsTreeModel;
+    private ProjectsService projectsService;
+
+    @ModelElement("model")
+    private Model model = new Model();
+
+    @ModelElement("projectTypeRenderer")
+    private ProjectTypeRenderer projectTypeRenderer = new ProjectTypeRenderer();
+
+
+
+    public NewProjectForm() {
+
+        projectsService = new ProjectsService();
+        projectsTreeModel = projectsService.createTreeModel();
+
+
+        model.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (domModel==null) {
+                    return;
+
+                }
+                Tag finishBtnTag = domModel.getTagById("nextBtn");
+                if (finishBtnTag==null || finishBtnTag.getComponent()==null) {
+                    return;
+                }
+                //also check is is not fake element
+                if (evt.getPropertyName().equals("selectedProject") && evt.getNewValue()!=null
+                        && !(evt.getNewValue().equals(model.empty))) {
+                    finishBtnTag.getComponent().setEnabled(true);
+                }
+                else {
+                    finishBtnTag.getComponent().setEnabled(false);
+                }
+            }
+        });
+
+        try {
+            domModel = Binder.bind(this, true);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void onCategoryChange(TreeSelectionEvent e) {
+        if (e.getNewLeadSelectionPath()!=null) {
+            //selected new node in category tree. We must get all node projects and show it in a list.
+            TreePath path = e.getNewLeadSelectionPath();
+            if (path.getPathCount()>1) {
+                //remove root
+                Object[] tokens = path.getPath();
+                String[] withoutRoot = new String[tokens.length-1];
+                for (int i = 0; i<withoutRoot.length; i++) {
+                    withoutRoot[i] = String.valueOf(tokens[i+1]);
+                }
+                //install new projects in model
+                java.util.List<ProjectType> projects = projectsService.getProjectsByPath(withoutRoot);
+                model.setProjects(projects);
+
+                //install fake element as selected element, so description area updates correctly
+                model.setSelectedProject(model.empty);
+            }
+        }
+    }
+
+
+    public void onNextClick() {
+        logger.info("Selected project type: "+model.getSelectedProject());
+    }
+
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    public static void main(String[] args) {
+        NewProjectForm form = new NewProjectForm();
+
+        JFrame f = new JFrame("New Project");
+        f.setSize(800, 700);
+
+        f.getContentPane().add(form);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
+    }
+
+
+    public class Model {
+
+
+        public final ProjectType empty = new ProjectType("", "", "", null);
+
+        private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+        private java.util.List<ProjectType> projects = ObservableCollections.observableList(new ArrayList<ProjectType>());
+        private ProjectType selectedProject;
+
+        public List<ProjectType> getProjects() {
+            return projects;
+        }
+
+        public void setProjects(List<ProjectType> projects) {
+            Object old = this.projects;
+            //this way we'll keep ObservableCollections
+            this.projects.clear();
+            this.projects.addAll(projects);
+            pcs.firePropertyChange("projects", old, projects);
+        }
+
+        public ProjectType getSelectedProject() {
+            return selectedProject;
+        }
+
+        public void setSelectedProject(ProjectType selectedProject) {
+            Object old = this.selectedProject;
+            this.selectedProject = selectedProject == null ? empty : selectedProject;
+            pcs.firePropertyChange("selectedProject", old, this.selectedProject);
+        }
+
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+            pcs.addPropertyChangeListener(listener);
+        }
+
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+            pcs.removePropertyChangeListener(listener);
+        }
+    }
+
+}
+
+}}}
+
+
+First thing to notice: we created special `empty` element in model. Then set eval
+{{{
+model.setSelectedProject(null);
+}}}
+we set the selected element to our `empty` element, so beans binding doesn't goes mad of it (it works bad with null).
+With this we update description area correctly.
+
+Second thing to notice, we use special type of collection for projects elements:
+{{{
+private java.util.List<ProjectType> projects = ObservableCollections.observableList(new ArrayList<ProjectType>());
+}}}
+this is from beans binding project, it allows us to correctly bind elements to list.
+Look at setter, we do not reset the `projects` property, instead we clear collection and use `addAll` to fill it.
