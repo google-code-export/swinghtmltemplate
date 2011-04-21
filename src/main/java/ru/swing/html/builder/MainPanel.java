@@ -4,6 +4,7 @@ import org.jdom.JDOMException;
 import ru.swing.html.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayInputStream;
@@ -45,8 +46,11 @@ public class MainPanel {
                 InputStream in = new ByteArrayInputStream(html.getBytes());
                 try {
                     DomModel model = DomLoader.loadModel(in);
-                    DomConverter.toSwing(model);
-                    JComponent root = model.getRootTag().getChildByName("body").getComponent();
+
+                    PreviewPanel previewPanel = new PreviewPanel();
+                    previewPanel.setModel(model);
+                    previewPanel.compose();
+
 
                     Builder builder = Builder.getInstance();
                     JDialog preview = new JDialog(builder, "Preview");
@@ -55,7 +59,7 @@ public class MainPanel {
                             builder.getLocation().x+(builder.getWidth() - preview.getWidth()) / 2,
                             builder.getLocation().y+(builder.getHeight() - preview.getHeight()) / 3);
                     preview.setModal(true);
-                    preview.getContentPane().add(root);
+                    preview.getContentPane().add(previewPanel);
                     preview.setVisible(true);
 
 
@@ -70,7 +74,11 @@ public class MainPanel {
 
         clearBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                content.setText("");
+                content.setText("<html>\n" +
+                        "<body>\n" +
+                        "<p>qq</p>\n" +
+                        "</body>\n" +
+                        "</html>");
             }
         });
     }
