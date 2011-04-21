@@ -98,6 +98,13 @@ public class PreviewPanel extends JPanel {
     }
 
 
+    public List<Attribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<Attribute> attributes) {
+        this.attributes = attributes;
+    }
 
     public DomModel getModel() {
         return model;
