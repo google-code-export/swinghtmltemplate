@@ -584,6 +584,91 @@ public class CreateProjectForm extends JPanel {
 }}}
 
 
+=== dataTable ===
+Tag is converted to the `javax.swing.JTable`.
+
+Use this tag to iterate through list of simular items (with binding to it). Items will be displayed in table, one item per row.
+Data will be retrieved with `value` attribute value. It is EL, pointing to `java.util.List` model's property.
+Use `org.jdesktop.observablecollections.ObservableCollections.observableList()` to automatically update table's
+model on adding/removing element to model's list.
+
+To specify columns for a table, use `<c:column/>` tag. The `value` attribute of `column` tag must resolve item's
+property to display in this column.
+
+
+Example:
+
+domain object:
+{{{
+public class Person {
+    private String name;
+    private String email;
+    ... //getters and setters with propertyChangeSupport usage
+}
+}}}
+
+
+model:
+{{{
+public class Model {
+    private List<Person> persons;
+    private Person selectedPerson;
+
+    public Model() {
+        persons = org.jdesktop.observablecollections.ObservableCollections.observableList(new ArrayList());
+        //fill some data
+        persons.add(new Person());
+        persons.add(new Person());
+        persons.add(new Person());
+    }
+
+    ...//getters and setters
+}
+}}}
+
+controller:
+{{{
+public class FormPanel extends JPanel {
+
+    @ModelAttribute("model")
+    private Model model = new Model();
+
+    ...
+}
+}}}
+
+form:
+{{{
+<c:dataTable value="${model.persons}" selectedElement="${model.selectedPerson}">
+    <c:column value="name" title="Name">
+    <c:column value="email">
+</c:dataTable>
+}}}
+
+in this example we create table with 2 columns: name and email. Both resolve corresponding properties of `Person` class.
+Table will have 3 rows (as we added 3 persons in `Model` constructor). Take a look that all table's cells are binded
+to model values, so changing cell's value will update model's value.
+
+
+To change selection model of the table, use `selectionType` attribute. Possible values are:
+ * `single` - the same as `ListSelectionModel.SINGLE_SELECTION`
+ * `multiple` - the same as `ListSelectionModel.SINGLE_INTERVAL_SELECTION`
+ * `custom` - the same as `ListSelectionModel.MULTIPLE_INTERVAL_SELECTION`
+
+You can track selection with `selectedElement` attribute (`selectedElements` to track multiple selection).
+The value of this attribute is EL pointing to model's property. This is read-only binding, so changing model's
+property value won't change selection, but changing selection will update property's value.
+
+
+Use `autoresize` attribute to specify table's column resizing strategy (JTable.setAutoResizeMode()). Possible values are:
+ * `off` - the same as `JTable.AUTO_RESIZE_OFF`
+ * `all` - the same as `JTable.AUTO_RESIZE_ALL_COLUMNS`
+ * `last` - the same as `JTable.AUTO_RESIZE_LAST_COLUMN`
+ * `next` - the same as `JTable.AUTO_RESIZE_NEXT_COLUMN`
+ * `auto` - the same as `JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS`
+
+
+
 === editorPane ===
 Tag is converted to the `javax.swing.JEditorPane`. The content type for the document is set with `type` attribute:
 {{{
