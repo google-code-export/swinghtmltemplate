@@ -721,6 +721,111 @@ Tag is converted to the `javax.swing.JEditorPane`. The content type for the docu
 The `value` attibute, if presents, sets the binding for the component. If it is absent, then usual text component
 attributes are applied: the content of the tag is set as component text.
 
+
+
+
+=== formTable ===
+This tag allows you to bind specific cells to model properties. It is converted to `javax.swing.JTable`.
+
+Supported attributes:
+ * `autoresize` - see below
+ * `showHeader` - show/hide table's header
+
+
+
+Use `autoresize` attribute to specify table's column resizing strategy (JTable.setAutoResizeMode()). Possible values are:
+ * `off` - the same as `JTable.AUTO_RESIZE_OFF`
+ * `all` - the same as `JTable.AUTO_RESIZE_ALL_COLUMNS`
+ * `last` - the same as `JTable.AUTO_RESIZE_LAST_COLUMN`
+ * `next` - the same as `JTable.AUTO_RESIZE_NEXT_COLUMN`
+ * `auto` - the same as `JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS`
+
+Tag supports child elements the same way, the usual `<table>` tag does. No cellspan/rowspan is supported (since JTable
+doesn't support it). `th` is not supported.
+
+The cell content must be specified with `<td>` tag. To output text, just place it inside `td`. To provide binding
+with model fill `value` attribute of `td` with propper EL:
+{{{
+<c:formTable>
+  <tr>
+    <td>Name</td>
+    <td value='${model.person.name}'></td>
+  </td>
+</c:formTable>
+}}}
+
+The `td` child tag supports attributes:
+ * `width` - sets column width
+ * `height` - sets row height
+ * `readonly` - disables cell editing (false by default)
+ * `renderer` - sets column renderer. This is EL pointing to propper `TableCellRenderer` instance
+ * `editor` - sets column editor. This is EL pointing to propper `TableCellEditor` instance
+
+Example:
+{{{
+<c:formTable autoresize='last' showHeader='false'>
+
+  <tr>
+      <td width="150" readonly="true">Name</td>
+      <td width="50" value='${person.name}'></td>
+
+      <td width="150" readonly="true">Last name</td>
+      <td width="50" value='${person.lastName}'></td>
+  </tr>
+  <tr>
+      <td readonly="true">Age</td>
+      <td value="${person.age}" editor="${spinnerEditor}"></td>
+
+      <td readonly="true">Active</td>
+      <td value="${person.active}" editor="${booleanEditor}" renderer="${booleanRenderer}"></td>
+  </tr>
+  <tr>
+      <td readonly="true">Color</td>
+      <td height="50" value="${person.color}" renderer='${colorRenderer}' editor="${colorEditor}"></td>
+
+      <td readonly='true'>Comment</td>
+      <td editor="${textAreaEditor}"></td>
+  </tr>
+
+</c:formTable>
+
+}}}
+
+controller:
+{{{
+public class FormTableForm extends JPanel {
+
+    private DomModel domModel;
+
+    @ModelElement("person")
+    private Person person;
+
+    @ModelElement("colorEditor")
+    private ColorTableCellEditor colorEditor = new ColorTableCellEditor();
+
+    @ModelElement("spinnerEditor")
+    private SpinnerEditor spinnerEditor = new SpinnerEditor();
+
+    @ModelElement("booleanEditor")
+    private BooleanEditor checkboxEditor = new BooleanEditor();
+
+    @ModelElement("colorRenderer")
+    private ColorTableCellRenderer colorRenderer = new ColorTableCellRenderer();
+
+    @ModelElement("booleanRenderer")
+    private BooleanRenderer checkboxCellRenderer = new BooleanRenderer();
+
+    @ModelElement("textAreaEditor")
+    private TextAreaEditor textAreaEditor = new TextAreaEditor();
+
+    ...
+}
+}}}
+
+
+
+
+
 === glue ===
 Tag is converted to the component, that is returned from
 {{{
