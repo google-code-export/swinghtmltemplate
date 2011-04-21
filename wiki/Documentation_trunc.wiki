@@ -562,7 +562,34 @@ Possible attributes are:
  * `editorClass` - sets column editor. The value is the full classname of editor. Editor must contain default constructor. This attribute is ignored if `editor` is specified
 
 
+Example:
 
+form:
+{{{
+<c:dataTable value="${model.persons}">
+   <c:column value="name" title="Name" renderer="${nameRenderer}" editorClass="foo.MyCustomTableCellEditor">
+</c:dataTable>
+}}}
+
+controller:
+{{{
+public class Form extends JPanel {
+
+   @ModelElement("nameRenderer")
+   private TableCellRenderer nameRenderer = new MyCustomTableCellRenderer();
+
+}
+}}}
+
+
+custom editor:
+{{{
+package foo;
+
+public class MyCustomTableCellEditor implements TableCellEditor {
+   public MyCustomTableCellEditor() {} //default constructor
+}
+}}}
 === combobox ===
 Tag is converted to the `javax.swing.JComboBox`.
 
