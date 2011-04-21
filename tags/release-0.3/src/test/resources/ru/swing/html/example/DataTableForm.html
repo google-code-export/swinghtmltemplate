@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <link type="text/css" rel="stylesheet" href="loginform.css"/>
+</head>
+<body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
+
+<c:scroll align="center">
+    <c:dataTable value="${model.items}"
+                 autoresize="last"
+                 selectionType="multiple"
+                 selectedElements="${model.selectedPersons}"
+                 selectedElement="${model.selectedPerson}">
+
+        <c:column value="${name}" title="Name" width='250'/>
+        <c:column value="${age}" title="Age" type='java.lang.Integer' readonly="false" width='30'/>
+        <c:column value="${active}" title="Active" type='java.lang.Boolean' readonly="false" width="20"/>
+        <c:column value="${color}" title="Color" readonly='false' editor="${colorEditor}" renderer="${colorRenderer}"/>
+        
+    </c:dataTable>
+</c:scroll>
+
+<div align='bottom' style="display:box;x-boxlayout-direction: vertical;">
+    <p content='el' style="text-align:left;">My name is ${model.selectedPerson.name}, i'm ${model.selectedPerson.age} years old</p>
+
+    <div style="display:box;text-align:left;">
+        <input type="button" onclick="onClick" text="Add"/>
+        <c:strut width='6' type='horizontal'/>
+        <input type="button" onclick="onClick2" text="Modify"/>
+        <c:glue/>
+    </div>
+</div>
+</body>
+</html>
