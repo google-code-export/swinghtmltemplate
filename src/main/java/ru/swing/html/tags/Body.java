@@ -23,7 +23,7 @@ public class Body extends Tag {
     @Override
     public void applyAttributes(JComponent component) {
         if (StringUtils.isEmpty(getDisplay())) {
-            setAttribute("fisplay", "flow");
+            setAttribute("display", "flow");
         }
         super.applyAttributes(component);
     }

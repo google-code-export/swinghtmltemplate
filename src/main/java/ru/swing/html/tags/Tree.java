@@ -10,6 +10,8 @@ import ru.swing.html.tags.event.TreeSelectionDelegator;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import java.lang.*;
 import java.lang.Object;
@@ -23,6 +25,7 @@ public class Tree extends Tag {
     private Log logger = LogFactory.getLog(getClass());
     private boolean showRoot = true;
     private boolean showRootHandles = false;
+    private String renderer;
     private TreeSelectionDelegator treeModelDelegator;
 
     @Override
@@ -56,6 +59,26 @@ public class Tree extends Tag {
 
         tree.setRootVisible(isShowRoot());
         tree.setShowsRootHandles(isShowRootHandles());
+
+        //install renderer
+        String rendererAttr = getRenderer();
+        if (StringUtils.isNotEmpty(rendererAttr)) {
+            ELProperty rendererProperty = ELProperty.create(rendererAttr);
+            Object rendererVal = rendererProperty.getValue(getModel().getModelElements());
+            if (renderer == null) {
+                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + " is null");
+            }
+            else if (rendererVal instanceof TreeCellRenderer) {
+                tree.setCellRenderer((TreeCellRenderer) rendererVal);
+                logger.trace(toString() + ": set renderer: '" + rendererAttr + "'");
+            }
+            else {
+                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + " is not instance of "+TreeCellRenderer.class.getName());
+            }
+
+        }
+
+
 
         //install model selection listener
         final String onchangeMethod = getAttribute("onchange");
@@ -91,6 +114,9 @@ public class Tree extends Tag {
         else if ("showroothandles".equals(name)) {
             setShowRootHandles(Boolean.valueOf(value));
         }
+        else if ("renderer".equals(name)) {
+            setRenderer(value);
+        }
 
     }
 
@@ -108,5 +134,13 @@ public class Tree extends Tag {
 
     public void setShowRootHandles(boolean showRootHandles) {
         this.showRootHandles = showRootHandles;
+    }
+
+    public String getRenderer() {
+        return renderer;
+    }
+
+    public void setRenderer(String renderer) {
+        this.renderer = renderer;
     }
 }
