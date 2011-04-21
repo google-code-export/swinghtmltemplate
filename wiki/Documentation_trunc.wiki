@@ -549,6 +549,41 @@ Example:
 </html>
 }}}
 
+=== combobox ===
+Tag is converted to the `javax.swing.JComboBox`.
+
+Currently it supports only one child tag: an `selectItems` tag, which holds the EL for list model. If it doesn't present,
+no model is installed.
+
+JComboBox's model is evaluated with jsr-255 binding. Source bean property must be of type `java.util.List`. Use
+`org.jdesktop.observablecollections.ObservableCollections.observableList()` to create observable list, so adding/removing
+elements to/from collection will add/remove elements from JComboBox model.
+
+You can bind selected combobox element with `selectedElement` attribute. Currently, due to limitations of better beans
+binding, this is readonly bindings (changing model won't update JList selection).
+
+{{{
+<c:combobox align='center' selectedElement="${model.runtime}">
+    <c:selectItems value="${runtimeValues}"/>
+</c:combobox>
+}}}
+
+{{{
+public class CreateProjectForm extends JPanel {
+
+    ...
+
+    @ModelElement("runtimeValues")
+    private List<String> runtimeValues = Arrays.asList("Apache Tomcat v5.5", "Apache Tomcat v6.0");
+
+    @ModelElement("model")
+    private Model model = new Model();
+
+    ...
+}
+}}}
+
+
 === editorPane ===
 Tag is converted to the `javax.swing.JEditorPane`. The content type for the document is set with `type` attribute:
 {{{
