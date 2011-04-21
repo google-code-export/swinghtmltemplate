@@ -1426,10 +1426,10 @@ where
   * {{{color}}} - caption's color in format of {{{ColorFactory.getColor(String)}}}
 Examples:
 {{{
-title "Foo"
-title "Foo" (empty 12 12 12 12)
-title "Foo" (empty 12 12 12 12) left bottom
-title "Foo" (empty 12 12 12 12) left bottom (Arial) red
+titled "Foo"
+titled "Foo" (empty 12 12 12 12)
+titled "Foo" (empty 12 12 12 12) left bottom
+titled "Foo" (empty 12 12 12 12) left bottom (Arial) red
 }}}
 
 
