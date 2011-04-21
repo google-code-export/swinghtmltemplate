@@ -20,7 +20,7 @@ Add the following too your pom.xml:
         <dependency>
             <groupId>com.googlecode.swinghtmltemplate</groupId>
             <artifactId>swinghtmltemplate</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
         </dependency>
     </dependencies>
 
