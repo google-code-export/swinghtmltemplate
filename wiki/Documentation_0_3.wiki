@@ -1,4 +1,4 @@
-#summary documentation for trunk
+#summary documentation for version 0.3
 #labels documentation
 
 <wiki:toc max_depth="2" />

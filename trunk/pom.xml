@@ -8,7 +8,7 @@
     <artifactId>swinghtmltemplate</artifactId>
     <packaging>jar</packaging>
     <name>Swing html template</name>
-    <version>0.2</version>
+    <version>0.3</version>
     <description>Allows easy manipulation of swing components and layouts</description>
     <url>http://code.google.com/p/swinghtmltemplate/</url>
     <licenses>
