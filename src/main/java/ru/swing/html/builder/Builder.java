@@ -25,7 +25,7 @@ public class Builder extends JFrame {
 
 
         MainPanel panel = new MainPanel();
-        getContentPane().add(panel.getRootPanel());
+        getContentPane().add(panel);
 
     }
 

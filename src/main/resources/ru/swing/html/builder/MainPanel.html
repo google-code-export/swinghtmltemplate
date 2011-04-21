@@ -1,8 +1,8 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
 
 <head>
 
-    <link />
     <style type="text/css">
         body {
             display:border;
@@ -12,17 +12,17 @@
     </style>
 </head>
 
-<body id='rootPanel'>
+<body>
 
 <div id="toolbar" style="display: box" align="top">
-    <input type="button" id="build" text="Build"/>
-    <strut type="horizontal" width='6'/>
-    <input type="button" id="clear" text="Clear"/>
+    <input type="button" id="build" text="Build" onclick="build"/>
+    <c:strut type="horizontal" width='6'/>
+    <input type="button" id="clear" text="Clear" onclick="clear"/>
 </div>
 
-<scroll>
+<c:scroll>
     <textarea id="content"></textarea>
-</scroll>
+</c:scroll>
 
 </body>
 

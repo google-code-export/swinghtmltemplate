@@ -18,21 +18,15 @@ import java.io.InputStream;
  * Time: 12:26:36
  * </pre>
  */
-public class MainPanel {
+public class MainPanel extends JPanel {
 
-    @Bind("build")
-    private JButton buildBtn;
-    @Bind("clear")
-    private JButton clearBtn;
     @Bind("content")
     private JTextArea content;
-    @Bind("rootPanel")
-    private JPanel rootPanel;
 
 
     public MainPanel() {
         try {
-            Binder.bind(this);
+            Binder.bind(this, true);
         } catch (JDOMException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -40,51 +34,44 @@ public class MainPanel {
         }
 
 
-        buildBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String html = content.getText();
-                InputStream in = new ByteArrayInputStream(html.getBytes());
-                try {
-                    DomModel model = DomLoader.loadModel(in);
+    }
 
-                    PreviewPanel previewPanel = new PreviewPanel();
-                    previewPanel.setModel(model);
-                    previewPanel.compose();
+    public void clear() {
+        content.setText("<html>\n" +
+                "<body>\n" +
+                "<p>qq</p>\n" +
+                "</body>\n" +
+                "</html>");
+    }
 
+    public void build() {
+        String html = content.getText();
+        InputStream in = new ByteArrayInputStream(html.getBytes());
+        try {
+            DomModel model = DomLoader.loadModel(in);
 
-                    Builder builder = Builder.getInstance();
-                    JDialog preview = new JDialog(builder, "Preview");
-                    preview.setSize(500, 400);
-                    preview.setLocation(
-                            builder.getLocation().x+(builder.getWidth() - preview.getWidth()) / 2,
-                            builder.getLocation().y+(builder.getHeight() - preview.getHeight()) / 3);
-                    preview.setModal(true);
-                    preview.getContentPane().add(previewPanel);
-                    preview.setVisible(true);
+            PreviewPanel previewPanel = new PreviewPanel();
+            previewPanel.setModel(model);
+            previewPanel.compose();
 
 
-                } catch (JDOMException e1) {
-                    e1.printStackTrace();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-            }
-        });
+            Builder builder = Builder.getInstance();
+            JDialog preview = new JDialog(builder, "Preview");
+            preview.setSize(500, 400);
+            preview.setLocation(
+                    builder.getLocation().x+(builder.getWidth() - preview.getWidth()) / 2,
+                    builder.getLocation().y+(builder.getHeight() - preview.getHeight()) / 3);
+            preview.setModal(true);
+            preview.getContentPane().add(previewPanel);
+            preview.setVisible(true);
 
 
-        clearBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                content.setText("<html>\n" +
-                        "<body>\n" +
-                        "<p>qq</p>\n" +
-                        "</body>\n" +
-                        "</html>");
-            }
-        });
+        } catch (JDOMException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
 
-    public JPanel getRootPanel() {
-        return rootPanel;
-    }
 }
