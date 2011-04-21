@@ -549,6 +549,20 @@ Example:
 </html>
 }}}
 
+=== column ===
+Special tag for specifying columns in dataTable tag.
+Possible attributes are:
+ * `value` - this is the name of `dataTable` item property.
+ * `title` - sets the title of the column
+ * `type` - sets the type of the column (used by editors/renderers), e.g. `java.lang.Integer`
+ * `width` - sets column width
+ * `renderer` - sets column renderer. This is EL pointing to propper `TableCellRenderer` instance
+ * `rendererClass` - sets column renderer. The value is the full classname of renderer. Renderer must contain default constructor. This attribute is ignored if `renderer` is specified
+ * `editor` - sets column editor. This is EL pointing to propper `TableCellEditor` instance
+ * `editorClass` - sets column editor. The value is the full classname of editor. Editor must contain default constructor. This attribute is ignored if `editor` is specified
+
+
+
 === combobox ===
 Tag is converted to the `javax.swing.JComboBox`.
 
@@ -764,6 +778,17 @@ public class CustomRenderer extends DefaultListCellRenderer implements ListCellR
 
 
 
+=== selectItems ===
+Special tag to specify model items for `combobox`, `list`, `dataTable` etc tags. It supports one attribute:
+`value`. It is EL pointing to propper model property, which type must be `java.util.List`.
+
+{{{
+<c:combobox selectedElement="${model.runtime}">
+    <c:selectItems value="${runtimeValues}"/>
+</c:combobox>
+}}}
+
+
 === scroll ===
 Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are
 more than 1 child tags, warning will be printed to the log.
@@ -865,6 +890,26 @@ Example:
 
     </div>
 </c:tabs>
+}}}
+
+
+
+=== tree ===
+The tag is converted to `javax.swing.JTree` component.
+
+Supported attributes:
+ * `value` - EL, pointing to `javax.swing.tree.TreeModel` instance which will be used as tree model
+ * `showRoot` - show tree root or not. Values: `true` or `false`
+ * `showRootHandles` - show tree root handles or not. Values: `true` or `false`
+
+The tag supports events:
+ * `onchange` - the name of the controller's method to invoke on selection change. The method must take no arguments or take 1 argument of type `javax.swing.event.TreeSelectionEvent`
+
+Example:
+{{{
+<c:scroll>
+    <c:tree value="${categoriesTreeModel}" showRoot="false" onchange="onCategoryChange" showRootHandles="true"/>
+</c:scroll>
 }}}
 
 

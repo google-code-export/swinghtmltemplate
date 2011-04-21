@@ -162,7 +162,7 @@ public class DataTable extends Tag {
                         logger.warn(toString()+ ": can't set column renderer. Object '"+col.getEditor() + " is not instance of "+TableCellEditor.class.getName());
                     }
                 }
-                if (StringUtils.isNotEmpty(col.getEditorClass())) {
+                else if (StringUtils.isNotEmpty(col.getEditorClass())) {
                     try {
                         Class columnClass = Utils.convertStringToClass(col.getEditorClass());
                         if (TableCellEditor.class.isAssignableFrom(columnClass)) {
