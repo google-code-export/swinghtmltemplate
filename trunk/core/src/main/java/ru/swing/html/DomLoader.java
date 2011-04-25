@@ -47,37 +47,47 @@ public class DomLoader {
         rootTag.setModel(model);
         model.setRootTag(rootTag);
         parseElement(root, rootTag);
+        rootTag.afterChildElementsConverted();
+
+        //child tag may substitute model, we must reassign it to all tags
+        model = rootTag.getModel();
+        for (Tag t : model.query("*")) {
+            t.setModel(model);
+        }
 
         model.fillIds();
         return model;
     }
 
     /**
-     * Преобразует jdom-элемент в тег.
-     * @param element jdom-элемент
-     * @param tag тег
+     * Converts jdom-element to the tag
+     * @param element jdom-element
+     * @param tag tag
      */
     private static void parseElement(Element element, Tag tag) {
-        //присваиваем имя тега
+        //assign tag's name
         tag.setName(element.getName().toLowerCase());
-        //присваиваем атрибуты
+        //assign attributes
         for (java.lang.Object o : element.getAttributes()) {
             org.jdom.Attribute a = (org.jdom.Attribute) o;
             tag.setAttribute(a.getName().toLowerCase(), a.getValue());
         }
 
-        //присваиваем содержимое тега
+        //assign tag's content
         tag.setContent(element.getText());
 
-        //рекурсивно обрабатываем дочерние теги
+        //recursively convert children
         for (java.lang.Object o : element.getChildren()) {
             Element child = (Element) o;
             Tag childTag = registry.getTagFactory(child.getNamespaceURI()).createTag(child);
             tag.addChild(childTag);
             parseElement(child, childTag);
+            //child tag may substitute model
+            tag.setModel(childTag.getModel());
         }
 
         tag.afterChildElementsConverted();
+
     }
 
 

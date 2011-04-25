@@ -91,16 +91,7 @@ public class Include extends Tag {
         body = res[0];
 
         //append all body's children
-        List<Tag> bodyChildren = body.getChildren();
-        Tag parent = getParent();
-        if (bodyChildren !=null && !bodyChildren.isEmpty() && parent !=null) {
-
-            parent.removeChild(this);
-
-            for (Tag bodyChild : bodyChildren) {
-                parent.addChild(bodyChild);
-            }
-        }
+        getModel().mergeTag(this, body);
 
     }
 
