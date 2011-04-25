@@ -205,7 +205,7 @@ public class DomModel {
      * @param elPath описывает свойство элемента модели, которое следует синхронизировать.
      * @param component компонент, с которым следует выполнять синхронизацию.
      * @param componentProperty свойства компонента, которое требуется синхронизировать.
-     * @see #bind(String, javax.swing.JComponent, org.jdesktop.beansbinding.BeanProperty, org.jdesktop.beansbinding.AutoBinding.UpdateStrategy)
+     * @see #bind(String, javax.swing.JComponent, org.jdesktop.beansbinding.Property, org.jdesktop.beansbinding.AutoBinding.UpdateStrategy)
      */
     public void bind(String elPath, JComponent component, Property componentProperty) {
         bind(elPath, component, componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);

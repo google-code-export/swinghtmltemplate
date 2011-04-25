@@ -8,8 +8,16 @@ import ru.swing.html.tags.Tag;
 import java.io.InputStream;
 
 /**
+ * Tests &lt;compositon> tag
  */
 public class CompositionTest extends TestCase {
+
+    public void testAttribute() throws Exception {
+        Composition composition = new Composition();
+        String value = "foo";
+        composition.setAttribute("template", value);
+        assertEquals(value, composition.getTemplate());
+    }
 
     public void testComposition() throws Exception {
 

@@ -9,6 +9,13 @@ import java.io.InputStream;
 
 public class IncludeTest extends TestCase {
 
+    public void testAttributes() throws Exception {
+        Include include = new Include();
+        String value = "foo";
+        include.setAttribute("src", value);
+        assertEquals("'src' attribute must be treated as source", value, include.getSource());
+    }
+
     public void testInclude() throws Exception {
         InputStream source = getClass().getResourceAsStream("IncludeSource.html");
 
