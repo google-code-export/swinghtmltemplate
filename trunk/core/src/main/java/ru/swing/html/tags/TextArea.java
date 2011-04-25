@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.BeanProperty;
 import ru.swing.html.DomModel;
 import ru.swing.html.Utils;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 

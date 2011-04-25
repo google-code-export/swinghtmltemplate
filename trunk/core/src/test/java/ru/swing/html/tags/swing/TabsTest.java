@@ -1,9 +1,10 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import junit.framework.TestCase;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.tags.swing.Tabs;
 
 import javax.swing.*;
 import java.awt.*;

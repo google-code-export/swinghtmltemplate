@@ -20,7 +20,7 @@ public class TextAreaTest extends TestCase {
 
     public void testCreateComponent() throws Exception {
 
-        TextArea tag = new TextArea();
+        ru.swing.html.tags.TextArea tag = new ru.swing.html.tags.TextArea();
         assertEquals(JTextArea.class, DomConverter.convertComponent(tag).getClass());
 
 

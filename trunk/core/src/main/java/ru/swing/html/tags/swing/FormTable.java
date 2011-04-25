@@ -1,4 +1,4 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,6 +10,7 @@ import ru.swing.html.components.CompoundTableEditor;
 import ru.swing.html.components.CompoundTableRenderer;
 import ru.swing.html.components.TableCellBinding;
 import ru.swing.html.css.SelectorGroup;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

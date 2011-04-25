@@ -1,9 +1,10 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.BeanProperty;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;

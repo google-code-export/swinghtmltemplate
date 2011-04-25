@@ -1,12 +1,14 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import junit.framework.TestCase;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.tags.swing.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.ScrollPane;
 import java.io.ByteArrayInputStream;
 
 /**
@@ -21,7 +23,7 @@ public class ScrollTest extends TestCase {
     public void testConvertsToJPanel() throws Exception {
         DomModel model = new DomModel();
 
-        ScrollPane tag = new ScrollPane();
+        ru.swing.html.tags.swing.ScrollPane tag = new ru.swing.html.tags.swing.ScrollPane();
         tag.setModel(model);
 
         JComponent jComponent = DomConverter.convertComponent(tag);

@@ -1,4 +1,4 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -11,6 +11,7 @@ import ru.swing.html.Utils;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;

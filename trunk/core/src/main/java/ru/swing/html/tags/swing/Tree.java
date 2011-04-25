@@ -1,10 +1,11 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.ELProperty;
 import ru.swing.html.Utils;
+import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.event.TreeSelectionDelegator;
 
 import javax.swing.*;

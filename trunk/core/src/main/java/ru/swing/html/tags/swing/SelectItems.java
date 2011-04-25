@@ -1,6 +1,7 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import ru.swing.html.css.SelectorGroup;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import java.util.Map;
