@@ -56,4 +56,25 @@ public class CompositionTest extends TestCase {
 
 
     }
+
+
+    public void testCompositionWithInclude() throws Exception {
+        InputStream source = getClass().getResourceAsStream("CompositionIncludeSource.html");
+
+        DomModel model = DomLoader.loadModel(source);
+        assertNotNull(model);
+
+        Tag html = model.getRootTag();
+        assertEquals("html", html.getName());
+        assertEquals(2, html.getChildren().size());//<head> and <body>
+        assertEquals("head", html.getChildren().get(0).getName());
+
+        Tag body = html.getChildren().get(1);
+        assertEquals("body", body.getName());
+
+        assertEquals(1, body.getChildren().size());
+        assertEquals("p", body.getChildren().get(0).getName());
+        assertEquals("Hello world", body.getChildren().get(0).getContent());
+
+    }
 }
