@@ -28,8 +28,8 @@ public class Table extends Tag {
     private Set<TagPosition> tags = new HashSet<TagPosition>();
     private TableLayoutSupport tableLayoutSupport;
     private SpanMap spanMap = new SpanMap();
-    private ru.swing.html.tags.swing.List<String> widths = new ArrayList<String>();
-    private ru.swing.html.tags.swing.List<String> heights = new ArrayList<String>();
+    private List<String> widths = new ArrayList<String>();
+    private List<String> heights = new ArrayList<String>();
 
     @Override
     public JComponent createComponent() {
@@ -141,7 +141,7 @@ public class Table extends Tag {
                 //так как мы обрабатываем тег td вручную, то необходимо вручную применить все глобальные стили
                 Map<String, String> old = new HashMap<String, String>();
 
-                ru.swing.html.tags.swing.List<CssBlock> css = child.getModel().getGlobalStyles();
+                List<CssBlock> css = child.getModel().getGlobalStyles();
                 for (CssBlock block : css) {
                     if (block.matches(child)) {
                         for (String attrName : block.getStyles().keySet()) {

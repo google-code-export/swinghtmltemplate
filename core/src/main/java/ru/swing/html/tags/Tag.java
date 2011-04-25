@@ -186,13 +186,24 @@ public class Tag {
 
 
     /**
-     * Добавляет дочерний тег. Для дочернего тега проставляется родительский тег и dom-модель
-     * @param tag дочерний тег
+     * Adds child tag. Parent tag and dom-model are assigned to child.
+     * This does not affect on swing components, so this methos is useless after converting to swing.
+     * @param tag child tag
      */
     public void addChild(Tag tag) {
         tag.setParent(this);
         tag.setModel(getModel());
         children.add(tag);
+    }
+
+    /**
+     * Removes child tag.
+     * This does not affect on swing components, so this methos is useless after converting to swing.
+     * @param tag child tag
+     */
+    public void removeChild(Tag tag) {
+        tag.setParent(null);
+        children.remove(tag);
     }
 
     public List<Tag> getChildren() {
