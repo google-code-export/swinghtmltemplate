@@ -16,6 +16,7 @@ public class DomLoader {
         registerLibrary(null, new HtmlTagFactory());
         registerLibrary("http://www.w3.org/1999/xhtml", new HtmlTagFactory());
         registerLibrary("http://www.oracle.com/swing", new SwingTagFactory());
+        registerLibrary("http://swinghtmltemplate.googlecode.com/ui", new UITagFactory());
     }
 
     
