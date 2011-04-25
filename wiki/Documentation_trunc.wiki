@@ -1055,6 +1055,59 @@ Example:
 
 == `http://swinghtmltemplate.googlecode.com/ui` namespace ==
 
+=== composition ===
+This tag allows you to compose dom model with template, almost the same way as in facelets.
+
+The template is assigned with `template` attribute. The value of the `template` must be in
+`getClass().getResourceAsStream()` format.
+
+This tag must contain only `<define>` children. Each child defines an named snippet to be inserted into
+template.
+
+
+When composition is used, everything outside the `composition` tag is ignored.
+
+Example:
+{{{
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+  "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:c='http://www.oracle.com/swing'
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head>
+    <title></title>
+</head>
+<body>
+
+    <ui:composition template='ru/swing/html/tags/ui/CompositionTemplate.html'>
+
+        <ui:define name='content'>
+            <c:scroll>
+                <textarea>
+            </c:scroll>
+        </ui:define>
+
+        <ui:define name='control'>
+            <div>
+                <input type="button" text="OK">
+                <input type="button" text="Cancel">
+            </div>
+        </ui:define>
+
+    </ui:composition>
+
+
+</body>
+</html>
+
+}}}
+
+
+=== define ===
+This tag defines an snippet to be inserted into template using `<composition>` tag.
+The required attribute is `name` which defines a name of the snippet. This name is used in `<insert>`
+tag when template is built.
+
+
 
 === include ===
 This tag allows you to include another document (target) content into your document (source).
@@ -1100,10 +1153,9 @@ The value of the `src` attribute is the address of the target html file in `getC
 
 
 
-
-
-
-
+=== insert ===
+This tag inserts named snippet (defined with `<define>` tag) into a template. The name of the snippet
+is set with `name` attrubute.
 
 
 
