@@ -80,7 +80,7 @@ public class DomModel {
     private void fillIdsWithinTag(Tag tag) {
         if (StringUtils.isNotEmpty(tag.getId())) {
             if (tagsById.containsKey(tag.getId())) {
-                logger.warn("Duplicapte id: "+tag.getId());
+                logger.warn("Duplicate id: "+tag.getId());
             }
             else {
                 tagsById.put(tag.getId(), tag);
@@ -285,5 +285,35 @@ public class DomModel {
 
     public Map<String, Object> getModelElements() {
         return model;
+    }
+
+
+    /**
+     * Removes source tag from model. Every direct child of target's tag will be inserted into source's parent tag.
+     *
+     * Do nothing if source is root tag (source.getParent() returns null).
+     *
+     * @param sourceTag tag to remove
+     * @param targetTag tag, whose children will be inserted
+     */
+    public void mergeTag(Tag sourceTag, Tag targetTag) {
+        List<Tag> targetChildren = targetTag.getChildren();
+        Tag parent = sourceTag.getParent();
+        if (targetChildren !=null && parent !=null) {
+
+            parent.removeChild(sourceTag);
+
+            for (Tag bodyChild : targetChildren) {
+                parent.addChild(bodyChild);
+            }
+        }
+
+    }
+
+    /**
+     * Clears all id-tag mappings.
+     */
+    public void resetIds() {
+        tagsById.clear();
     }
 }
