@@ -1,11 +1,12 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdesktop.beansbinding.BeanProperty;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 
-public class EditorPane extends Tag  {
+public class EditorPane extends Tag {
 
     @Override
     public JComponent createComponent() {

@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import ru.swing.html.tags.*;
+import ru.swing.html.tags.swing.*;
 
 /**
  * Factory for swing tags, like &lt;strut&gt;.

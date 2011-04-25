@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import ru.swing.html.tags.*;
 import ru.swing.html.tags.Object;
+import ru.swing.html.tags.swing.*;
 
 /**
  * Factory for default html tags, like &lt;div&gt;.

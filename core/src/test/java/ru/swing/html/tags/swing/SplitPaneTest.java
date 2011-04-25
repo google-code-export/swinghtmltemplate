@@ -1,8 +1,13 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import junit.framework.TestCase;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomModel;
+import ru.swing.html.tags.Div;
+import ru.swing.html.tags.P;
+import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.swing.Attribute;
+import ru.swing.html.tags.swing.SplitPane;
 
 import javax.swing.*;
 import java.awt.*;

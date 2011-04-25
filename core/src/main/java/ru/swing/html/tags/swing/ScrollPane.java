@@ -1,9 +1,10 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
 import ru.swing.html.css.SelectorGroup;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import java.util.ArrayList;

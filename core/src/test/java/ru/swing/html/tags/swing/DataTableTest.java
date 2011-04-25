@@ -1,4 +1,4 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import junit.framework.TestCase;
 import org.jdesktop.observablecollections.ObservableCollections;

@@ -1,4 +1,4 @@
-package ru.swing.html.tags;
+package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,6 +10,8 @@ import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import ru.swing.html.css.SelectorGroup;
+import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.swing.SelectItems;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
