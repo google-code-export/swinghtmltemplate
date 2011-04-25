@@ -503,7 +503,7 @@ Example:
 
 
 
-== 'http://www.oracle.com/swing' namespace ==
+== `http://www.oracle.com/swing` namespace ==
 
 === attribute ===
 Special tag for assigning value to the parent's tag component. Doesn't convert to any swing component.
@@ -1043,6 +1043,69 @@ Example:
     <c:tree value="${categoriesTreeModel}" showRoot="false" onchange="onCategoryChange" showRootHandles="true"/>
 </c:scroll>
 }}}
+
+
+
+
+
+
+
+
+
+
+== `http://swinghtmltemplate.googlecode.com/ui` namespace ==
+
+
+=== include ===
+This tag allows you to include another document (target) content into your document (source).
+
+The address of the target is assigned with `src` attribute. Target document must contain `<body>` tag.
+All direct children of target's body tag will be inserted into the parent of the `<include>` tag in the
+source document. The `<include>` tag will be removed from it's parent.
+
+Example:
+source:
+{{{
+<html>
+<body>
+    <div>
+        <include src='ru/example/target.html'/>
+    </div>
+</body>
+</html>
+}}}
+
+target (`/src/ru/example/target.html`):
+{{{
+<html>
+<body>
+    <input type='button'/>
+</body>
+</html>
+}}}
+
+result:
+{{{
+<html>
+<body>
+    <div>
+        <input type='button'/>
+    </div>
+</body>
+</html>
+}}}
+
+
+The value of the `src` attribute is the address of the target html file in `getClass().getResourceAsStream()` format.
+
+
+
+
+
+
+
+
+
 
 
 = Layout managers =
