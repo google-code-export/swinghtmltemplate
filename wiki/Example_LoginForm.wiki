@@ -1,4 +1,9 @@
-#Пример написания формы авторизации
+#summary Details on how to implement "Login" form
+#labels example
+
+
+http://swinghtmltemplate.googlecode.com/files/loginform.jpg
+
 == HTML ==
 {{{
 <html>
@@ -135,6 +140,3 @@ public class LoginForm {
 }
 }}}
 
-== Result ==
-
-http://swinghtmltemplate.googlecode.com/files/loginform.jpg
