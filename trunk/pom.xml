@@ -6,9 +6,9 @@
 
     <groupId>com.googlecode.swinghtmltemplate</groupId>
     <artifactId>swinghtmltemplate</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>Swing html template</name>
-    <version>0.3</version>
+    <version>0.4-SNAPSHOT</version>
     <description>Allows easy manipulation of swing components and layouts</description>
     <url>http://code.google.com/p/swinghtmltemplate/</url>
     <licenses>
@@ -18,6 +18,10 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <modules>
+        <module>core</module>
+    </modules>
 
     <scm>
         <url>http://code.google.com/p/swinghtmltemplate/source/browse/</url>
