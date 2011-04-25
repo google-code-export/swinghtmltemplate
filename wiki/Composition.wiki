@@ -1,0 +1,100 @@
+#summary Details on how use <composition> tag
+#labels usage
+
+
+From rev 202 (it is ver. 0.4-SNAPSHOT) the `<composition>` tag is available. To use this tag you must first
+create a template (`src/com/example/Template.html`):
+
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body style='display:border'>
+   <ui:insert name='content'>
+        <p>Default value</p>
+   </ui:insert>
+</body>
+</html>
+}}}
+
+this template defines a `JPanel` with `BorderLayout`. The content of the panel is defined with snippet, you must
+provide in you html. If you won't provide the snippet, the `<ui:insert>` content will be used.
+
+We saved the template file in the sources folder in the com.example package. Now we can locate this template
+with `com/example/Template.html` path.
+
+Next, write you html, using this template:
+
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body>
+   <ui:composition template='com/example/Template.html'>
+      <ui:define name='content'>
+        <p>Custom value</p>
+      </ui:define>
+   </ui:composition>
+</body>
+</html>
+}}}
+
+When DomLoader loads you document and finds `<composition>` tag, it loads template`s model and substitutes all
+`<ui:insert>` tags with the content of the `<ui:define>` tags with corresponding name, so the resulting document
+will look like this:
+
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body style='display:border'>
+    <p>Custom value</p>
+</body>
+</html>
+}}}
+
+
+Let's see what will occur when we do not provide `content` snippet. In this case the source document will be like this:
+
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body>
+   <ui:composition template='com/example/Template.html'>
+
+   </ui:composition>
+</body>
+</html>
+}}}
+
+And the resulting document will look like this:
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body style='display:border'>
+    <p>Default value</p>
+</body>
+</html>
+}}}
+
+
+
+You can also use `<ui:include>` inside `<ui:define>` tag.
+Let's create snippet `com/example/DefaultContent.html`:
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body>
+    <p>Default value</p>
+</body>
+</html>
+}}}
+Remember, that when using `<ui:include>` the content of the body tag is insluded.
+
+No let's modify the template:
+{{{
+<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<body>
+   <ui:composition template='com/example/Template.html'>
+      <ui:define name='content'>
+        <ui:include src='com/example/DefaultContent.html'/>
+      </ui:define>
+   </ui:composition>
+</body>
+</html>
+}}}
+
+Using this template will have the same result as using our first template.
+
+
