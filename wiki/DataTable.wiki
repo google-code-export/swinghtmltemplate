@@ -1,0 +1,273 @@
+#summary Details on how use <dataTable> tag
+#labels usage
+
+Since ver.0.3 there is beans binding and new `<dataTable>` tag. This tag allows you to bind
+`java.util.List` elements to table rows, one row per table, and display them in `javax.swing.JTable`.
+
+Let's see the details.
+
+Assume we wan't to create a form form controlling persons in our dictionary. The final result will look like this:
+
+http://swinghtmltemplate.googlecode.com/files/datatable-usage.png
+
+
+
+Let's start with domain object:
+
+{{{
+public class Person {
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private String name;
+    private int age;
+    private boolean active;
+    private Color color = Color.BLACK;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        Object old = this.name;
+        this.name = name;
+        pcs.firePropertyChange("name", old, name);
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        int old = this.age;
+        this.age = age;
+        pcs.firePropertyChange("age", old, age);
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        boolean old = this.active;
+        this.active = active;
+        pcs.firePropertyChange("active", old, active);
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        Object old = this.name;
+        this.color = color;
+        pcs.firePropertyChange("color", old, color);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+}
+}}}
+
+We've got name, age, active and color properties for a person. Notice, `Person` is java bean, so it fires
+when it's properties change.
+
+
+
+
+Let's create the model for the form. It will hold the list of existing persons, the selected person:
+{{{
+public class Model {
+
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private List<Person> items = ObservableCollections.observableList(new ArrayList<Person>());
+    private Person selectedPerson;
+    private List<Person> selectedPersons;
+
+    public List<Person> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Person> items) {
+        this.items = items;
+    }
+
+    public Person getSelectedPerson() {
+        return selectedPerson;
+    }
+
+    public void setSelectedPerson(Person selectedPerson) {
+        Object old = this.selectedPerson;
+        this.selectedPerson = selectedPerson;
+        pcs.firePropertyChange("selectedPerson", old, selectedPerson);
+        logger.debug("Set selected person: "+selectedPerson);
+    }
+
+    public List<Person> getSelectedPersons() {
+        return selectedPersons;
+    }
+
+    public void setSelectedPersons(List<Person> selectedPersons) {
+        this.selectedPersons = selectedPersons;
+        logger.debug("Set selected persons: "+selectedPersons);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+}
+
+}}}
+
+Pay attention. We use `ObservableCollections.observableList(new ArrayList<Person>());` for storing existing
+persons. This way we will notify our table when new `Person` is added (removed) to a collection.
+`ObservableCollections` is helper class from `Beans Binding` framework.
+
+Look at the setters: we fire on property change, so our model is java bean also.
+
+
+
+
+
+
+Now let's create a form markup:
+
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <link type="text/css" rel="stylesheet" href="loginform.css"/>
+</head>
+<body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
+
+<c:scroll align="center">
+    <c:dataTable value="${model.items}"
+                 autoresize="last"
+                 selectionType="multiple"
+                 selectedElements="${model.selectedPersons}"
+                 selectedElement="${model.selectedPerson}">
+
+        <c:column value="${name}" title="Name" width='250' readonly="false" />
+        <c:column value="${age}" title="Age" type='java.lang.Integer' readonly="false" width='30'/>
+        <c:column value="${active}" title="Active" type='java.lang.Boolean' readonly="false" width="20"/>
+        <c:column value="${color}" title="Color" readonly='false' editor="${colorEditor}" renderer="${colorRenderer}"/>
+
+    </c:dataTable>
+</c:scroll>
+
+<div align='bottom' style="display:box;x-boxlayout-direction: vertical;">
+    <p content='el' style="text-align:left;">My name is ${model.selectedPerson.name}, i'm ${model.selectedPerson.age} years old</p>
+
+    <div style="display:box;text-align:left;">
+        <input type="button" onclick="onAdd" text="Add"/>
+        <c:strut width='6' type='horizontal'/>
+        <input type="button" onclick="onModify" text="Modify"/>
+        <c:glue/>
+    </div>
+</div>
+</body>
+</html>
+}}}
+
+We have a table within a `JScrollPane` in the center of the form. In the bottom we have 2 buttons: "Add" and "Modify".
+The first button is used to add new `Person`, second - to modify the `age` property of existing person (to see
+beans binding in action). We also have a label, showing the details of selected person, in the bottom of the panel.
+
+Look at the `<c:dataTable>` tag. It gets values from ${model.items}, the ${model} is a dom model element, it's
+type is our `Model` (we'll define it in controller later).
+
+Inside the table we define table columns, one column per `Person` property. We set the type of the column
+for `age` and `active` with `type` attribute. We set titles of the columns using `title` attribute.
+Also we set renderer and editor for `color` column.
+We specify the width of columns to shrink `age` and `active` columns. We also enable cell editing with
+`readonly="false"`.
+
+Now let's create controller and see the whole form:
+
+{{{
+public class DataTableForm extends JPanel {
+
+    private DomModel domModel;
+
+    @ModelElement("colorRenderer")
+    private ColorTableCellRenderer colorRenderer = new ColorTableCellRenderer();
+
+    @ModelElement("colorEditor")
+    private ColorTableCellEditor colorEditor = new ColorTableCellEditor();
+
+    @ModelElement("model")
+    private Model model = new Model();
+
+    private Log logger = LogFactory.getLog(getClass());
+
+    public DataTableForm() {
+        try {
+            domModel = Binder.bind(this, true);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static void main(String[] args) {
+        DataTableForm form = new DataTableForm();
+
+        JFrame f = new JFrame("Test");
+        f.setSize(400, 200);
+
+        f.getContentPane().add(form);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
+    }
+
+    public void onAdd() {
+        Person person = new Person();
+        person.setAge(new Random().nextInt(80));
+        person.setName("Foo");
+        model.getItems().add(person);
+    }
+
+    public void onModify() {
+        for (Person p : model.getItems()) {
+            p.setAge(new Random().nextInt(80));
+        }
+    }
+
+
+    public ColorTableCellRenderer getColorRenderer() {
+        return colorRenderer;
+    }
+
+    public void setColorRenderer(ColorTableCellRenderer colorRenderer) {
+        this.colorRenderer = colorRenderer;
+    }
+}
+}}}
+
+We have 2 special methods in controller: `onAdd` and `onModify`. They are invoked when `Add` and `Modify`
+buttons are clicked, because we set the `onclick` attribute in the markup for these elements.
+
+In the `onAdd` method we just add a new `Person` to the existing persons in our model.
+In the `onModify` method we set random age for the existing persons.
+Notice, no direct `javax.swing.JTable` usage.
+
+In the constructor of our controller we simply bind the markup to the controller. The `model`,
+`colorRenderer` and `colorEditor` are exposed to the dom model as model elements.
+
+In the `main` method we create our form, place it in the `JFrame` and show it. You can click "Add" button and
+see the a new row is appended to the table.
+
+The `colorRenderer` and the `colorEditor` can be examined here:
+* [http://code.google.com/p/swinghtmltemplate/source/browse/tags/release-0.3/src/test/java/ru/swing/html/example/utils/ColorTableCellEditor.java ColorTableCellEditor.java]
+* [http://code.google.com/p/swinghtmltemplate/source/browse/tags/release-0.3/src/test/java/ru/swing/html/example/utils/ColorTableCellRenderer.java ColorTableCellRenderer.java]
