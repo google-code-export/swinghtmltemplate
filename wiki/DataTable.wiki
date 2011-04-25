@@ -86,7 +86,6 @@ public class Model {
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private List<Person> items = ObservableCollections.observableList(new ArrayList<Person>());
     private Person selectedPerson;
-    private List<Person> selectedPersons;
 
     public List<Person> getItems() {
         return items;
@@ -104,16 +103,6 @@ public class Model {
         Object old = this.selectedPerson;
         this.selectedPerson = selectedPerson;
         pcs.firePropertyChange("selectedPerson", old, selectedPerson);
-        logger.debug("Set selected person: "+selectedPerson);
-    }
-
-    public List<Person> getSelectedPersons() {
-        return selectedPersons;
-    }
-
-    public void setSelectedPersons(List<Person> selectedPersons) {
-        this.selectedPersons = selectedPersons;
-        logger.debug("Set selected persons: "+selectedPersons);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -134,7 +123,11 @@ persons. This way we will notify our table when new `Person` is added (removed) 
 
 Look at the setters: we fire on property change, so our model is java bean also.
 
+We made special `selectedPerson` property to track the selection in our table. When selection changes, beans binding
+will update our property. To see this we will show the `selectedPerson` content on the label in the bottom of the form.
 
+Selection in the table is readonly feature, so changing `selectedPerson` value will not update the selection. This is
+due to the Bean Binding framework.
 
 
 
@@ -152,7 +145,7 @@ Now let's create a form markup:
 <c:scroll align="center">
     <c:dataTable value="${model.items}"
                  autoresize="last"
-                 selectionType="multiple"
+                 selectionType="single"
                  selectedElements="${model.selectedPersons}"
                  selectedElement="${model.selectedPerson}">
 
