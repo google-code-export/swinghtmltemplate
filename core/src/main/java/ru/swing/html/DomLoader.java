@@ -3,7 +3,7 @@ package ru.swing.html;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import ru.swing.html.tags.*;
-import ru.swing.html.tags.Attribute;
+import ru.swing.html.tags.swing.Attribute;
 import ru.swing.html.tags.Object;
 
 import java.io.IOException;
@@ -75,6 +75,8 @@ public class DomLoader {
             tag.addChild(childTag);
             parseElement(child, childTag);
         }
+
+        tag.afterChildElementsConverted();
     }
 
 

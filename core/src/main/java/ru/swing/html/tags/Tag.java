@@ -576,4 +576,10 @@ public class Tag {
         return StringUtils.join(pathToRoot.iterator(), " > ");
 
     }
+
+    /**
+     * This call-back method is called in DomLoader after child elements are loaded and appended to this tag.
+     */
+    public void afterChildElementsConverted() {
+    }
 }
