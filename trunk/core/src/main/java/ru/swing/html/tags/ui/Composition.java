@@ -112,6 +112,9 @@ public class Composition extends Tag {
                 if (snippets.containsKey(insert.getSnippetName())) {
                     target.mergeTag(insert, snippets.get(insert.getSnippetName()));
                 }
+                else {
+                    target.mergeTag(insert, insert);
+                }
             }
         }
 
