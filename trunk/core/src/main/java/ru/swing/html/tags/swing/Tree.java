@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.ELProperty;
 import ru.swing.html.Utils;
 import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.event.MouseListenerClickDelegator;
 import ru.swing.html.tags.event.TreeSelectionDelegator;
 
 import javax.swing.*;
@@ -14,6 +15,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.lang.*;
 import java.lang.Object;
 import java.lang.reflect.Method;
@@ -28,6 +31,8 @@ public class Tree extends Tag {
     private boolean showRootHandles = false;
     private String renderer;
     private TreeSelectionDelegator treeModelDelegator;
+    private MouseListenerClickDelegator mouseListenerClickDelegator;
+    private MouseListenerClickDelegator mouseListenerDblClickDelegator;
 
     @Override
     public JComponent createComponent() {
@@ -101,6 +106,50 @@ public class Tree extends Tag {
 
 
             tree.getSelectionModel().addTreeSelectionListener(treeModelDelegator);
+        }
+
+        //install click listener
+        final String onclickMethod = getAttribute("onclick");
+        if (StringUtils.isNotEmpty(onclickMethod)) {
+
+            Object controller = getModel().getController();
+            Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, MouseEvent.class);
+            //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+            if (method!=null) {
+                //добавляем слушатель, который вызывает метод
+                if (mouseListenerClickDelegator !=null) {
+                    tree.removeMouseListener(mouseListenerClickDelegator);
+                }
+                mouseListenerClickDelegator = new MouseListenerClickDelegator(controller, method, 1);
+            }
+            else {
+                logger.warn(toString()+ ": can't find method " + onchangeMethod + " in class " +controller.getClass().getName());
+            }
+
+
+            tree.addMouseListener(mouseListenerClickDelegator);
+        }
+
+        //install dblclick listener
+        final String ondblclickMethod = getAttribute("ondblclick");
+        if (StringUtils.isNotEmpty(ondblclickMethod)) {
+
+            Object controller = getModel().getController();
+            Method method = Utils.findActionMethod(controller.getClass(), ondblclickMethod, MouseEvent.class);
+            //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+            if (method!=null) {
+                //добавляем слушатель, который вызывает метод
+                if (mouseListenerDblClickDelegator !=null) {
+                    tree.removeMouseListener(mouseListenerDblClickDelegator);
+                }
+                mouseListenerDblClickDelegator = new MouseListenerClickDelegator(controller, method, 2);
+            }
+            else {
+                logger.warn(toString()+ ": can't find method " + ondblclickMethod + " in class " +controller.getClass().getName());
+            }
+
+
+            tree.addMouseListener(mouseListenerDblClickDelegator);
         }
 
     }

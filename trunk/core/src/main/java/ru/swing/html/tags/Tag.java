@@ -402,16 +402,25 @@ public class Tag {
                 component.setOpaque(Boolean.parseBoolean(attrValue));
             }
             else if ("icon".equals(attrName) && StringUtils.isNotBlank(attrValue)) {
-                Icon icon = new ImageIcon(getClass().getResource(attrValue));
+                Icon icon = null;
                 try {
-                    Method m = component.getClass().getMethod("setIcon", Icon.class);
-                    m.invoke(component, icon);
-                } catch (NoSuchMethodException e) {
-                    logger.warn("Failed to set icon property for component of class "+component.getClass());
-                } catch (IllegalAccessException e) {
-                    logger.warn("Failed to set icon property for component of class "+component.getClass());
-                } catch (InvocationTargetException e) {
-                    logger.warn("Failed to set icon property for component of class "+component.getClass());
+                    icon = new ImageIcon(getClass().getResource(attrValue));
+                } catch (Exception e) {
+                    logger.warn("Can't load icon from resource '"+attrValue+"': "+e.getMessage());
+                }
+
+                if (icon!=null) {
+
+                    try {
+                        Method m = component.getClass().getMethod("setIcon", Icon.class);
+                        m.invoke(component, icon);
+                    } catch (NoSuchMethodException e) {
+                        logger.warn("Failed to set icon property for component of class "+component.getClass());
+                    } catch (IllegalAccessException e) {
+                        logger.warn("Failed to set icon property for component of class "+component.getClass());
+                    } catch (InvocationTargetException e) {
+                        logger.warn("Failed to set icon property for component of class "+component.getClass());
+                    }
                 }
 
             }
