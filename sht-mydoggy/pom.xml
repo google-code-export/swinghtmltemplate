@@ -18,7 +18,7 @@
         
         <dependency>
             <groupId>com.googlecode.swinghtmltemplate</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>sht-core</artifactId>
             <version>0.5-SNAPSHOT</version>
         </dependency>
 

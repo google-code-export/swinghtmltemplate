@@ -10,9 +10,9 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>core</artifactId>
+    <artifactId>sht-core</artifactId>
     <packaging>jar</packaging>
-    <name>core</name>
+    <name>sht-core</name>
 
     <dependencies>
 

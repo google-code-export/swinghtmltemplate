@@ -64,7 +64,7 @@ public class MainPanel extends JPanel {
 
             EditorPanel editorPanel = new EditorPanel();
             try {
-                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("examples/loginform/LoginForm.html");
+                InputStream inputStream = getClass().getClassLoader().getResourceAsStream(example.getSource());
                 String text = IOUtils.toString(inputStream);
                 editorPanel.getModel().setOriginal(text);
                 editorPanel.getModel().reset();
