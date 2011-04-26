@@ -2,7 +2,7 @@
 #labels usage
 
 
-From rev 202 (it is ver. 0.4-SNAPSHOT) the `<composition>` tag is available.
+From release 0.4 the `<composition>` tag is available.
 
 
 To use this tag you must first create a template (`src/com/example/Template.html`):
