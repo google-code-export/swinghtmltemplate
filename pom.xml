@@ -20,7 +20,7 @@
     </licenses>
 
     <modules>
-        <module>core</module>
+        <module>sht-core</module>
         <module>sht-mydoggy</module>
         <module>sht-builder</module>
     </modules>
