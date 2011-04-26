@@ -65,57 +65,76 @@ public class MainWindow extends Tag {
 
         MyDoggyToolWindowManager myDoggyToolWindowManager = (MyDoggyToolWindowManager) getComponent();
 
+        //add tool windows and content windows
         for (Tag child : getChildren()) {
 
             if (child instanceof ToolWindow) {
+                //add tool window
+                ToolWindow toolWindow = (ToolWindow) child;
 
-                ToolWindow toolWindowTag = (ToolWindow) child;
+                if (toolWindow.getChildren()==null || toolWindow.getChildren().isEmpty()) {
+                    logger.warn(toolWindow+" doesn't contain any children. It must contain 1 child. Skipping tool window");
+                }
+                else {
 
-                JComponent childComponent = DomConverter.convertComponent(toolWindowTag.getChildren().get(0), substitutions);
+                    if (toolWindow.getChildren().size()>1) {
+                        logger.warn(toolWindow+" contains more than 1 child. Using the first one.");
+                    }
+                    JComponent childComponent = DomConverter.convertComponent(toolWindow.getChildren().get(0), substitutions);
 
-                ToolWindowAnchor anchor = ToolWindowAnchor.LEFT;
-                if ("left".equals(toolWindowTag.getAlign())) {
-                    anchor = ToolWindowAnchor.LEFT;
-                }
-                else if ("right".equals(toolWindowTag.getAlign())) {
-                    anchor = ToolWindowAnchor.RIGHT;
-                }
-                else if ("top".equals(toolWindowTag.getAlign())) {
-                    anchor = ToolWindowAnchor.TOP;
-                }
-                else if ("bottom".equals(toolWindowTag.getAlign())) {
-                    anchor = ToolWindowAnchor.BOTTOM;
-                }
+                    ToolWindowAnchor anchor = ToolWindowAnchor.LEFT;
+                    if ("left".equals(toolWindow.getAlign())) {
+                        anchor = ToolWindowAnchor.LEFT;
+                    }
+                    else if ("right".equals(toolWindow.getAlign())) {
+                        anchor = ToolWindowAnchor.RIGHT;
+                    }
+                    else if ("top".equals(toolWindow.getAlign())) {
+                        anchor = ToolWindowAnchor.TOP;
+                    }
+                    else if ("bottom".equals(toolWindow.getAlign())) {
+                        anchor = ToolWindowAnchor.BOTTOM;
+                    }
 
-                Icon icon = null;
-                if (StringUtils.isNotEmpty(toolWindowTag.getIcon())) {
-                    icon = new ImageIcon(getClass().getResource(toolWindowTag.getIcon()));
-                }
-                org.noos.xing.mydoggy.ToolWindow w = myDoggyToolWindowManager.registerToolWindow(
-                        toolWindowTag.getId(),
-                        toolWindowTag.getTitle(),
-                        icon,
-                        childComponent,
-                        anchor);
-                w.setAvailable(true);
+                    Icon icon = null;
+                    if (StringUtils.isNotEmpty(toolWindow.getIcon())) {
+                        icon = new ImageIcon(getClass().getResource(toolWindow.getIcon()));
+                    }
+                    org.noos.xing.mydoggy.ToolWindow w = myDoggyToolWindowManager.registerToolWindow(
+                            toolWindow.getId(),
+                            toolWindow.getTitle(),
+                            icon,
+                            childComponent,
+                            anchor);
+                    w.setAvailable(true);
 
-                if (StringUtils.isNotEmpty(toolWindowTag.getVisible())) {
-                    w.setVisible((Boolean) Utils.convertStringToObject(toolWindowTag.getVisible(), Boolean.class));
+                    if (StringUtils.isNotEmpty(toolWindow.getVisible())) {
+                        w.setVisible((Boolean) Utils.convertStringToObject(toolWindow.getVisible(), Boolean.class));
+                    }
+
                 }
             }
-
+            //add content window
             else if (child instanceof ContentWindow) {
 
                 ContentWindow contentWindow = (ContentWindow) child;
                 ContentManager contentManager = myDoggyToolWindowManager.getContentManager();
 
-                JComponent childComponent = DomConverter.convertComponent(contentWindow.getChildren().get(0), substitutions);
-
-                Icon icon = null;
-                if (StringUtils.isNotEmpty(contentWindow.getIcon())) {
-                    icon = new ImageIcon(getClass().getResource(contentWindow.getIcon()));
+                if (contentWindow.getChildren()==null || contentWindow.getChildren().isEmpty()) {
+                    logger.warn(contentWindow+" doesn't contain any children. It must contain 1 child. Skipping content window");
                 }
-                contentManager.addContent(contentWindow.getId(), contentWindow.getTitle(), icon, childComponent);
+                else {
+                    if (contentWindow.getChildren().size()>1) {
+                        logger.warn(contentWindow+" contains more than 1 child. Using the first one.");
+                    }
+                    JComponent childComponent = DomConverter.convertComponent(contentWindow.getChildren().get(0), substitutions);
+
+                    Icon icon = null;
+                    if (StringUtils.isNotEmpty(contentWindow.getIcon())) {
+                        icon = new ImageIcon(getClass().getResource(contentWindow.getIcon()));
+                    }
+                    contentManager.addContent(contentWindow.getId(), contentWindow.getTitle(), icon, childComponent);
+                }
 
             }
             
