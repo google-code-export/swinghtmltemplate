@@ -1,25 +1,31 @@
 package ru.swing.html;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdesktop.beansbinding.ext.BeanAdapterProvider;
 import org.jdom.*;
 import org.jdom.input.SAXBuilder;
 import ru.swing.html.tags.*;
 import ru.swing.html.tags.swing.Attribute;
 import ru.swing.html.tags.Object;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
+import java.util.*;
 
 public class DomLoader {
 
+    private static Log logger = LogFactory.getLog(DomLoader.class);
+
     private static LibraryRegistry registry = new LibraryRegistry();
+    private static final Set<ClassLoader> classLoaders = new HashSet<ClassLoader>();
+    private static final Set<URL> serviceURLs = new HashSet<URL>();
     static {
-        registerLibrary(null, new HtmlTagFactory());
-        registerLibrary("http://www.w3.org/1999/xhtml", new HtmlTagFactory());
-        registerLibrary("http://www.oracle.com/swing", new SwingTagFactory());
-        registerLibrary("http://swinghtmltemplate.googlecode.com/ui", new UITagFactory());
+        registerLibrary("", new HtmlTagFactory());
+        loadProvidersIfNecessary();
     }
 
-    
+
     public static void registerLibrary(String namespace, TagFactory tagFactory) {
         registry.registerLibrary(namespace, tagFactory);
     }
@@ -89,6 +95,63 @@ public class DomLoader {
         tag.afterChildElementsConverted();
 
     }
+
+
+
+    private static void loadProvidersIfNecessary() {
+        ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();
+
+        if (!classLoaders.contains(currentLoader)) {
+            classLoaders.add(currentLoader);
+            loadProviders(currentLoader);
+        }
+    }
+
+    private static void loadProviders(ClassLoader classLoader) {
+        // PENDING: this needs to be rewriten in terms of ServiceLoader
+        String serviceName = "META-INF/services/" + TagFactory.class.getName();
+
+        try {
+            Enumeration<URL> urls = classLoader.getResources(serviceName);
+
+            while (urls.hasMoreElements()) {
+                URL url = urls.nextElement();
+
+                if (!serviceURLs.contains(url)) {
+                    serviceURLs.add(url);
+                    addProviders(url);
+                }
+            }
+        } catch (IOException ex) {
+        }
+    }
+
+    private static void addProviders(URL url) {
+
+        Properties properties = new Properties();
+
+        logger.trace("Loading tag factories from "+url.getFile());
+
+        try {
+            properties.load(url.openStream());
+            for (java.lang.Object key : properties.keySet()) {
+                String classname = (String) key;
+                TagFactory factory;
+                try {
+                    factory = (TagFactory) Class.forName(classname).newInstance();
+                    registerLibrary(properties.getProperty(classname), factory);
+                } catch (InstantiationException e) {
+                } catch (IllegalAccessException e) {
+                } catch (ClassNotFoundException e) {
+                }
+            }
+
+        } catch (UnsupportedEncodingException ex) {
+        } catch (IOException ex) {
+        }
+
+    }
+
 
 
 }
