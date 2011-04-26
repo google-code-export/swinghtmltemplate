@@ -1,0 +1,3 @@
+ru.swing.html.HtmlTagFactory=http://www.w3.org/1999/xhtml
+ru.swing.html.SwingTagFactory=http://www.oracle.com/swing
+ru.swing.html.UITagFactory=http://swinghtmltemplate.googlecode.com/ui
