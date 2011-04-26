@@ -8,13 +8,15 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 21.04.11
- * Time: 16:42
+ * Utils to convert DomModel to TreeModel.
  */
 public class DomModelUtils {
 
+    /**
+     * Converts DomModel to TreeModel. All nodes are DefaultMutableTreeNode, user object is Tag.
+     * @param domModel domModel
+     * @return treeModel
+     */
     public static TreeModel toTreeModel(DomModel domModel) {
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(domModel.getRootTag());
@@ -25,6 +27,12 @@ public class DomModelUtils {
     }
 
 
+    /**
+     * Recursively creates sub-nodes for tag's children and adds them to node.
+     * New sub-nodes are DefaultMutableTreeNode with Tag as user object.
+     * @param node parent node, new sub-nodes will be added to it
+     * @param tag parent tag. new sub-nodes will be created from the children oh this tag.
+     */
     public static void load(DefaultMutableTreeNode node, Tag tag) {
         for (Tag child : tag.getChildren()) {
             DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);

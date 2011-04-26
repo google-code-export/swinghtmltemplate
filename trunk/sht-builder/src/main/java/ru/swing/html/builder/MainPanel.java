@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 26.04.11
- * Time: 13:53
+ * The controller for the main panel of the builder.
  */
 public class MainPanel extends JPanel {
 
@@ -35,6 +32,7 @@ public class MainPanel extends JPanel {
 
 
     public MainPanel() {
+        //create examples tree model
         examplesModel = new ExamplesService().createTreeModel();
         try {
             Binder.bind(this, true);
@@ -46,28 +44,41 @@ public class MainPanel extends JPanel {
     }
 
 
+    /**
+     * Takes the clicked node in the examples tree. If user object of the node
+     * is Example, creates new EditorPanel, loads html and adds panel to the mydoggy content.
+     * @param e
+     */
     public void onExampleOpen(MouseEvent e) {
         JTree tree = (JTree) e.getSource();
+        //do nothing if no path is clicked
         TreePath path = tree.getPathForLocation(e.getX(), e.getY());
         if (path==null || path.getPathCount()<=0) {
             return;
         }
 
+        //take clicked node
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
         if (node==null) {
             return;
         }
         else if (node.getUserObject() instanceof Example) {
+            //if the node is example, open EditorPanel
             Example example = (Example) node.getUserObject();
+            //get html address
             String url = example.getSource();
             logger.info("Opening "+ url);
 
+            //create editor panel
             EditorPanel editorPanel = new EditorPanel();
             try {
+                //load html
                 InputStream inputStream = getClass().getClassLoader().getResourceAsStream(example.getSource());
                 String text = IOUtils.toString(inputStream);
+                //init editor panel
                 editorPanel.getModel().setOriginal(text);
                 editorPanel.getModel().reset();
+                //add content to the mydoggy
                 toolWindowManager.getContentManager().addContent(example.getName(), example.getName(), null, editorPanel);
             } catch (Exception e1) {
                 logger.error("Can't open source '"+url+"' for example '"+example.getName()+"'", e1);

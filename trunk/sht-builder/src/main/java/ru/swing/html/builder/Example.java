@@ -4,15 +4,23 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 26.04.11
- * Time: 13:55
+ * Javabean, holding info of the examples.
  */
 public class Example {
 
+    /**
+     * The name of the example.
+     */
     private String name;
+
+    /**
+     * The path to the html of the example.
+     */
     private String source;
+
+    /**
+     * The path, where the example must be located in the examples tree.
+     */
     private String[] path;
 
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);

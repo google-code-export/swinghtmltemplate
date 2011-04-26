@@ -3,10 +3,7 @@ package ru.swing.html.builder;
 import java.beans.PropertyChangeSupport;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 21.04.11
- * Time: 17:17
+ * Java bean for editing attributes of the selected tag.
  */
 public class Attribute {
 

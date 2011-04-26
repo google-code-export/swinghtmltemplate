@@ -65,6 +65,28 @@ public class Binder {
         return bind(component, useControllerAsRoot, substitutions);
     }
 
+    /**
+     * Creates new dom-model for component and binds model to component.
+     * dom-model is loaded from file, whose name equals to component's classname and which is located
+     * at the same place, as component's class.
+     *
+     * For example, for component of class foo.Foo, file /foo/Foo.html will be used
+     *
+     * If useControllerAsRoot==true and component extends javax.swing.JComponent, then component
+     * will be used as root component (it will substitute &lt;body&gt;'s component),
+     *
+     * Substitutions is a collection of selectors as keys and components as values.
+     * Each tag in dom-model is checked for matching
+     * a selector, if tag matches when selectors value (component) will be used as tag's component,
+     * rather then creating new one.
+     *
+     * @param component object, to whom dom-model will be binded
+     * @param useControllerAsRoot if true, use component as root component in dom-model
+     * @param substitutions substitutions map
+     * @return dom-model
+     * @throws JDOMException
+     * @throws IOException
+     */
     public static DomModel bind(Object component, boolean useControllerAsRoot,
                                 Map<SelectorGroup, JComponent> substitutions) throws JDOMException, IOException {
         //get classname
