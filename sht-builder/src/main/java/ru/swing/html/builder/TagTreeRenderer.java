@@ -9,6 +9,9 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import java.awt.*;
 
+/**
+ * Tree renderer for Tag. Shows tag name. If tag has 'id', appends it to the tag name.
+ */
 public class TagTreeRenderer extends DefaultTreeCellRenderer implements TreeCellRenderer {
 
     @Override

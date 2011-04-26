@@ -4,11 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 26.11.2010
- * Time: 12:25:36
- * </pre>
+ * The main frame fot the builder. Creates MainPanel and adds it to the contentPane.
  */
 public class Builder extends JFrame {
 

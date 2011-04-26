@@ -9,10 +9,8 @@ import javax.swing.tree.TreePath;
 import java.util.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 26.04.11
- * Time: 13:54
+ * Service for examples. Examples are initiated in the constructor.
+ * Contains methods for converting examples list into TreeModel.
  */
 public class ExamplesService {
 
@@ -22,11 +20,11 @@ public class ExamplesService {
     public ExamplesService() {
 
         examples = new ArrayList<Example>();
-
+        //init examples list
         examples.add(new Example("'Create project' form", "examples/createproject/CreateProjectForm.html", new String[] {"Forms"}));
         examples.add(new Example("Login form", "examples/loginform/LoginForm.html", new String[] {"Forms"}));
 
-
+        //group examples by path. Key - path. Value - list of the examples
         examplesByPath = new HashMap<String[], List<Example>>();
         for (Example pt : examples) {
             String[] path = pt.getPath();
@@ -44,9 +42,14 @@ public class ExamplesService {
 
     }
 
-
+    /**
+     * Returns the examples, licated in the path
+     * @param path path of the examples
+     * @return list of the examples
+     */
     public List<Example> getExamplesByPath(String[] path) {
         TreePath param = new TreePath(path);
+        //we must convert keys to the TreePath to enable .equals() (String[] do not supports it)
         List<Example> res = new ArrayList<Example>();
         for (String[] key : examplesByPath.keySet()) {
             TreePath pathKey = new TreePath(key);
@@ -59,9 +62,16 @@ public class ExamplesService {
     }
 
 
+    /**
+     * Creates TreeModel from the examples.
+     * @return tree model
+     */
     public TreeModel createTreeModel() {
 
-
+        //group nodes by path to avoid simmular nodes.
+        //e.g. if we have /foo/foo1 and /foo/foo2 paths, with griuping we will
+        //forbid 2 nodes for /foo path.
+        //also sort paths by name.
         Map<TreePath, DefaultMutableTreeNode> nodesByPath = new TreeMap<TreePath, DefaultMutableTreeNode>(new Comparator<TreePath>() {
             public int compare(TreePath o1, TreePath o2) {
                 String path1 = StringUtils.join(o1.getPath());
@@ -70,7 +80,9 @@ public class ExamplesService {
             }
         });
 
+        //fill groups
         for (String[] path : examplesByPath.keySet()) {
+            // /foo/foo1 produces 2 nodes, /foo and /foo/foo1
             for (int i = 1; i<=path.length; i++) {
 
                 String[] subPath = new String[i];
@@ -85,9 +97,10 @@ public class ExamplesService {
             }
         }
 
-
+        //create root node
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Projects");
 
+        //append all nodes to the parents
         for (TreePath path : nodesByPath.keySet()) {
             DefaultMutableTreeNode node = nodesByPath.get(path);
             if (path.getPathCount()>1) {
@@ -100,6 +113,7 @@ public class ExamplesService {
             }
         }
 
+        //append nodes with the examples
         for (String[] path : examplesByPath.keySet()) {
             TreePath treePath = new TreePath(path);
             DefaultMutableTreeNode node = nodesByPath.get(treePath);
@@ -110,6 +124,7 @@ public class ExamplesService {
             }
         }
 
+        //create tree model
         TreeModel model = new DefaultTreeModel(rootNode);
         return model;
     }

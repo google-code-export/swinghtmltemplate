@@ -15,10 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 21.04.11
- * Time: 16:58
+ * Controller for the preview panel. Allows you to edit attributes of the tag.
  */
 public class PreviewPanel extends JPanel {
 
@@ -57,12 +54,18 @@ public class PreviewPanel extends JPanel {
     }
 
 
+    /**
+     * Adds new attribute to the attributes list.
+     */
     public void add() {
         Attribute attr = new Attribute();
         attributes.add(attr);
     }
 
-    
+    /**
+     * Gets the selected node in the tags tree and applies all attributes fro the attributes list to it.
+     * Do nothing if no node is selected.
+     */
     public void apply() {
         JTree tree = (JTree) document.getTagById("tagsTree").getComponent();
         if (tree.getSelectionPath()!=null) {
@@ -76,7 +79,12 @@ public class PreviewPanel extends JPanel {
     }
 
 
-
+    /**
+     * Updates attributes list on node selection change in the tags tree.
+     * Loads attributes of the selected node into the attributes list.
+     * Just clears attributes if no node is selected.
+     * @param e
+     */
     public void onTagChange(TreeSelectionEvent e) {
         if (e.getNewLeadSelectionPath()!=null) {
             TreePath path = e.getNewLeadSelectionPath();

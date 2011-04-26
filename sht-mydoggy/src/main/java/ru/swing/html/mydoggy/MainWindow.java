@@ -18,10 +18,7 @@ import javax.swing.*;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 26.04.11
- * Time: 11:30
+ * The main window for mydoggy content.
  */
 public class MainWindow extends Tag {
 
