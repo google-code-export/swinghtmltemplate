@@ -2,17 +2,21 @@ package ru.swing.html.mydoggy;
 
 import ru.swing.html.tags.Tag;
 
+import javax.swing.*;
+
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 26.04.11
- * Time: 11:47
+ * Tag for holding info on MyDoggy toolwindow. Do not produces any component.
  */
 public class ToolWindow extends Tag {
 
     private String title;
     private String icon;
     private String visible;
+
+    @Override
+    public JComponent createComponent() {
+        return null;
+    }
 
     @Override
     public void setAttribute(String name, String value) {
