@@ -23,9 +23,9 @@
         </dependency>
 
         <dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-plaf</artifactId>
-            <version>1.4.2</version>
+            <groupId>com.googlecode.swinghtmltemplate</groupId>
+            <artifactId>sht-mydoggy</artifactId>
+            <version>0.5-SNAPSHOT</version>
         </dependency>
 
     </dependencies>
