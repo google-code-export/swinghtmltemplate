@@ -2,8 +2,13 @@ package ru.swing.html.builder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.RTextScrollPane;
+import org.jdesktop.beansbinding.BeanProperty;
 import org.jdom.JDOMException;
 import ru.swing.html.*;
+import ru.swing.html.css.SelectorGroup;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
@@ -11,6 +16,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 
 /**
  * <pre>
@@ -28,7 +34,13 @@ public class EditorPanel extends JPanel {
 
     public EditorPanel() {
         try {
-            Binder.bind(this, true);
+            HashMap<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
+            RSyntaxTextArea textArea = new RSyntaxTextArea();
+            textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
+            RTextScrollPane sp = new RTextScrollPane(textArea);
+            substitutions.put(new SelectorGroup("#editorScroll"), sp);
+            DomModel model = Binder.bind(this, true, substitutions);
+            model.bind("${model.text}", textArea, BeanProperty.create("text"));
         } catch (JDOMException e) {
             e.printStackTrace();
         } catch (IOException e) {

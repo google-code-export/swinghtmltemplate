@@ -14,6 +14,49 @@
     <packaging>jar</packaging>
     <name>sht-builder</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo.webstart</groupId>
+                <artifactId>webstart-maven-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo.webstart</groupId>
+                    <artifactId>webstart-maven-plugin</artifactId>
+                    <!-- do not bind to install phase -->
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jnlp</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <jnlp>
+                            <mainClass>ru.swing.html.builder.Builder</mainClass>
+                        </jnlp>
+                        <sign>
+                            <keystore>${project.basedir}/../../sht.jks</keystore>
+                            <keypass>qwerty</keypass>
+                            <storepass>qwerty</storepass>
+                            <storetype>jks</storetype>
+                            <alias>account</alias>
+                            <verify>true</verify>
+                        </sign>
+                        <unsign>true</unsign>
+                        <verbose>true</verbose>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+
+    </build>
+
     <dependencies>
 
         <dependency>
@@ -33,8 +76,13 @@
             <version>1.4</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>1.4.1</version>
+        </dependency>
 
+    </dependencies>
 
 
 </project>

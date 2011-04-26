@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.5+" codebase="http://swinghtmltemplate.googlecode.com/svn/jnlp/" href="$outputFile">
+    <information>
+        <title>Swinghtmltemplate Builder</title>
+        <vendor>Penkov Vladimir</vendor>
+        <description kind="one-line">Swinghtmltemplate Builder</description>
+        <description kind="short">Swinghtmltemplate Builder</description>
+        <description kind="tooltip">Swinghtmltemplate Builder</description>
+        <shortcut>
+            <desktop/>
+        </shortcut>
+        <offline-allowed/>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.5+" initial-heap-size="32m" max-heap-size="128m"/>
+        <property name="jnlp.versionEnabled" value="true"/>
+        $dependencies
+    </resources>
+    <application-desc main-class="$mainClass">
+    </application-desc>
+</jnlp>
+

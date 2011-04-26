@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.5+" codebase="http://swinghtmltemplate.googlecode.com/svn/jnlp/" href="launch.jnlp">
+    <information>
+        <title>Swinghtmltemplate Builder</title>
+        <vendor>Penkov Vladimir</vendor>
+        <description kind="one-line">Swinghtmltemplate Builder</description>
+        <description kind="short">Swinghtmltemplate Builder</description>
+        <description kind="tooltip">Swinghtmltemplate Builder</description>
+        <shortcut>
+            <desktop/>
+        </shortcut>
+        <offline-allowed/>
+    </information>
+    <security>
+        <all-permissions/>
+    </security>
+    <resources>
+        <j2se version="1.5+" initial-heap-size="32m" max-heap-size="128m"/>
+        <property name="jnlp.versionEnabled" value="true"/>
+        
+<jar href="sht-builder-0.5-SNAPSHOT.jar" main="true"/>
+<jar href="core-0.5-SNAPSHOT.jar"/>
+<jar href="jdom-1.1.jar"/>
+<jar href="commons-lang-2.1.jar"/>
+<jar href="TableLayout-20050920.jar"/>
+<jar href="miglayout-3.7.3.jar"/>
+<jar href="batik-css-1.6-1.jar"/>
+<jar href="batik-util-1.6-1.jar"/>
+<jar href="batik-gui-util-1.6-1.jar"/>
+<jar href="batik-ext-1.6-1.jar"/>
+<jar href="xmlParserAPIs-2.0.2.jar"/>
+<jar href="betterbeansbinding-core-1.3.0.jar"/>
+<jar href="betterbeansbinding-el-1.3.0.jar"/>
+<jar href="jsr305-1.3.7.jar"/>
+<jar href="betterbeansbinding-swingbinding-1.3.0.jar"/>
+<jar href="commons-logging-1.1.1.jar"/>
+<jar href="sht-mydoggy-0.5-SNAPSHOT.jar"/>
+<jar href="mydoggy-plaf-1.4.2.jar"/>
+<jar href="mydoggy-api-1.4.2.jar"/>
+<jar href="mydoggy-res-1.4.2.jar"/>
+<jar href="commons-io-1.4.jar"/>
+<jar href="rsyntaxtextarea-1.4.1.jar"/>
+
+    </resources>
+    <application-desc main-class="ru.swing.html.builder.Builder">
+    </application-desc>
+</jnlp>
+

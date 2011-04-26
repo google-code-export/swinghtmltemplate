@@ -61,6 +61,12 @@ public class Binder {
      * @throws IOException
      */
     public static DomModel bind(Object component, boolean useControllerAsRoot) throws JDOMException, IOException {
+        Map<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
+        return bind(component, useControllerAsRoot, substitutions);
+    }
+
+    public static DomModel bind(Object component, boolean useControllerAsRoot,
+                                Map<SelectorGroup, JComponent> substitutions) throws JDOMException, IOException {
         //get classname
         final Class<?> cl = component.getClass();
         String className = cl.getName();
@@ -71,7 +77,7 @@ public class Binder {
         if (htmlStream!=null) {
             DomModel model = DomLoader.loadModel(htmlStream);
             model.setSourcePath(path);
-            return bind(component, useControllerAsRoot, model);
+            return bind(component, useControllerAsRoot, model, substitutions);
         }
         else {
             logger.error("Can't find html-document at "+path);
