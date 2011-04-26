@@ -10,6 +10,7 @@ import org.noos.xing.mydoggy.plaf.ui.content.MyDoggyDesktopContentManagerUI;
 import org.noos.xing.mydoggy.plaf.ui.content.MyDoggyMultiSplitContentManagerUI;
 import org.noos.xing.mydoggy.plaf.ui.content.MyDoggyTabbedContentManagerUI;
 import ru.swing.html.DomConverter;
+import ru.swing.html.Utils;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
@@ -100,6 +101,10 @@ public class MainWindow extends Tag {
                         childComponent,
                         anchor);
                 w.setAvailable(true);
+
+                if (StringUtils.isNotEmpty(toolWindowTag.getVisible())) {
+                    w.setVisible((Boolean) Utils.convertStringToObject(toolWindowTag.getVisible(), Boolean.class));
+                }
             }
 
             else if (child instanceof ContentWindow) {

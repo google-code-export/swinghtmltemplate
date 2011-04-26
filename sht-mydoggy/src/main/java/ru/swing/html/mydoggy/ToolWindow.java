@@ -12,6 +12,7 @@ public class ToolWindow extends Tag {
 
     private String title;
     private String icon;
+    private String visible;
 
     @Override
     public void setAttribute(String name, String value) {
@@ -20,6 +21,9 @@ public class ToolWindow extends Tag {
         }
         else if ("icon".equals(name)) {
             setIcon(value);
+        }
+        else if ("visible".equals(name)) {
+            setVisible(value);
         }
         else {
             super.setAttribute(name, value);
@@ -40,5 +44,13 @@ public class ToolWindow extends Tag {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getVisible() {
+        return visible;
+    }
+
+    public void setVisible(String visible) {
+        this.visible = visible;
     }
 }

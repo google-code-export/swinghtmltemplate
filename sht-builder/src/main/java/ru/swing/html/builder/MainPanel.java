@@ -1,27 +1,41 @@
 package ru.swing.html.builder;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
-import ru.swing.html.*;
+import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;
+import ru.swing.html.Bind;
+import ru.swing.html.Binder;
+import ru.swing.html.ModelElement;
 
 import javax.swing.*;
-import java.io.ByteArrayInputStream;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 26.11.2010
- * Time: 12:26:36
- * </pre>
+ * Created by IntelliJ IDEA.
+ * User: Deady
+ * Date: 26.04.11
+ * Time: 13:53
  */
 public class MainPanel extends JPanel {
 
-    @Bind("content")
-    private JTextArea content;
+    @ModelElement("examplesModel")
+    private TreeModel examplesModel;
+
+    private Log logger = LogFactory.getLog(getClass());
+
+    @Bind("toolWindowManager")
+    private MyDoggyToolWindowManager toolWindowManager;
 
 
     public MainPanel() {
+        examplesModel = new ExamplesService().createTreeModel();
         try {
             Binder.bind(this, true);
         } catch (JDOMException e) {
@@ -29,46 +43,38 @@ public class MainPanel extends JPanel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
-    public void clear() {
-        content.setText("<html>\n" +
-                "<body>\n" +
-                "<p>qq</p>\n" +
-                "</body>\n" +
-                "</html>");
-    }
 
-    public void build() {
-        String html = content.getText();
-        InputStream in = new ByteArrayInputStream(html.getBytes());
-        try {
-            DomModel model = DomLoader.loadModel(in);
+    public void onExampleOpen(MouseEvent e) {
+        JTree tree = (JTree) e.getSource();
+        TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+        if (path==null || path.getPathCount()<=0) {
+            return;
+        }
 
-            PreviewPanel previewPanel = new PreviewPanel();
-            previewPanel.setModel(model);
-            previewPanel.compose();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+        if (node==null) {
+            return;
+        }
+        else if (node.getUserObject() instanceof Example) {
+            Example example = (Example) node.getUserObject();
+            String url = example.getSource();
+            logger.info("Opening "+ url);
+
+            EditorPanel editorPanel = new EditorPanel();
+            try {
+                InputStream inputStream = getClass().getClassLoader().getResourceAsStream("examples/loginform/LoginForm.html");
+                String text = IOUtils.toString(inputStream);
+                editorPanel.getModel().setOriginal(text);
+                editorPanel.getModel().reset();
+                toolWindowManager.getContentManager().addContent(example.getName(), example.getName(), null, editorPanel);
+            } catch (Exception e1) {
+                logger.error("Can't open source '"+url+"' for example '"+example.getName()+"'", e1);
+            }
 
 
-            Builder builder = Builder.getInstance();
-            JDialog preview = new JDialog(builder, "Preview");
-            preview.setSize(500, 400);
-            preview.setLocation(
-                    builder.getLocation().x+(builder.getWidth() - preview.getWidth()) / 2,
-                    builder.getLocation().y+(builder.getHeight() - preview.getHeight()) / 3);
-            preview.setModal(true);
-            preview.getContentPane().add(previewPanel);
-            preview.setVisible(true);
 
-
-        } catch (JDOMException e1) {
-            e1.printStackTrace();
-        } catch (IOException e1) {
-            e1.printStackTrace();
         }
     }
-
-
 }

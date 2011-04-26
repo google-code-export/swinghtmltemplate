@@ -17,7 +17,7 @@ public class Builder extends JFrame {
     public Builder() throws HeadlessException {
         instance = this;
         setTitle("SwingHtmlTemplate buider");
-        setSize(640, 480);
+        setSize(1024, 768);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setLocation((screenSize.width - getWidth()) / 2, (screenSize.height - getHeight()) / 3);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -25,6 +25,7 @@ public class Builder extends JFrame {
 
 
         MainPanel panel = new MainPanel();
+//        EditorPanel panel = new EditorPanel();
         getContentPane().add(panel);
 
     }
