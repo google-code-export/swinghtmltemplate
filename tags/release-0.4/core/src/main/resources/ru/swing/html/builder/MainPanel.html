@@ -1,0 +1,29 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+
+<head>
+
+    <style type="text/css">
+        body {
+            display:border;
+            border: compound (empty 12 12 12 12) (compound (etched) (empty 12 12 12 12));
+            margin: 0 6;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="toolbar" style="display: box" align="top">
+    <input type="button" id="build" text="Build" onclick="build"/>
+    <c:strut type="horizontal" width='6'/>
+    <input type="button" id="clear" text="Clear" onclick="clear"/>
+</div>
+
+<c:scroll>
+    <textarea id="content"></textarea>
+</c:scroll>
+
+</body>
+
+</html>
