@@ -6,7 +6,7 @@ Since ver.0.3 there is beans binding and new `<dataTable>` tag. This tag allows 
 
 Let's see the details.
 
-Assume we wan't to create a form form controlling persons in our dictionary. The final result will look like this:
+Assume we want to create a form for editing persons in our company. The final result will look like this:
 
 http://swinghtmltemplate.googlecode.com/files/datatable-usage.png
 
