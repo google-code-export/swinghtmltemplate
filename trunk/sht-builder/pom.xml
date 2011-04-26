@@ -61,12 +61,6 @@
 
         <dependency>
             <groupId>com.googlecode.swinghtmltemplate</groupId>
-            <artifactId>core</artifactId>
-            <version>0.5-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.googlecode.swinghtmltemplate</groupId>
             <artifactId>sht-mydoggy</artifactId>
             <version>0.5-SNAPSHOT</version>
         </dependency>

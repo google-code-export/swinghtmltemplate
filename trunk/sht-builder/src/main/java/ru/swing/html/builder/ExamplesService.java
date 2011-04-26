@@ -23,6 +23,7 @@ public class ExamplesService {
 
         examples = new ArrayList<Example>();
 
+        examples.add(new Example("'Create project' form", "examples/createproject/CreateProjectForm.html", new String[] {"Forms"}));
         examples.add(new Example("Login form", "examples/loginform/LoginForm.html", new String[] {"Forms"}));
 
 
