@@ -6,9 +6,11 @@ import org.apache.commons.logging.LogFactory;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
+import ru.swing.html.tags.Meta;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +31,120 @@ public class DomConverter {
     private static Log logger = LogFactory.getLog(DomConverter.class);
 
     /**
+     * <p>Creates an window. The window type is set with</p>
+     * <pre>
+     *     &lt;meta name='display-as' content='frame'/&gt;
+     * </pre>
+     * <p>Possible values for "display-as" are "frame" and "dialog".</p>
+     *
+     * <p>If originalWindow is not null, when window is not created, originalWindow will be
+     * used instead.</p>
+     *
+     * <p>The window title, defaultCloseOperation, modality (for JDialog) are set for window.
+     * The title is taken from &lt;title>Title&lt;/title> tag.</p>
+     *
+     * <p>defaultCloseOperation is set with
+     * <pre>
+     *     &lt;meta name='onclose' content='close_op'/&gt;
+     * </pre>
+     * Possible values for "close_op" are:
+     * <ul>
+     *     <li>exit - JFrame.EXIT_ON_CLOSE (only for JFrame)</li>
+     *     <li>hide - JFrame.HIDE_ON_CLOSE</li>
+     *     <li>dispose - JFrame.DISPOSE_ON_CLOSE</li>
+     *     <li>nothing - JFrame.DO_NOTHING_ON_CLOSE</li>
+     * </ul>
+     * </p>
+     *
+     * <p>The modality of JDialog can be set with
+     * <pre>
+     *     &lt;meta name='modal' content='true|false'/&gt;
+     * </pre>
+     * </p>
+     *
+     * @param model dom-model
+     * @param originalWindow if not null, will be used as window.
+     * @return created window
+     */
+    public static Window createWindow(DomModel model, Window originalWindow) {
+        Window res;
+        if (originalWindow==null) {
+            if ("dialog".equals(model.getMetaItems().get("display-as"))) {
+                res = new JDialog();
+
+            }
+            else {
+                res = new JFrame();
+            }
+        }
+        else {
+            res = originalWindow;
+        }
+
+
+        //apply metas
+        if (res instanceof JDialog) {
+            JDialog dlg = (JDialog) res;
+            Tag[] titles = model.query("title");
+            if (titles.length>0) {
+                dlg.setTitle(titles[0].getContent());
+            }
+
+            String onclose = model.getMetaItems().get("onclose");
+            if (StringUtils.isNotEmpty(onclose)) {
+                if ("hide".equals(onclose)) {
+                    dlg.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
+                }
+                else if ("dispose".equals(onclose)) {
+                    dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                }
+                else if ("nothing".equals(onclose)) {
+                    dlg.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+                }
+            }
+
+            dlg.setModal((Boolean) Utils.convertStringToObject(model.getMetaItems().get("modal"), Boolean.class));
+
+
+        }
+        else if (res instanceof JFrame) {
+            JFrame frame = (JFrame) res;
+            Tag[] titles = model.query("title");
+            if (titles.length>0) {
+                frame.setTitle(titles[0].getContent());
+            }
+
+            String onclose = model.getMetaItems().get("onclose");
+            if (StringUtils.isNotEmpty(onclose)) {
+                if ("exit".equals(onclose)) {
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+                else if ("hide".equals(onclose)) {
+                    frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                }
+                else if ("dispose".equals(onclose)) {
+                    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                }
+                else if ("nothing".equals(onclose)) {
+                    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+
+        }
+
+        return res;
+    }
+
+
+    /**
      * Creates swing component for every tag in the dom model.
+     *
+     * <p>When &lt;meta name='display-as' content='frame'&gt; is contained inside &lt;head&gt;
+     * a window will be created (or existing window will be used if set with setWindow()),
+     * the root component will be added into the contentPane of the window.</p>
+     *
+     * <p>Possible values for 'display-as' are "frame" and "dialog".</p>
+     *
      * @param model dom-model
      * @return root swing-component
      */
@@ -39,6 +154,13 @@ public class DomConverter {
 
     /**
      * Creates swing component for every tag in the dom model.
+     *
+     * <p>When &lt;meta name='display-as' content='frame'&gt; is contained inside &lt;head&gt;
+     * a window will be created (or existing window will be used if set with setWindow()),
+     * the root component will be added into the contentPane of the window.</p>
+     *
+     * <p>Possible values for 'display-as' are "frame" and "dialog".</p>
+     *
      * @param model dom-model
      * @param substitutions the map of the substitutions of the components. The key - css selector, value - the component to be used.
      * @return root swing-component
@@ -56,6 +178,18 @@ public class DomConverter {
         for (Tag tag : model.query("*")) {
             tag.afterComponentsConverted();
         }
+
+        if (model.getMetaItems().containsKey("display-as")) {
+            Window w = createWindow(model, model.getWindow());
+            model.setWindow(w);
+            if (w instanceof JFrame) {
+                ((JFrame)w).getContentPane().add(b);
+            }
+            else if (w instanceof JDialog) {
+                ((JDialog)w).getContentPane().add(b);
+            }
+        }
+
         return b;
     }
 
@@ -119,6 +253,10 @@ public class DomConverter {
                 else {
                     logger.warn("css file: "+filename+" not found");
                 }
+            }
+            else if ("meta".equals(headChild.getName())) {
+                Meta meta = (Meta) headChild;
+                model.getMetaItems().put(meta.getMetaName(), meta.getMetaContent());
             }
         }
     }

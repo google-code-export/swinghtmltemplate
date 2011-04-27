@@ -82,4 +82,40 @@ public class BinderTest extends TestCase {
 
 
     }
+
+
+    public void testJFrame() throws Exception {
+        JFrame frame = new JFrame();
+
+        String html = "<html>\n" +
+                "<head>" +
+                "   <title>Test</title>" +
+                "   <meta name='display-as' content='frame'/>" +
+                "   <meta name='onclose' content='exit'/>" +
+                "</head>\n" +
+                "<body style='display: border;'>\n" +
+                "   <p content='html' id='rootLabel'>center</p>\n" +
+                "   <p align='top'>top</p>\n" +
+                "   <p align='bottom' content='html'><![CDATA[<i>bottom</i>]]></p>\n" +
+                "   <p align='left'>left</p>\n" +
+                "   <p align='right'>right</p>\n" +
+                "</body>\n" +
+                "</html>";
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+
+        Binder.bind(frame, true, model);
+
+        assertEquals("Test", frame.getTitle());
+        assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation());
+        assertEquals(1, frame.getContentPane().getComponentCount());
+
+        JPanel root = (JPanel) frame.getContentPane().getComponent(0);
+        assertEquals(BorderLayout.class, root.getLayout().getClass());
+        assertEquals(5, root.getComponentCount());
+
+
+
+    }
 }

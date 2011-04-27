@@ -8,6 +8,7 @@ import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -153,6 +154,9 @@ public class Binder {
         if (useControllerAsRoot && component instanceof JComponent) {
             SelectorGroup selector = new SelectorGroup("body");
             substitutions.put(selector, (JComponent) component);
+        }
+        else if (useControllerAsRoot && component instanceof Window) {
+            model.setWindow((Window) component);
         }
         model.setController(component);
         //extract model elements and put them to dom model
