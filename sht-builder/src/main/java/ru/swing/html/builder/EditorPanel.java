@@ -85,12 +85,12 @@ public class EditorPanel extends JPanel {
             }
 
 
-            Builder builder = Builder.getInstance();
-            JDialog preview = new JDialog(builder, "Preview");
+            MainPanel parent = Builder.getInstance();
+            JDialog preview = new JDialog(parent, "Preview");
             preview.setSize(800, 600);
             preview.setLocation(
-                    builder.getLocation().x+(builder.getWidth() - preview.getWidth()) / 2,
-                    builder.getLocation().y+(builder.getHeight() - preview.getHeight()) / 3);
+                    parent.getLocation().x+(parent.getWidth() - preview.getWidth()) / 2,
+                    parent.getLocation().y+(parent.getHeight() - preview.getHeight()) / 3);
             preview.setModal(true);
             preview.getContentPane().add(previewPanel);
             preview.setVisible(true);
