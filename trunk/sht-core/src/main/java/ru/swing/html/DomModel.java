@@ -10,6 +10,7 @@ import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -32,7 +33,12 @@ public class DomModel {
     private Map<String, Tag> tagsById = new HashMap<String, Tag>();
     private Map<String, Object> model = ObservableCollections.observableMap(new HashMap<String, Object>());
     private String sourcePath;
+    private Window window;
     private Map<String, Map<String, Binding>> bindingsByModelElementName = new HashMap<String, Map<String, Binding>>();
+    /**
+     * Contains meta data, filled by <meta> tags inside <head>
+     */
+    private Map<String, String> metaItems = new HashMap<String, String>();
 
     private PropertyChangeListener controllerPCL = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -315,5 +321,17 @@ public class DomModel {
      */
     public void resetIds() {
         tagsById.clear();
+    }
+
+    public Map<String, String> getMetaItems() {
+        return metaItems;
+    }
+
+    public Window getWindow() {
+        return window;
+    }
+
+    public void setWindow(Window window) {
+        this.window = window;
     }
 }

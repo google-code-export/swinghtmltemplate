@@ -40,6 +40,9 @@ public class HtmlTagFactory implements TagFactory {
         else if ("label".equals(element.getName())) {
             return new Label();
         }
+        else if ("meta".equals(element.getName())) {
+            return new Meta();
+        }
         else if ("object".equals(element.getName())) {
             return new Object();
         }
