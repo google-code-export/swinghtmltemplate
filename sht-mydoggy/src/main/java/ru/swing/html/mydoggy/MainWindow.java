@@ -19,6 +19,19 @@ import java.util.Map;
 
 /**
  * The main window for mydoggy content.
+ *
+ * Content manager ui can be set with "type" attribute:
+ * <ul>
+ *     <li>split - MyDoggyMultiSplitContentManagerUI</li>
+ *     <li>tabbed - MyDoggyTabbedContentManagerUI</li>
+ *     <li>desktop - MyDoggyDesktopContentManagerUI</li>
+ * </ul>
+ *
+ * The only allowed children are:
+ * <ul>
+ *    <li>&lt;mydoggy:toolWindow&gt; - for tool window</li>
+ *    <li>&lt;mydoggy:contentWindow&gt; - for content window</li>
+ * </ul>
  */
 public class MainWindow extends Tag {
 
@@ -42,6 +55,8 @@ public class MainWindow extends Tag {
         MyDoggyToolWindowManager myDoggyToolWindowManager = (MyDoggyToolWindowManager) component;
 
         super.applyAttributes(component);
+
+        //set content manager ui
         if (StringUtils.isNotEmpty(getType())) {
 
             if ("split".equals(getType())) {

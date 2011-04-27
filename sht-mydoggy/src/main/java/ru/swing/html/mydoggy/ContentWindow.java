@@ -1,18 +1,28 @@
 package ru.swing.html.mydoggy;
 
+import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
+import javax.swing.*;
+import java.util.Map;
+
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 26.04.11
- * Time: 12:18
- * To change this template use File | Settings | File Templates.
+ * Tag for holding info on MyDoggy contentwindow. Do not produces any component.
  */
 public class ContentWindow extends Tag {
 
-        private String title;
+    private String title;
     private String icon;
+
+    @Override
+    public JComponent createComponent() {
+        return null;
+    }
+
+    @Override
+    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
+        //the only possible child is handled by MainWindow
+    }
 
     @Override
     public void setAttribute(String name, String value) {
