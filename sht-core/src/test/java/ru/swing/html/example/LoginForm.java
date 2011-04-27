@@ -20,7 +20,7 @@ import java.io.IOException;
  * Time: 17:48:58
  * </pre>
  */
-public class LoginForm extends JPanel{
+public class LoginForm extends JFrame {
 
 
     @Bind("result")
@@ -73,13 +73,7 @@ public class LoginForm extends JPanel{
         acc.setName("John Doe");
         loginForm.setAccount(acc);
 
-        JFrame f = new JFrame("Test");
-        f.setSize(400, 200);
-
-
-        f.getContentPane().add(loginForm);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        loginForm.setVisible(true);
 
     }
 

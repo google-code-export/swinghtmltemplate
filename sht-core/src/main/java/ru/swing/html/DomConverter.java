@@ -62,6 +62,12 @@ public class DomConverter {
      * </pre>
      * </p>
      *
+     * <p>The size of window can be set with
+     * <pre>
+     *     &lt;meta name='size' content='w h'/&gt;
+     * </pre>
+     * </p>
+     *
      * @param model dom-model
      * @param originalWindow if not null, will be used as window.
      * @return created window
@@ -130,6 +136,12 @@ public class DomConverter {
                 }
             }
 
+        }
+
+
+        if (StringUtils.isNotEmpty(model.getMetaItems().get("size"))) {
+            Dimension d = (Dimension) Utils.convertStringToObject(model.getMetaItems().get("size"), Dimension.class);
+            res.setSize(d);
         }
 
         return res;
