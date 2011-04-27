@@ -1,8 +1,10 @@
 package ru.swing.html.mydoggy;
 
+import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
+import java.util.Map;
 
 /**
  * Tag for holding info on MyDoggy toolwindow. Do not produces any component.
@@ -16,6 +18,11 @@ public class ToolWindow extends Tag {
     @Override
     public JComponent createComponent() {
         return null;
+    }
+
+    @Override
+    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
+        //the only possible child is handled by MainWindow
     }
 
     @Override

@@ -29,19 +29,19 @@ public class DomConverter {
     private static Log logger = LogFactory.getLog(DomConverter.class);
 
     /**
-     * Для каждого тега dom-модели производит построение соответствующего swing-компонета.
-     * @param model dom-модель
-     * @return корневой swing-компонент
+     * Creates swing component for every tag in the dom model.
+     * @param model dom-model
+     * @return root swing-component
      */
     public static JComponent toSwing(DomModel model) {
         return toSwing(model, Collections.<SelectorGroup, JComponent>emptyMap());
     }
 
     /**
-     * Для каждого тега dom-модели производит построение соответствующего swing-компонета.
-     * @param model dom-модель
-     * @param substitutions карта подстановок компонентов. Ключ - селектор, значение - компонент.
-     * @return корневой swing-компонент
+     * Creates swing component for every tag in the dom model.
+     * @param model dom-model
+     * @param substitutions the map of the substitutions of the components. The key - css selector, value - the component to be used.
+     * @return root swing-component
      */
     public static JComponent toSwing(DomModel model, Map<SelectorGroup, JComponent> substitutions) {
 
@@ -60,9 +60,9 @@ public class DomConverter {
     }
 
     /**
-     * Обрабатывает тег &lt;head&gt;
-     * @param model dom-модель
-     * @param head тег
+     * Parses tag &lt;head&gt;
+     * @param model dom-model
+     * @param head tag
      */
     public static void parseHead(DomModel model, Tag head) {
         if (head==null) {
@@ -124,9 +124,9 @@ public class DomConverter {
     }
 
     /**
-     * Выполняет процедуру преобразования тега dom-модели в swing-компонент.
-     * @param componentTag тег dom-модели
-     * @return swing-компонент
+     * Converts single tag to the swing component
+     * @param componentTag tag dom-model
+     * @return swing-component
      */
     public static JComponent convertComponent(Tag componentTag) {
         return convertComponent(componentTag, Collections.<SelectorGroup, JComponent>emptyMap());
