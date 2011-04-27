@@ -92,6 +92,7 @@ public class BinderTest extends TestCase {
                 "   <title>Test</title>" +
                 "   <meta name='display-as' content='frame'/>" +
                 "   <meta name='onclose' content='exit'/>" +
+                "   <meta name='size' content='100 200'/>" +
                 "</head>\n" +
                 "<body style='display: border;'>\n" +
                 "   <p content='html' id='rootLabel'>center</p>\n" +
@@ -109,6 +110,8 @@ public class BinderTest extends TestCase {
 
         assertEquals("Test", frame.getTitle());
         assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation());
+        assertEquals(100, frame.getWidth());
+        assertEquals(200, frame.getHeight());
         assertEquals(1, frame.getContentPane().getComponentCount());
 
         JPanel root = (JPanel) frame.getContentPane().getComponent(0);
