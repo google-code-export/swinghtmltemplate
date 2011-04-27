@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.googlecode.swinghtmltemplate</groupId>
+  <artifactId>sht-mydoggy</artifactId>
+  <version>0.5-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20110427094500</lastUpdated>
+  </versioning>
+</metadata>
