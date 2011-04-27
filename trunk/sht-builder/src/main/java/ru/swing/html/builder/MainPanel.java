@@ -20,7 +20,7 @@ import java.io.InputStream;
 /**
  * The controller for the main panel of the builder.
  */
-public class MainPanel extends JPanel {
+public class MainPanel extends JFrame {
 
     @ModelElement("examplesModel")
     private TreeModel examplesModel;
