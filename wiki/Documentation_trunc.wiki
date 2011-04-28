@@ -397,8 +397,8 @@ The window can be later accessed with `domModel.getWindow()` method. You can pas
 `domModel.setWindow(window)` method, in this case no window is created, your instance is used instead.
 
 Possible values are:
-   * `frame` for `javax.swing.JFrame`
-   * `dialog` for `javax.swing.JDialog`.
+   ** `frame` for `javax.swing.JFrame`
+   ** `dialog` for `javax.swing.JDialog`.
 
  * `modal` sets the modality of the `JDialog`. It is used only when `display-as` meta is used and is equal to `dialog`.
 
