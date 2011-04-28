@@ -1,11 +1,14 @@
 package ru.swing.html.builder;
 
+import groovy.lang.GroovyClassLoader;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Property;
 import org.jdom.JDOMException;
 import ru.swing.html.*;
 import ru.swing.html.css.SelectorGroup;
@@ -33,14 +36,25 @@ public class EditorPanel extends JPanel {
             //we will substitute the texteditor from the markup with RSyntaxTextArea.
             //when we will create module for RSyntaxTextArea, we will remove substitutions
             HashMap<SelectorGroup, JComponent> substitutions = new HashMap<SelectorGroup, JComponent>();
+            //html editor
             RSyntaxTextArea textArea = new RSyntaxTextArea();
             textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_HTML);
             RTextScrollPane sp = new RTextScrollPane(textArea);
             substitutions.put(new SelectorGroup("#editorScroll"), sp);
+
+            //code editor
+            RSyntaxTextArea codeArea = new RSyntaxTextArea();
+            codeArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_GROOVY);
+            sp = new RTextScrollPane(codeArea);
+            substitutions.put(new SelectorGroup("#codeScroll"), sp);
+
             //bind controller to model
             DomModel model = Binder.bind(this, true, substitutions);
             //bind text from model with text from RSyntaxTextArea. Mannual binding cause we use substitutions
             model.bind("${model.text}", textArea, BeanProperty.create("text"));
+            model.bind("${model.code}", codeArea, BeanProperty.create("text"));
+
+
         } catch (JDOMException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -75,6 +89,26 @@ public class EditorPanel extends JPanel {
         try {
             DomModel model = DomLoader.loadModel(in);
 
+            Object controller = null;
+            GroovyClassLoader gcl = new GroovyClassLoader();
+            if (StringUtils.isNotEmpty(this.model.getCode())) {
+                Class clazz = gcl.parseClass(this.model.getCode());
+                try {
+                    controller = clazz.newInstance();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                Property<Object, DomModel> p = BeanProperty.create("model");
+                if (p.isWriteable(controller)) {
+                    p.setValue(controller, model);
+                }
+                Binder.injectModelElements(controller, model);
+            }
+
+            model.setController(controller);
+
             PreviewPanel previewPanel = new PreviewPanel();
             previewPanel.setModel(model);
             try {
@@ -96,11 +130,9 @@ public class EditorPanel extends JPanel {
             preview.setVisible(true);
 
 
-        } catch (JDOMException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        } 
     }
 
 
@@ -112,6 +144,8 @@ public class EditorPanel extends JPanel {
         private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
         private String text;
+        private String code;
+        private String originalCode;
         private String original;
 
         public String getText() {
@@ -126,6 +160,7 @@ public class EditorPanel extends JPanel {
 
         public void reset() {
             setText(original);
+            setCode(originalCode);
         }
 
         public String getOriginal() {
@@ -134,6 +169,24 @@ public class EditorPanel extends JPanel {
 
         public void setOriginal(String original) {
             this.original = original;
+        }
+
+        public String getOriginalCode() {
+            return originalCode;
+        }
+
+        public void setOriginalCode(String originalCode) {
+            this.originalCode = originalCode;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            String old = this.code;
+            this.code = code;
+            pcs.firePropertyChange("code", old, code);
         }
 
         public void addPropertyChangeListener(PropertyChangeListener listener) {

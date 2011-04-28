@@ -14,7 +14,7 @@
         }
     </style>
 </head>
-<body id="rootPanel">
+<body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
 <table>
     <tr>
         <td rowspan="3" class="top">
@@ -22,20 +22,25 @@
         </td>
         <td width="fill">
             <form id="loginForm">
-                <label for="login">Login:</label>
-                <input id="login" type="text" align="wrap"/>
+                <label for="login">Login</label>
+                <input id="login" type="text" value="${account.name}" align="wrap"/>
                 <label for="password">Password:</label>
-                <input id="password" type="password" align="wrap" />
+                <input id="password" type="password" value="${account.password}" align="wrap" />
             </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p id="result" class="red"></p>
         </td>
     </tr>
     <tr>
         <td>
             <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6">
                 <c:glue type="horizontal"/>
-                <input type="button" text="OK" id="ok" icon="/examples/loginform/accept.png" class="button"/>
+                <input type="button" text="OK" id="ok" icon="/examples/loginform/accept.png" class="button" onclick="onOkClick"/>
                 <c:strut type="horizontal" style="width: 6"/>
-                <input type="button" text="Cancel" id="cancel" icon="/examples/loginform/cancel.png" class="button"/>
+                <input type="button" text="Cancel" id="cancel" icon="/examples/loginform/cancel.png" class="button" onclick="onCancelClick"/>
             </div>
         </td>
     </tr>
@@ -43,4 +48,5 @@
 
 
 </body>
+
 </html>

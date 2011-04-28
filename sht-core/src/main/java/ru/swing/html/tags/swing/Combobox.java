@@ -54,15 +54,20 @@ public class Combobox extends Tag {
                 //get items for table model
                 ELProperty beanProperty = ELProperty.create(modelEL);
                 java.lang.Object propertyValue = beanProperty.getValue(getModel().getModelElements());
-                if (!(propertyValue instanceof java.util.List)) {
+                if (propertyValue == null) {
+                    logger.warn(toString()+": selectItems binding target '"+modelEL+"' is null");
+                }
+                else if (!(propertyValue instanceof java.util.List)) {
                     logger.warn(toString()+": selectItems must be binded to the property of type "+List.class.getName());
                     return;
                 }
-                List<java.lang.Object> values = (List<java.lang.Object>) propertyValue;
+                else {
+                    List<java.lang.Object> values = (List<java.lang.Object>) propertyValue;
 
-                JComboBoxBinding binding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, values, (JComboBox) getComponent());
-                binding.bind();
-                logger.trace(toString()+": created binding on property '"+modelEL+"'");
+                    JComboBoxBinding binding = SwingBindings.createJComboBoxBinding(AutoBinding.UpdateStrategy.READ_WRITE, values, (JComboBox) getComponent());
+                    binding.bind();
+                    logger.trace(toString()+": created binding on property '"+modelEL+"'");
+                }
 
 
             }

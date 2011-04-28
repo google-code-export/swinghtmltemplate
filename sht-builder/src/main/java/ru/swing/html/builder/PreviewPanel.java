@@ -48,6 +48,9 @@ public class PreviewPanel extends JPanel {
         }
 
         DomConverter.toSwing(model);
+        if (model.getController()!=null) {
+            Binder.bind(model, model.getController());
+        }
         JComponent root = model.getRootTag().getChildByName("body").getComponent();
         contentWrapper.add(root);
 

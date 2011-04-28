@@ -31,9 +31,9 @@ public class BaseDelegator {
                 finalM.invoke(controller, finalP);
             }
         } catch (IllegalAccessException e1) {
-            logger.warn("Can't invoke method " + finalM.getName()+" in class "+controller.getClass().getName());
+            logger.warn("Can't invoke method " + finalM.getName()+" in class "+controller.getClass().getName(), e1);
         } catch (InvocationTargetException e1) {
-            logger.warn("Can't invoke method " + finalM.getName()+" in class "+controller.getClass().getName());
+            logger.warn("Can't invoke method " + finalM.getName()+" in class "+controller.getClass().getName(), e1);
         }
     }
 
