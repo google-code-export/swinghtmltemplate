@@ -1,6 +1,7 @@
 package ru.swing.html.builder;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
@@ -73,10 +74,24 @@ public class MainPanel extends JFrame {
             EditorPanel editorPanel = new EditorPanel();
             try {
                 //load html
-                InputStream inputStream = getClass().getClassLoader().getResourceAsStream(example.getSource());
-                String text = IOUtils.toString(inputStream);
+                if (StringUtils.isNotEmpty(example.getSource())) {
+                    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(example.getSource());
+                    String text = IOUtils.toString(inputStream);
+                    inputStream.close();
+                    editorPanel.getModel().setOriginal(text);
+                }
+
+                if (StringUtils.isNotEmpty(example.getCode())) {
+                    //load groovy
+                    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(example.getCode());
+                    String code = null;
+                    if (inputStream!=null) {
+                        code = IOUtils.toString(inputStream);
+                        inputStream.close();
+                    }
+                    editorPanel.getModel().setOriginalCode(code);
+                }
                 //init editor panel
-                editorPanel.getModel().setOriginal(text);
                 editorPanel.getModel().reset();
                 //add content to the mydoggy
                 toolWindowManager.getContentManager().addContent(example.getName(), example.getName(), null, editorPanel);

@@ -21,8 +21,10 @@ public class ExamplesService {
 
         examples = new ArrayList<Example>();
         //init examples list
-        examples.add(new Example("'Create project' form", "examples/createproject/CreateProjectForm.html", new String[] {"Forms"}));
-        examples.add(new Example("Login form", "examples/loginform/LoginForm.html", new String[] {"Forms"}));
+        examples.add(new Example("'Create project' form", "examples/createproject/CreateProjectForm.html",
+                "examples/createproject/CreateProjectForm.groovy", new String[] {"Forms"}));
+        examples.add(new Example("Login form", "examples/loginform/LoginForm.html",
+                "examples/loginform/LoginForm.groovy", new String[] {"Forms"}));
 
         //group examples by path. Key - path. Value - list of the examples
         examplesByPath = new HashMap<String[], List<Example>>();

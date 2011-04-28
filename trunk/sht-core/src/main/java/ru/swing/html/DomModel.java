@@ -191,9 +191,11 @@ public class DomModel {
             }
         }
         this.controller = controller;
-        if (BeanUtils.supportsBoundProperties(controller.getClass())) {
-            BeanUtils.addPropertyChangeListener(controller, controllerPCL);
-            logger.trace("Added property change listener to controller "+controller.getClass());
+        if (controller!=null) {
+            if (BeanUtils.supportsBoundProperties(controller.getClass())) {
+                BeanUtils.addPropertyChangeListener(controller, controllerPCL);
+                logger.trace("Added property change listener to controller "+controller.getClass());
+            }
         }
     }
 

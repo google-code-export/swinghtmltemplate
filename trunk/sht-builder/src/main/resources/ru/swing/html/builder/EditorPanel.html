@@ -20,10 +20,16 @@
     <input type="button" id="clear" text="Reset" onclick="reset"/>
 </div>
 
-<c:scroll id='editorScroll'>
-    <!--<textarea id="content" value="${model.text}"></textarea>-->
-</c:scroll>
-
+<c:tabs>
+    <div title="Html">
+        <c:scroll id='editorScroll'>
+            <!--<textarea id="content" value="${model.text}"></textarea>-->
+        </c:scroll>
+    </div>
+    <div title="Code">
+        <c:scroll id='codeScroll'></c:scroll>
+    </div>
+</c:tabs>
 </body>
 
 </html>

@@ -160,15 +160,26 @@ public class Binder {
         }
         model.setController(component);
         //extract model elements and put them to dom model
-        Map<String, Object> modelElements = extractModelElements(component);
-        for (String name : modelElements.keySet()) {
-            model.addModelElement(name, modelElements.get(name));
-        }
+        injectModelElements(component, model);
         //convert dom-model to swing components
         DomConverter.toSwing(model, substitutions);
         //tie model
         bind(model, component);
         return model;
+    }
+
+    /**
+     * Injects model elements from controller to the dom model.
+     * Model element is a field annotated with @ModelElement
+     * @param component controller
+     * @param model dom model
+     * @see ModelElement
+     */
+    public static void injectModelElements(Object component, DomModel model) {
+        Map<String, Object> modelElements = extractModelElements(component);
+        for (String name : modelElements.keySet()) {
+            model.addModelElement(name, modelElements.get(name));
+        }
     }
 
 

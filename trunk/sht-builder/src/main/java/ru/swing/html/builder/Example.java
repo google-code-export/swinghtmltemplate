@@ -19,6 +19,11 @@ public class Example {
     private String source;
 
     /**
+     * The path to the groovy code of the example.
+     */
+    private String code;
+
+    /**
      * The path, where the example must be located in the examples tree.
      */
     private String[] path;
@@ -28,10 +33,11 @@ public class Example {
     public Example() {
     }
 
-    public Example(String name, String source, String[] path) {
+    public Example(String name, String source, String code, String[] path) {
         this.name = name;
         this.source = source;
         this.path = path;
+        this.code = code;
     }
 
     public String getName() {
@@ -62,6 +68,16 @@ public class Example {
         String[] old = this.path;
         this.path = path;
         pcs.firePropertyChange("path", old, path);
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        String old = this.code;
+        this.code = code;
+        pcs.firePropertyChange("code", old, code);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
