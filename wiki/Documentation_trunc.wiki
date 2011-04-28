@@ -401,6 +401,7 @@ Possible values are:
    # `dialog` for `javax.swing.JDialog`.
 
  * `modal` sets the modality of the `JDialog`. It is used only when `display-as` meta is used and is equal to `dialog`.
+   Possible values: `true` or `false`
 
  * `onclose` - this is used to set default close operation for the window (`JFrame.setDefaultCloseOperation()`).
 It is only used if `display-as` meta is used. Possible values:
