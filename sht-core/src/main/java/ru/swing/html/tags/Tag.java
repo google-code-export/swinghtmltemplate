@@ -3,6 +3,10 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdesktop.beansbinding.*;
+import org.jdesktop.observablecollections.ObservableCollections;
+import org.jdesktop.observablecollections.ObservableMap;
+import org.jdesktop.observablecollections.ObservableMapListener;
 import ru.swing.html.*;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
@@ -32,13 +36,14 @@ import java.util.List;
  * Time: 10:47:28
  * </pre>
  */
-public class Tag {
+public class Tag implements Cloneable {
 
     private DomModel model;
     private JComponent component;
     private Log logger = LogFactory.getLog(Tag.class);
     private String id;
     private String name;
+    private String namespace;
     private Tag parent;
     private List<Tag> children = new ArrayList<Tag>();
     private String content;
@@ -65,6 +70,9 @@ public class Tag {
     public static final String TYPE_ATTRIBUTE = "type";
     private ClickDelegator clickDelegator;
     private DocumentDelegator documentDelegator;
+    private Map<String, Object> modelElements;
+    private ObservableMapListener parentMapListener;
+    private ObservableMap parentMap;
 
     /**
      * Возвращает первый дочерний тег с указанным именем.
@@ -193,6 +201,7 @@ public class Tag {
     public void addChild(Tag tag) {
         tag.setParent(this);
         tag.setModel(getModel());
+        tag.createContextModel();
         children.add(tag);
     }
 
@@ -435,6 +444,9 @@ public class Tag {
         }
 
 
+        String resolvedId = ELUtils.parseStringValue(getId(), getModelElements());
+        setId(resolvedId);
+
         if (StringUtils.isNotEmpty(getAttribute("readonly")) && component instanceof JTextComponent) {
             ((JTextComponent)component).setEditable(!Boolean.valueOf(getAttribute("readonly")));
         }
@@ -574,6 +586,18 @@ public class Tag {
     }
 
     /**
+     * This call-back method is called in DomLoader after child elements are loaded and appended to this tag.
+     */
+    public void afterChildElementsConverted() {
+    }
+
+    /**
+     * This call-back method is called in DomLoader before convertion to swing is started.
+     */
+    public void beforeComponentsConvertion() {
+    }
+
+    /**
      * This method is called in DomConverter after all tags are parsed and converted to components.
      */
     public void afterComponentsConverted() {
@@ -597,9 +621,104 @@ public class Tag {
 
     }
 
-    /**
-     * This call-back method is called in DomLoader after child elements are loaded and appended to this tag.
-     */
-    public void afterChildElementsConverted() {
+
+
+    public String getNamespace() {
+        return namespace;
     }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    @Override
+    public Tag clone()  {
+        Tag clone = DomLoader.createTag(getNamespace(), getName());
+        clone.setModel(model);
+        for (String attrName : attributes.keySet()) {
+            clone.setAttribute(attrName, attributes.get(attrName));
+        }
+        clone.setContent(content);
+
+        for (Tag child : getChildren()) {
+            Tag childClone = child.clone();
+            clone.addChild(childClone);
+        }
+
+        return clone;
+    }
+
+    public void addModelElement(String name, Object value) {
+        modelElements.put(name, value);
+    }
+
+    public Map<String, Object> getModelElements() {
+        //if this is root tag, when noone will call "addChild", so local model is not created from dom model
+        if (getParent()==null && modelElements==null) {
+            createContextModel();
+        }
+        return modelElements;
+    }
+
+    /**
+     * Creates map with model elements, where local elements take preference over global.
+     * @return
+     */
+    public Map<String, Object> createContextModel() {
+
+
+        //first remove listener from old parent map
+        if (parentMap!=null && parentMapListener!=null) {
+            parentMap.removeObservableMapListener(parentMapListener);
+        }
+
+        if (getParent()==null && getModel()!=null) {
+            parentMap = (ObservableMap) getModel().getModelElements();
+        }
+        else if (getParent()!=null) {
+            parentMap = (ObservableMap) getParent().getModelElements();
+        }
+        else {
+            parentMap = null;
+        }
+
+        
+        modelElements = parentMap !=null ? ObservableCollections.observableMap(new HashMap(parentMap)) :
+                ObservableCollections.observableMap(new HashMap());
+
+        if (parentMap !=null) {
+            //sync with parent map
+            parentMapListener = new ObservableMapListener() {
+                public void mapKeyValueChanged(ObservableMap map, Object key, Object lastValue) {
+                    Object newValue = map.get(key);
+                    modelElements.put((String) key, newValue);
+                    logger.trace(Tag.this.toString()+": updated model element '"+key+"' to value: "+newValue);
+                }
+
+                public void mapKeyAdded(ObservableMap map, Object key) {
+                    modelElements.put((String) key, map.get(key));
+                }
+
+                public void mapKeyRemoved(ObservableMap map, Object key, Object value) {
+                    modelElements.remove(key);
+                }
+            };
+            parentMap.addObservableMapListener(parentMapListener);
+        }
+
+        return modelElements;
+
+    }
+
+    public void bind(String elPath, JComponent component, Property componentProperty, AutoBinding.UpdateStrategy type) {
+
+        ELProperty<Map<String, Object>, String> beanProperty = ELProperty.create(elPath);
+        Map<String, Object> modelElements1 = getModelElements();
+        Binding binding = Bindings.createAutoBinding(type, modelElements1, beanProperty, component, componentProperty);
+        binding.bind();
+        logger.debug("Binded '"+elPath+"'");
+
+    }
+
+
 }

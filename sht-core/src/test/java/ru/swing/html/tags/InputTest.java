@@ -7,7 +7,10 @@ import ru.swing.html.DomModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
+import java.lang.*;
 
 /**
  * <pre>
@@ -71,11 +74,74 @@ public class InputTest extends TestCase {
 
     }
 
+
+    public void testBinding() throws Exception {
+
+        String html = "<html>" +
+                "<head></head>" +
+                "<body style='display: border;'>" +
+                "   <input id='in' value='${person.name}'></input>" +
+                "</body>" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        Person element = new Person("1");
+        model.addModelElement("person", element);
+        DomConverter.toSwing(model);
+
+        JTextField label = (JTextField) model.getTagById("in").getComponent();
+        assertEquals("1", label.getText());
+
+        element.setName("2");
+        assertEquals("2", label.getText());
+
+        label.setText("3");
+        assertEquals("3", element.getName());
+
+        element = new Person("1");
+        model.addModelElement("person", element);
+        model.rebindModelElement("person");
+        assertEquals("1", element.getName());
+
+    }
+
     public void testUnknownType() {
         Input p = new Input();
         p.setType("foo");
         JComponent jComponent = DomConverter.convertComponent(p);
         assertEquals("Unknown type must be resolved to "+JTextField.class, JTextField.class, jComponent.getClass());
+    }
+
+
+    public class Person {
+
+        private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+        private String name;
+
+        public Person() {
+        }
+
+        public Person(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            java.lang.Object old = this.name;
+            this.name = name;
+            pcs.firePropertyChange("name", old, name);
+        }
+
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+            pcs.addPropertyChangeListener(listener);
+        }
+
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+            pcs.removePropertyChangeListener(listener);
+        }
     }
 
 }

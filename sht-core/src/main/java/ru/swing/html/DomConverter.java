@@ -184,9 +184,13 @@ public class DomConverter {
         Tag head = html.getChildByName("head");
         parseHead(model, head);
 
+        for (Tag tag : model.query("*")) {
+            tag.beforeComponentsConvertion();
+        }
 
         Tag body = html.getChildByName("body");
         JComponent b = convertComponent(body, substitutions);
+
         for (Tag tag : model.query("*")) {
             tag.afterComponentsConverted();
         }

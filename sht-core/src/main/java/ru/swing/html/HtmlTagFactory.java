@@ -14,63 +14,63 @@ public class HtmlTagFactory implements TagFactory {
 
     private Log logger = LogFactory.getLog(getClass());
 
-    public Tag createTag(Element element) {
-        if ("attribute".equals(element.getName())) {
+    public Tag createTag(String name) {
+        if ("attribute".equals(name)) {
             logger.warn("attribute tag moved to 'http://www.oracle.com/swing' namespace");
             return new Attribute();
         }
-        else if ("body".equals(element.getName())) {
+        else if ("body".equals(name)) {
             return new Body();
         }
-        else if ("div".equals(element.getName())) {
+        else if ("div".equals(name)) {
             return new Div();
         }
-        else if ("img".equals(element.getName())) {
+        else if ("img".equals(name)) {
             return new Img();
         }
-        else if ("form".equals(element.getName())) {
+        else if ("form".equals(name)) {
             return new Form();
         }
-        else if ("hr".equals(element.getName())) {
+        else if ("hr".equals(name)) {
             return new Hr();
         }
-        else if ("input".equals(element.getName())) {
+        else if ("input".equals(name)) {
             return new Input();
         }
-        else if ("label".equals(element.getName())) {
+        else if ("label".equals(name)) {
             return new Label();
         }
-        else if ("meta".equals(element.getName())) {
+        else if ("meta".equals(name)) {
             return new Meta();
         }
-        else if ("object".equals(element.getName())) {
+        else if ("object".equals(name)) {
             return new Object();
         }
-        else if ("p".equals(element.getName())) {
+        else if ("p".equals(name)) {
             return new P();
         }
-        else if ("table".equals(element.getName())) {
+        else if ("table".equals(name)) {
             return new Table();
         }
-        else if ("textarea".equals(element.getName())) {
+        else if ("textarea".equals(name)) {
             return new TextArea();
         }
-        else if ("scroll".equals(element.getName())) {
+        else if ("scroll".equals(name)) {
             logger.warn("scroll tag moved to 'http://www.oracle.com/swing' namespace");
             return new ScrollPane();
         }
-        else if ("span".equals(element.getName())) {
+        else if ("span".equals(name)) {
             return new Span();
         }
-        else if ("split".equals(element.getName())) {
+        else if ("split".equals(name)) {
             logger.warn("split tag moved to 'http://www.oracle.com/swing' namespace");
             return new SplitPane();
         }
-        else if ("strut".equals(element.getName())) {
+        else if ("strut".equals(name)) {
             logger.warn("strut tag moved to 'http://www.oracle.com/swing' namespace");
             return new Strut();
         }
-        else if ("tabs".equals(element.getName())) {
+        else if ("tabs".equals(name)) {
             logger.warn("tabs tag moved to 'http://www.oracle.com/swing' namespace");
             return new Tabs();
         }

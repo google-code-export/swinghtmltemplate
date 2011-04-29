@@ -3,6 +3,7 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import ru.swing.html.DomModel;
 
@@ -71,7 +72,7 @@ public class Input extends Tag {
                 componentProperty = BeanProperty.create("text");
             }
 
-            getModel().bind(el, getComponent(), componentProperty);
+            bind(el, getComponent(), componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);
         }
 
 
