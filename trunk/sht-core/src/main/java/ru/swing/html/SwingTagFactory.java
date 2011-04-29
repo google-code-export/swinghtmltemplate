@@ -13,54 +13,54 @@ public class SwingTagFactory implements TagFactory {
 
     private Log logger = LogFactory.getLog(getClass());
 
-    public Tag createTag(Element element) {
-        if ("attribute".equals(element.getName())) {
+    public Tag createTag(String name) {
+        if ("attribute".equals(name)) {
             return new Attribute();
         }
-        else if ("editorPane".equals(element.getName())) {
+        else if ("editorPane".equals(name)) {
             return new EditorPane();
         }
-        else if ("glue".equals(element.getName())) {
+        else if ("glue".equals(name)) {
             return new Glue();
         }
-        else if ("list".equals(element.getName())) {
+        else if ("list".equals(name)) {
             return new List();
         }
-        else if ("scroll".equals(element.getName())) {
+        else if ("scroll".equals(name)) {
             return new ScrollPane();
         }
-        else if ("split".equals(element.getName())) {
+        else if ("split".equals(name)) {
             return new SplitPane();
         }
-        else if ("strut".equals(element.getName())) {
+        else if ("strut".equals(name)) {
             return new Strut();
         }
-        else if ("tabs".equals(element.getName())) {
+        else if ("tabs".equals(name)) {
             return new Tabs();
         }
-        else if ("spinner".equals(element.getName())) {
+        else if ("spinner".equals(name)) {
             return new Spinner();
         }
-        else if ("dataTable".equals(element.getName())) {
+        else if ("dataTable".equals(name)) {
             return new DataTable();
         }
-        else if ("formTable".equals(element.getName())) {
+        else if ("formTable".equals(name)) {
             return new FormTable();
         }
-        else if ("column".equals(element.getName())) {
+        else if ("column".equals(name)) {
             return new Column();
         }
-        else if ("combobox".equals(element.getName())) {
+        else if ("combobox".equals(name)) {
             return new Combobox();
         }
-        else if ("selectItems".equals(element.getName())) {
+        else if ("selectItems".equals(name)) {
             return new SelectItems();
         }
-        else if ("tree".equals(element.getName())) {
+        else if ("tree".equals(name)) {
             return new Tree();
         }
         else {
-            logger.warn("Unknown tag: "+element.getNamespacePrefix()+":"+element.getName());
+            logger.warn("Unknown tag: "+name);
             return null;
         }
     }

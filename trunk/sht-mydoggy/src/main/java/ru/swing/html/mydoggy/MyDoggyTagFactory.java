@@ -7,14 +7,14 @@ import ru.swing.html.tags.Tag;
 public class MyDoggyTagFactory implements TagFactory {
 
 
-    public Tag createTag(Element element) {
-        if ("mainWindow".equals(element.getName())) {
+    public Tag createTag(String name) {
+        if ("mainWindow".equals(name)) {
             return new MainWindow();
         }
-        else if ("toolWindow".equals(element.getName())) {
+        else if ("toolWindow".equals(name)) {
             return new ToolWindow();
         }
-        else if ("contentWindow".equals(element.getName())) {
+        else if ("contentWindow".equals(name)) {
             return new ContentWindow();
         }
         return null;

@@ -9,8 +9,8 @@ public class MyDoggyTagFactoryTest extends TestCase {
 
         MyDoggyTagFactory factory = new MyDoggyTagFactory();
 
-        assertEquals(ContentWindow.class, factory.createTag(new Element("contentWindow")).getClass());
-        assertEquals(MainWindow.class, factory.createTag(new Element("mainWindow")).getClass());
-        assertEquals(ToolWindow.class, factory.createTag(new Element("toolWindow")).getClass());
+        assertEquals(ContentWindow.class, factory.createTag("contentWindow").getClass());
+        assertEquals(MainWindow.class, factory.createTag("mainWindow").getClass());
+        assertEquals(ToolWindow.class, factory.createTag("toolWindow").getClass());
     }
 }

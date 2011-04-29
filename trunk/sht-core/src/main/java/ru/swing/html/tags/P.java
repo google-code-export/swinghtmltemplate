@@ -3,7 +3,9 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
+import ru.swing.html.ELUtils;
 
 import javax.swing.*;
 
@@ -32,20 +34,23 @@ public class P extends Tag {
         JLabel label = (JLabel) component;
         String contentType = getAttribute(CONTENT_ATTRIBUTE);
         if ("html".equals(contentType)) {
-            label.setText("<html>"+getContent()+"</html>");
+            String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), createContextModel()) : getContent();
+            label.setText("<html>"+text+"</html>");
         }
         else if ("text".equals(contentType)) {
-            label.setText(getContent());
+            String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), createContextModel()) : getContent();
+            label.setText(text);
         }
         else if ("el".equals(contentType)) {
-            getModel().bind(getContent(), label, BeanProperty.create("text"));
+            bind(getContent(), label, BeanProperty.create("text"), AutoBinding.UpdateStrategy.READ_WRITE);
         }
         else if (StringUtils.isEmpty(contentType)) {
-            label.setText(getContent());
+            String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), createContextModel()) : getContent();
+            label.setText(text);
         }
         else {
             logger.warn("Unknown type: "+ contentType +", defaulting to text");
-            label.setText(getContent());
+            label.setText(ELUtils.parseStringValue(getContent(), createContextModel()));
         }
     }
 

@@ -9,10 +9,10 @@ import ru.swing.html.tags.Tag;
 public interface TagFactory {
 
     /**
-     * Фабрика тегов. Создает тег по имени jdom элемента.
-     * @param element jdom-элемент
+     * Фабрика тегов. Создает тег по имени тега.
+     * @param name имя тега
      * @return тег
      */
-    public Tag createTag(Element element);
+    public Tag createTag(String name);
 
 }

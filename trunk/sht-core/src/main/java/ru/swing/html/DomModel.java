@@ -285,7 +285,7 @@ public class DomModel {
                 b.unbind();
                 logger.debug("Unbinded binding: " + elPath);
 
-                bind(elPath, (JComponent) b.getTargetObject(), (BeanProperty) b.getTargetProperty());
+                bind(elPath, (JComponent) b.getTargetObject(), b.getTargetProperty());
             }
         }
     }
