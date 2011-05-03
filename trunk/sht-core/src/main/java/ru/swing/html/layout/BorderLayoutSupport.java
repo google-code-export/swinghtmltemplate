@@ -1,6 +1,8 @@
 package ru.swing.html.layout;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -15,29 +17,44 @@ import java.awt.*;
  */
 public class BorderLayoutSupport implements LayoutManagerSupport {
 
-
+    private Log logger = LogFactory.getLog(getClass());
 
     public void addComponent(JComponent parent, JComponent child, String constraint) {
+
+
         if ("left".equals(constraint)) {
+            checkConstraint(parent, BorderLayout.WEST);
             parent.add(child, BorderLayout.WEST);
         }
         else if ("center".equals(constraint)) {
+            checkConstraint(parent, BorderLayout.CENTER);
             parent.add(child, BorderLayout.CENTER);
         }
         else if ("right".equals(constraint)) {
+            checkConstraint(parent, BorderLayout.EAST);
             parent.add(child, BorderLayout.EAST);
         }
         else if ("bottom".equals(constraint)) {
+            checkConstraint(parent, BorderLayout.SOUTH);
             parent.add(child, BorderLayout.SOUTH);
         }
         else if ("top".equals(constraint)) {
+            checkConstraint(parent, BorderLayout.NORTH);
             parent.add(child, BorderLayout.NORTH);
         }
         else {
+            checkConstraint(parent, BorderLayout.CENTER);
             parent.add(child);
         }
     }
 
+
+    private void checkConstraint(JComponent parent, String constraint) {
+        BorderLayout layout = (BorderLayout) parent.getLayout();
+        if (StringUtils.isNotEmpty(constraint) && layout.getLayoutComponent(parent, constraint)!=null) {
+            logger.warn("Component already has a child in '"+constraint+"' align position. It will be overplaced with a new child.");
+        }
+    }
 
     public LayoutManager createLayout(Tag tag) {
 

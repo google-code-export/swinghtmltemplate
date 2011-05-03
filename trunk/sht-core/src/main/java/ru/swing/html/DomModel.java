@@ -26,6 +26,7 @@ import java.util.Map;
  */
 public class DomModel {
 
+    private int tagCounter = 0;
     private Log logger = LogFactory.getLog(getClass());
     private List<CssBlock> globalStyles = new ArrayList<CssBlock>();
     private Tag rootTag;
@@ -309,10 +310,11 @@ public class DomModel {
         Tag parent = sourceTag.getParent();
         if (targetChildren !=null && parent !=null) {
 
+            int index = parent.getChildren().indexOf(sourceTag);
             parent.removeChild(sourceTag);
 
             for (Tag bodyChild : targetChildren) {
-                parent.addChild(bodyChild);
+                parent.addChild(bodyChild, index++);
             }
         }
 
@@ -336,4 +338,42 @@ public class DomModel {
     public void setWindow(Window window) {
         this.window = window;
     }
+
+    public int nextTagCount() {
+        return tagCounter++;
+    }
+
+    public String dump() {
+        return dump(getRootTag(), 0);
+    }
+
+    private String dump(Tag tag, int pad) {
+        final StringBuilder sb = new StringBuilder();
+        String padStr = StringUtils.repeat(" ", pad * 3);
+        sb.append(padStr);
+        sb.append("<").append(tag.getName()).append(" id='").append(tag.getId()).append("'");
+
+        for (String attrName : tag.getAttributes().keySet()) {
+            sb.append(" ").append(attrName).append("='").append(tag.getAttribute(attrName)).append("'");
+        }
+
+        if (StringUtils.isEmpty(tag.getContent()) && tag.getChildren().isEmpty()) {
+            sb.append("/>\n");
+        }
+        else {
+            sb.append(">\n");
+
+            if (StringUtils.isNotEmpty(tag.getContent())) {
+                sb.append(tag.getContent());
+            }
+
+            for (Tag child : tag.getChildren()) {
+                sb.append(dump(child, pad+1));
+            }
+            sb.append(padStr).append("</").append(tag.getName()).append(">\n");
+        }
+        return sb.toString();
+
+    }
+
 }

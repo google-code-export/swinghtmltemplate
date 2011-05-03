@@ -11,13 +11,10 @@ import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <pre>
@@ -187,18 +184,22 @@ public class DomConverter {
         parseHead(model, head);
 
         logger.trace("before-component-conversion phase");
-        for (Tag tag : model.query("*")) {
-            tag.beforeComponentsConvertion();
-        }
+        recursivellyVisitTags(html, new TagVisitor() {
+            public void visit(Tag tag) {
+                tag.beforeComponentsConvertion();
+            }
+        });
 
         logger.trace("component-conversion phase");
         Tag body = html.getChildByName("body");
         JComponent b = convertComponent(body, substitutions);
 
         logger.trace("after-conversion phase");
-        for (Tag tag : model.query("*")) {
-            tag.afterComponentsConverted();
-        }
+        recursivellyVisitTags(html, new TagVisitor() {
+            public void visit(Tag tag) {
+                tag.afterComponentsConverted();
+            }
+        });
 
         if (model.getMetaItems().containsKey("display-as")) {
             Window w = createWindow(model, model.getWindow());
@@ -347,6 +348,23 @@ public class DomConverter {
     }
 
 
+    private static void recursivellyVisitTags(Tag root, TagVisitor visitor) {
+        visitor.visit(root);
+        List<Tag> children = new ArrayList<Tag>(root.getChildren());
+        List<Tag> visited = new ArrayList<Tag>();
+        for (Tag child : children) {
+            recursivellyVisitTags(child, visitor);
+            visited.add(child);
+        }
+        //check no new tags created
+        List<Tag> children2 = new ArrayList<Tag>(root.getChildren());
+        if (!children.containsAll(children2)) {
+            children2.removeAll(children);
+            for (Tag child : children2) {
+                recursivellyVisitTags(child, visitor);
+            }
+        }
+    }
 
 
 }
