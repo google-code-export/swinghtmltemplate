@@ -32,6 +32,9 @@ public class UITagFactory implements TagFactory {
         else if ("insert".equals(name)) {
             return new Insert();
         }
+        else if ("set".equals(name)) {
+            return new Set();
+        }
         else {
             logger.warn("Unknown tag: "+name);
             return null;
