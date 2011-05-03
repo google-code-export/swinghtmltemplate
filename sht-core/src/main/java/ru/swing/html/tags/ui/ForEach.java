@@ -93,7 +93,7 @@ public class ForEach extends Tag {
         else if ("items".equals(name)) {
             setItems(value);
         }
-        super.setAttribute(name, value);    //To change body of overridden methods use File | Settings | File Templates.
+        super.setAttribute(name, value);
     }
 
     public String getVar() {
