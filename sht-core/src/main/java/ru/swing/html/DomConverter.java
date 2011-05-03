@@ -181,16 +181,21 @@ public class DomConverter {
 
         logger.trace("Converting dom model to swing components");
         Tag html = model.getRootTag();
+
+        logger.trace("parsing-head phase");
         Tag head = html.getChildByName("head");
         parseHead(model, head);
 
+        logger.trace("before-component-conversion phase");
         for (Tag tag : model.query("*")) {
             tag.beforeComponentsConvertion();
         }
 
+        logger.trace("component-conversion phase");
         Tag body = html.getChildByName("body");
         JComponent b = convertComponent(body, substitutions);
 
+        logger.trace("after-conversion phase");
         for (Tag tag : model.query("*")) {
             tag.afterComponentsConverted();
         }
@@ -287,19 +292,21 @@ public class DomConverter {
     }
 
     /**
-     * Выполняет процедуру преобразования тега dom-модели в swing-компонент.
-     * @param componentTag тег dom-модели
-     * @param substitutions карта подстановок компонентов. Ключ - селектор, значение - компонент.
-     * @return swing-компонент
+     * Converts dom model to the tree of swing elements
+     * @param componentTag tag from the dom model
+     * @param substitutions substitution map. Key - selector, value - swing component. Value is used as the tag component,
+     * if tag matches selector
+     * @return swing-component
      */
     public static JComponent convertComponent(Tag componentTag, Map<SelectorGroup, JComponent> substitutions) {
 
-        //если dom-модель тега не null, то попробуем применить на тег таблицу css стилей.
-        if (componentTag.getModel()!=null) {
-            //сохраняем имеющиеся атрибуты тега (они получены на этапе загрузки dom-модели)
-            Map<String, String> old = new HashMap<String, String>(componentTag.getAttributes());
+        //save local tag attributes (they were loaded in DonLoader)
+        Map<String, String> old = new HashMap<String, String>(componentTag.getAttributes());
 
-            //применяем к тегу глобальные css-стили документа
+        //if there is dom-model, let's parse css styles
+        if (componentTag.getModel()!=null) {
+
+            //apply global (from <link> and <style>) css styles to tag
             List<CssBlock> css = componentTag.getModel().getGlobalStyles();
             for (CssBlock block : css) {
                 if (block.matches(componentTag)) {
@@ -308,30 +315,32 @@ public class DomConverter {
                     }
                 }
             }
-            //теперь применяем атрибуты тега, таким образом локальные атрибуты перекрывают глобальные
-            for (String attrName : old.keySet()) {
-                componentTag.setAttribute(attrName, old.get(attrName));
-            }
+        }
+        //now apply old tag attributes, so local attributes take higher priority then global.
+        for (String attrName : old.keySet()) {
+            String value = old.get(attrName);
+            componentTag.setAttribute(attrName, value);
         }
 
-        //вызываем создание тегом компонента
+        //create component by the tag
         JComponent component = null;
-        //если компонент есть в карте подстановок, то в качестве компонента используем компонент из карты
+        //if component is contained in substitution map, use it
         for (SelectorGroup selector : substitutions.keySet()) {
             if (selector.matches(componentTag)) {
                 component = substitutions.get(selector);
                 break;
             }
         }
+        //otherwise use component, created by tag
         if (component==null) {
             component = componentTag.createComponent();
         }
         componentTag.setComponent(component);
-        //вызываем процедуру применения атрибутов тега к компоненту
+        //actual apply attributes to component
         componentTag.applyAttributes(component);
-        //инициализируем менеджер компоновки в компоненте
+        //init layout manager
         componentTag.handleLayout();
-        //обрабатываем дочерние теги
+        //parse child tags
         componentTag.handleChildren(substitutions);
 
         return component;
