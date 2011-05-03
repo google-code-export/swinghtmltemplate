@@ -17,6 +17,9 @@ public class UITagFactory implements TagFactory {
         if ("composition".equals(name)) {
             return new Composition();
         }
+        else if ("choose".equals(name)) {
+            return new Choose();
+        }
         else if ("define".equals(name)) {
             return new Define();
         }
@@ -32,8 +35,14 @@ public class UITagFactory implements TagFactory {
         else if ("insert".equals(name)) {
             return new Insert();
         }
+        else if ("otherwise".equals(name)) {
+            return new Otherwise();
+        }
         else if ("set".equals(name)) {
             return new Set();
+        }
+        else if ("when".equals(name)) {
+            return new When();
         }
         else {
             logger.warn("Unknown tag: "+name);
