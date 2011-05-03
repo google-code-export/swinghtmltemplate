@@ -14,7 +14,10 @@ public class UITagFactory implements TagFactory {
     private Log logger = LogFactory.getLog(getClass());
    
     public Tag createTag(String name) {
-        if ("composition".equals(name)) {
+        if ("component".equals(name)) {
+            return new Component();
+        }
+        else if ("composition".equals(name)) {
             return new Composition();
         }
         else if ("choose".equals(name)) {

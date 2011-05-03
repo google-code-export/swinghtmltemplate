@@ -45,6 +45,7 @@ public class ForEach extends Tag {
         if (raw instanceof Iterable) {
 
             Tag parent = getParent();
+            int tagIndex = getParent().getChildren().indexOf(this);
             getParent().removeChild(this);
 
             List<Tag> children = new ArrayList<Tag>();
@@ -56,6 +57,7 @@ public class ForEach extends Tag {
 
             Iterable items =  (Iterable) raw;
 
+
             Iterator it = items.iterator();
             int index = 0;
             boolean first = true;
@@ -64,14 +66,16 @@ public class ForEach extends Tag {
 
                 VarStatus status = new VarStatus();
                 status.setFirst(first);
-                status.setLast(it.hasNext());
+                status.setLast(!it.hasNext());
                 status.setIndex(index);
 
                 for (Tag child : children) {
                     Tag childClone = child.clone();
-                    parent.addChild(childClone);
+                    parent.addChild(childClone, tagIndex++);
                     childClone.addModelElement(getVar(), item);
-                    childClone.addModelElement(getVarStatus(), status);
+                    if (StringUtils.isNotEmpty(getVarStatus())) {
+                        childClone.addModelElement(getVarStatus(), status);
+                    }
                 }
 
                 first = false;

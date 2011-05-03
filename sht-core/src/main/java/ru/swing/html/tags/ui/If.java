@@ -29,7 +29,7 @@ public class If extends Tag {
 
         if (StringUtils.isNotEmpty(getTest())) {
             ELProperty<Object, String> prop = ELProperty.create(getTest());
-            Object res = prop.getValue(getModel().getModelElements());
+            Object res = prop.getValue(getModelElements());
             if (res instanceof Boolean) {
                 Boolean show = (Boolean) res;
                 if (show) {
@@ -52,9 +52,7 @@ public class If extends Tag {
         if ("test".equals(name)) {
             setTest(value);
         }
-        else {
-            super.setAttribute(name, value );
-        }
+        super.setAttribute(name, value );
     }
 
 

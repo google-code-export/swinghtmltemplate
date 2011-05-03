@@ -206,6 +206,19 @@ public class Tag implements Cloneable {
     }
 
     /**
+     * Adds child tag. Parent tag and dom-model are assigned to child.
+     * This does not affect on swing components, so this methos is useless after converting to swing.
+     * @param tag child tag
+     * @param index index of the child elements array, into which the tag is inserted.
+     */
+    public void addChild(Tag tag, int index) {
+        tag.setParent(this);
+        tag.setModel(getModel());
+        tag.createContextModel();
+        children.add(index, tag);
+    }
+
+    /**
      * Removes child tag.
      * This does not affect on swing components, so this methos is useless after converting to swing.
      * @param tag child tag
@@ -438,6 +451,36 @@ public class Tag implements Cloneable {
             }
             else if ("enabled".equals(attrName)) {
                 component.setEnabled((Boolean) Utils.convertStringToObject(attrValue, Boolean.class));
+            }
+            else if ("min-width".equals(attrName)) {
+                Dimension d = component.getMinimumSize();
+                d.setSize((Double) Utils.convertStringToObject(attrValue, Double.class), d.getHeight());
+                component.setMinimumSize(d);
+            }
+            else if ("min-height".equals(attrName)) {
+                Dimension d = component.getMinimumSize();
+                d.setSize(d.getWidth(), (Double) Utils.convertStringToObject(attrValue, Double.class));
+                component.setMinimumSize(d);
+            }
+            else if ("width".equals(attrName)) {
+                Dimension d = component.getPreferredSize();
+                d.setSize((Double) Utils.convertStringToObject(attrValue, Double.class), d.getHeight());
+                component.setPreferredSize(d);
+            }
+            else if ("height".equals(attrName)) {
+                Dimension d = component.getPreferredSize();
+                d.setSize(d.getWidth(), (Double) Utils.convertStringToObject(attrValue, Double.class));
+                component.setPreferredSize(d);
+            }
+            else if ("max-width".equals(attrName)) {
+                Dimension d = component.getMaximumSize();
+                d.setSize((Double) Utils.convertStringToObject(attrValue, Double.class), d.getHeight());
+                component.setMaximumSize(d);
+            }
+            else if ("max-height".equals(attrName)) {
+                Dimension d = component.getMaximumSize();
+                d.setSize(d.getWidth(), (Double) Utils.convertStringToObject(attrValue, Double.class));
+                component.setMaximumSize(d);
             }
 
 
@@ -721,4 +764,27 @@ public class Tag implements Cloneable {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tag tag = (Tag) o;
+
+        if (attributes != null ? !attributes.equals(tag.attributes) : tag.attributes != null) return false;
+        if (id != null ? !id.equals(tag.id) : tag.id != null) return false;
+        if (name != null ? !name.equals(tag.name) : tag.name != null) return false;
+        if (namespace != null ? !namespace.equals(tag.namespace) : tag.namespace != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (namespace != null ? namespace.hashCode() : 0);
+        result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
+        return result;
+    }
 }

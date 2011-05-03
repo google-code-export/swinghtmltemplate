@@ -8,13 +8,6 @@ import ru.swing.html.tags.Tag;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 21.11.2010
- * Time: 0:39:20
- * To change this template use File | Settings | File Templates.
- */
 public class BoxLayoutSupport implements LayoutManagerSupport {
 
     private Log logger = LogFactory.getLog(getClass());

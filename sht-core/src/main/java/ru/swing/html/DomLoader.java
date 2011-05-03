@@ -1,5 +1,6 @@
 package ru.swing.html;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.ext.BeanAdapterProvider;
@@ -79,6 +80,11 @@ public class DomLoader {
             org.jdom.Attribute a = (org.jdom.Attribute) o;
             tag.setAttribute(a.getName().toLowerCase(), a.getValue());
         }
+        //set default id
+        if (StringUtils.isEmpty(tag.getId())) {
+            tag.setId(tag.getName()+tag.getModel().nextTagCount());
+        }
+
 
         //assign tag's content
         tag.setContent(element.getText());
@@ -155,8 +161,10 @@ public class DomLoader {
 
     public static Tag createTag(String namespace, String name) {
         Tag tag = registry.getTagFactory(namespace).createTag(name);
-        tag.setNamespace(namespace);
-        tag.setName(name);
+        if (tag!=null) {
+            tag.setNamespace(namespace);
+            tag.setName(name);
+        }
         return tag;
     }
 }
