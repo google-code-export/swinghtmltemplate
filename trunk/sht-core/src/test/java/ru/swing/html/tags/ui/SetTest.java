@@ -71,6 +71,27 @@ public class SetTest extends TestCase {
         assertEquals("fooString1", model.getModelElements().get("foo"));
         assertEquals("fooString1", label.getText());
 
+    }
+
+    public void testComplexValue() throws Exception {
+        String html =
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n" +
+                        "      xmlns:c=\"http://www.oracle.com/swing\"\n" +
+                        "      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>\n" +
+                "<head></head>\n" +
+                "<body>\n" +
+                "   <ui:set var='text' value='${num > 0 ? 1 : 0} items'/>" +
+                "</body>\n" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        model.addModelElement("num", 1);
+        DomConverter.toSwing(model);
+
+        assertEquals("1 items", model.getModelElements().get("text"));
+
 
     }
+    
+
+
 }
