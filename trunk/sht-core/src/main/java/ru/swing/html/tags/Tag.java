@@ -759,7 +759,7 @@ public class Tag implements Cloneable {
         Map<String, Object> modelElements1 = getModelElements();
         Binding binding = Bindings.createAutoBinding(type, modelElements1, beanProperty, component, componentProperty);
         binding.bind();
-        logger.debug("Binded '"+elPath+"'");
+        logger.debug(toString()+ ": binded '"+elPath+"'");
 
     }
 

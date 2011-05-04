@@ -72,14 +72,14 @@ public class Tree extends Tag {
             ELProperty rendererProperty = ELProperty.create(rendererAttr);
             Object rendererVal = rendererProperty.getValue(getModel().getModelElements());
             if (renderer == null) {
-                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + " is null");
+                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + "' is null");
             }
             else if (rendererVal instanceof TreeCellRenderer) {
                 tree.setCellRenderer((TreeCellRenderer) rendererVal);
                 logger.trace(toString() + ": set renderer: '" + rendererAttr + "'");
             }
             else {
-                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + " is not instance of "+TreeCellRenderer.class.getName());
+                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + "' is not instance of "+TreeCellRenderer.class.getName());
             }
 
         }
