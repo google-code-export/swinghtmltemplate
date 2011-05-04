@@ -28,6 +28,7 @@ public class List extends Tag {
     private String selectedElement;
     private String selectedElements;
     private String renderer;
+    private String rowsPerColumn;
 
     @Override
     public JComponent createComponent() {
@@ -85,9 +86,15 @@ public class List extends Tag {
         if (StringUtils.isNotEmpty(rendererAttr)) {
             ELProperty rendererProperty = ELProperty.create(rendererAttr);
             Object editorVal = rendererProperty.getValue(getModel().getModelElements());
-            if (editorVal instanceof ListCellRenderer) {
+            if (editorVal==null) {
+                logger.warn(toString()+": can't set renderer, '"+rendererAttr+"' resolved to null");
+            }
+            else if (editorVal instanceof ListCellRenderer) {
                 list.setCellRenderer((ListCellRenderer) editorVal);
                 logger.trace(toString()+": set renderer: '"+rendererAttr+"'");
+            }
+            else {
+                logger.warn(toString()+": can't set renderer, '"+rendererAttr+"' is not instance of "+ListCellRenderer.class);
             }
 
         }
@@ -95,7 +102,35 @@ public class List extends Tag {
 
     }
 
+    @Override
+    public void applyAttributes(JComponent component) {
+        super.applyAttributes(component);
+        JList jlist = (JList) component;
 
+        //set layout orientation
+        if (StringUtils.isNotEmpty(getType())) {
+            int type = JList.VERTICAL;
+            if ("vertical-wrap".equals(getType())) {
+                type = JList.VERTICAL_WRAP;
+            }
+            else if ("horizontal-wrap".equals(getType())) {
+                type = JList.HORIZONTAL_WRAP;
+            }
+            jlist.setLayoutOrientation(type);
+            jlist.setVisibleRowCount(0);
+        }
+
+        if (StringUtils.isNotEmpty(getRowsPerColumn())) {
+
+            if (StringUtils.isNumeric(getRowsPerColumn())) {
+                int rows = Integer.parseInt(getRowsPerColumn());
+                jlist.setVisibleRowCount(rows);
+            }
+            else {
+                logger.warn(toString()+": can't parse 'rowsPerColumn' attribute value, it is not numeric");
+            }
+        }
+    }
 
     @Override
     public void setAttribute(String name, String value) {
@@ -108,6 +143,9 @@ public class List extends Tag {
         }
         else if ("renderer".equals(name)) {
             setRenderer(value);
+        }
+        else if ("rowsPerColumn".equalsIgnoreCase(name)) {
+            setRowsPerColumn(value);
         }
     }
 
@@ -133,5 +171,13 @@ public class List extends Tag {
 
     public void setRenderer(String renderer) {
         this.renderer = renderer;
+    }
+
+    public String getRowsPerColumn() {
+        return rowsPerColumn;
+    }
+
+    public void setRowsPerColumn(String rowsPerColumn) {
+        this.rowsPerColumn = rowsPerColumn;
     }
 }
