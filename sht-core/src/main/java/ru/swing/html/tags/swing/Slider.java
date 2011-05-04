@@ -15,7 +15,28 @@ import javax.swing.event.ChangeEvent;
 import java.lang.reflect.Method;
 
 /**
- * JSlider
+ * <p>
+ *  This tag produces JSlider.
+ * </p>
+ * <p>
+ *     Supported attributes:
+ *     <ul>
+ *         <li>max - maximum slider's value</li>
+ *         <li>min - minimum slider's value</li>
+ *         <li>snap - same as JSlider#setSnapToTicks</li>
+ *         <li>majorSpace - same as JSlider#setMajorTickSpacing</li>
+ *         <li>minorSpace - same as JSlider#setMinorTickSpacing</li>
+ *
+ * </p>
+ * <p>
+ *     The slider's value can be be binded to model element using 'value' attribute.
+ * </p>
+ * <p>
+ *     This tag supports 'onchange' event, which is invoked when slider's value is changed. The value of
+ *     an attribute is controller's method name. Method must take no arguments or one argument of type ChangeEvent.
+ * </p>
+ *
+ * @see JSlider
  */
 public class Slider extends Tag {
 
