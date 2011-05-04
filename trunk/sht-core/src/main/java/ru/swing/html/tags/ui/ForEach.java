@@ -2,7 +2,6 @@ package ru.swing.html.tags.ui;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdesktop.beansbinding.ELProperty;
-import org.jdesktop.el.impl.parser.ELParser;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -12,10 +11,21 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 29.04.11
- * Time: 12:05
+ * <p>
+ * This tag allows to iterate over some iteratable collection. The child tags will be
+ * duplicated for each item in collection.
+ * </p>
+ * <p>
+ *     Supported attributes:
+ *     <ul>
+ *         <li>var - the name of exposed variable, which will be available in child tags,
+ *         containing current collection item</li>
+ *         <li>items - the EL, pointing to the iteratable collection</li>
+ *         <li>varStatus - the name of exposed variable, which will be available inside child tags. It will contain
+ *         current iteration status</li>
+ *     </ul>
+ * </p>
+ * @see VarStatus
  */
 public class ForEach extends Tag {
 
@@ -124,34 +134,4 @@ public class ForEach extends Tag {
         this.varStatus = varStatus;
     }
 
-    public class VarStatus {
-
-        private int index;
-        private boolean last;
-        private boolean first;
-
-        public int getIndex() {
-            return index;
-        }
-
-        public void setIndex(int index) {
-            this.index = index;
-        }
-
-        public boolean isLast() {
-            return last;
-        }
-
-        public void setLast(boolean last) {
-            this.last = last;
-        }
-
-        public boolean isFirst() {
-            return first;
-        }
-
-        public void setFirst(boolean first) {
-            this.first = first;
-        }
-    }
 }

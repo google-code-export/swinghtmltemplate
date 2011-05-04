@@ -10,6 +10,18 @@ import ru.swing.html.tags.Tag;
 import javax.swing.*;
 import java.util.Map;
 
+/**
+ * <p>
+ * This tag allows children handling based on some condition.
+ * </p>
+ * <p>
+ * Condition is set with 'test' attribute. If it resolves to 'true', when children tag are handled in usual way.
+ * If it is resolved to 'false', children are skipped.
+ * </p>
+ * <p>
+ *     Condition is evaluated once during 'component conversion' phase
+ * </p>
+ */
 public class If extends Tag {
 
     private String test;

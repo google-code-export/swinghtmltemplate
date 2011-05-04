@@ -26,23 +26,23 @@ import java.util.Map;
  * 
  * <h2>Example</h2>
  * <pre>
- *              &lt;html xmlns=\"http://www.w3.org/1999/xhtml\"\n" +
- *                           xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>\n" +
- *              &lt;head>&lt;/head>\n" +
- *              &lt;body id='body'>\n" +
- *                 &lt;ui:choose>" +
- *                      &lt;ui:when test=\"${type eq 'full'}\">" +
- *                          &lt;p>Full&lt;/p>" +
- *                      &lt;/ui:when>" +
- *                      &lt;ui:when test=\"${type eq 'brief'}\">" +
- *                          &lt;p>Brief&lt;/p>" +
- *                      &lt;/ui:when>" +
- *                      &lt;ui:otherwise>" +
- *                          &lt;p>Unknown&lt;/p>" +
- *                      &lt;/ui:otherwise>" +
- *                 &lt;/ui:choose>" +
- *              &lt;/body>\n" +
- *              &lt;/html>";
+ *              &lt;html xmlns="http://www.w3.org/1999/xhtml"
+ *                           xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+ *              &lt;head>&lt;/head>
+ *              &lt;body id='body'>
+ *                 &lt;ui:choose>
+ *                      &lt;ui:when test="${type eq 'full'}">
+ *                          &lt;p>Full&lt;/p>
+ *                      &lt;/ui:when>
+ *                      &lt;ui:when test="${type eq 'brief'}">
+ *                          &lt;p>Brief&lt;/p>
+ *                      &lt;/ui:when>
+ *                      &lt;ui:otherwise>
+ *                          &lt;p>Unknown&lt;/p>
+ *                      &lt;/ui:otherwise>
+ *                 &lt;/ui:choose>
+ *              &lt;/body>
+ *              &lt;/html>
  *
  * </pre>
  *

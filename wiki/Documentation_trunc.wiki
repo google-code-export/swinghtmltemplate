@@ -613,7 +613,7 @@ Supported `value` formats according to `type` value:
   * `type='float'` : float, example: `<attribute name='width' value='5.0' type='float'/>`
   * `type='double'` : double, example: `<attribute name='width' value='5.0' type='double'/>`
   * `type='short'` : short, example: `<attribute name='width' value='5' type='short'/>`
-  * `type='byte'` : bute, example: `<attribute name='width' value='5' type='byte'/>`
+  * `type='byte'` : byte, example: `<attribute name='width' value='5' type='byte'/>`
   * `type='char'` : charachter, example: `<attribute name='mnemonic' value='f' type='char'/>`
   * `type='java.lang.Boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='java.lang.Boolean'/>`
   * `type='java.lang.Integer'` : integer, example: `<attribute name='width' value='500' type='java.lang.Integer'/>`
@@ -1166,6 +1166,90 @@ Example:
 
 == `http://swinghtmltemplate.googlecode.com/ui` namespace ==
 
+=== choose ===
+Allows to choose child content depending on condition. This tag allows only `<when>` and `<otherwise>` children.
+
+To provide condition use `when` tags. `otherwise` child tag will be used if no of `when` tags matches.
+
+Conditions are evaluated during `before-components-convertion` phase. Only one child tag can match, if several tags
+match their conditions, the first one will be used.
+
+If some tag matches condition (`when` or `otherwise`) it's content will be merged to 'choose' parent tag,
+otherise `choose` tag will be simply removed from it's parent.
+
+Example
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head></head>
+<body id='body'>
+   <ui:choose>
+        <ui:when test="${type eq 'full'}">
+            <p>Full</p>
+        </ui:when>
+        <ui:when test="${type eq 'brief'}">
+            <p>Brief</p>
+        </ui:when>
+        <ui:otherwise>
+            <p>Unknown</p>
+        </ui:otherwise>
+   </ui:choose>
+</body>
+</html>
+}}}
+
+=== component ===
+This tag allows to define components composition in external file. When used this tag parses this external file and adds external body's content to the original document in place of itself.
+Use 'src' attribute to locate target document.
+Example
+/src/foo/original.html
+{{{
+<html>
+   <body style='display:box;'>
+       <ui:forEach items='${model.persons}' var="person">
+           <ui:component src='foo/personPanel.html' person="${person}">
+       </ui:forEach>
+   </body>
+</html>
+}}}
+/src/foo/personPanel.html
+{{{
+<html>
+   <body style='display:box;'>
+       <table>
+           <tr>
+               <td><p>Name:</p></td>
+               <td><input type='text' value='${person.name}'></td>
+           </tr>
+       </table>
+   </body>
+</html>
+}}}
+This results in the following html (assume we have 2 persons in our ${model.persons}, Mary and Bill)
+{{{
+<html>
+   <body style='display:box;'>
+       <table>
+           <tr>
+               <td><p>Name:</p></td>
+               <td><input type='text' value='Mary'></td>
+           </tr>
+       </table>
+       <table>
+           <tr>
+               <td><p>Name:</p></td>
+               <td><input type='text' value='Bill'></td>
+           </tr>
+       </table>
+   </body>
+       </html>
+}}}
+As you can see, we exposed var, 'person' to our component. Every attribute (besides src) is treates as EL to expose to component.
+
+
+
+
+
 === composition ===
 This tag allows you to compose dom model with template, almost the same way as in facelets.
 
@@ -1219,6 +1303,45 @@ The required attribute is `name` which defines a name of the snippet. This name 
 tag when template is built.
 
 
+=== forEach ===
+This tag allows to iterate over some iteratable collection. The child tags will be duplicated for each item in collection.
+Supported attributes:
+ * `var` - the name of exposed variable, which will be available in child tags, containing current collection item
+ * `items` - the EL, pointing to the iteratable collection
+ * `varStatus` - the name of exposed variable, which will be available inside child tags. It will contain current iteration status
+
+Example:
+{{{
+<ui:forEach items='${model.persons}' var="person" varStatus="i">
+    <table>
+        <tr>
+            <td><p>Name:</p></td>
+            <td><input type='text' value='${person.name}'/></td>
+        </tr>
+    </table>
+</ui:forEach>
+}}}
+
+
+=== if ===
+This tag allows children handling based on some condition.
+
+Condition is set with 'test' attribute. If it resolves to 'true', when children tag are handled in usual way. If it is resolved to 'false', children are skipped.
+
+Condition is evaluated once during 'component conversion' phase
+
+Example:
+{{{
+<div style="display:box;x-boxlayout-direction: vertical;">
+    <ui:forEach items='${model.persons}' var='person' varStatus='i'>
+        <ui:component src='ru/swing/html/example/component/PersonPanel.html' person="${person}"/>
+        <ui:if test='${not i.last}'>
+            <j:strut height='30'/>
+        </ui:if>
+    </ui:forEach>
+    <j:glue/>
+</div>
+}}}
 
 === include ===
 This tag allows you to include another document (target) content into your document (source).
@@ -1268,6 +1391,17 @@ The value of the `src` attribute is the address of the target html file in `getC
 This tag inserts named snippet (defined with `<define>` tag) into a template. The name of the snippet
 is set with `name` attrubute.
 
+
+=== set ===
+This tag adds new model element to the dom model and creates binding between source and target values.
+Attributes:
+ * `var` - name of the new model element (target)
+ * `value` - EL pointing to source value.
+
+Example:
+{{{
+<ui:set var='title' value='${model.num} elements in ${model.currentRow} row'/>
+}}}
 
 
 
