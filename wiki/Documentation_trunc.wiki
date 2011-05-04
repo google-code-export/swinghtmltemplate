@@ -297,26 +297,30 @@ All html tags are located at default library with empty namespace. They are also
 For any component you can assign it's properties by providing attributes in associated tag or by specifying
 css styles. Below are common properties (for all tags):
 
-  * `id` - component identifier
-  * `display` - identifier of the layout manager for the component, associated with tag. Defaults to `flow (java.awt.BorderLayout)`), `div` defaults to `border (java.awt.BorderLayout)`).
   * `align` - this is constraint for this component in parent's layout manager. Each layout manager has corresponding support-class, which role is to convert text values of this attribute to suitable values of layout manager. For example, support class for `java.awt.BorderLayout` converts strings `top`, `bottom`, `left`, `right`, `center` into `BorderLayout.NORTH`, `BorderLayout.SOUTH` etc accordingly
-  * `text-align` - layout specific. Used to align on left/right side (but can be ignored, if layout manager doesn't supports aligning)
-  * `vertial-align` - layout specific. Used to align on top/bottom side (but can be ignored, if layout manager doesn't supports aligning)
-  * `type` - depends on tag. Used to specify the type of component to produce. Examples: `<input type="text" /> -> JTextField`, `<input type="button" /> -> JButton`
-  * `width` - component's width, layout specific
-  * `height` - component's height, layout specific
+  * `background-color` - component's background color. Method `JComponent.setBackground(Color)` is called for this property
+  * `border` - component's border. Value - border description (see border section for details)
+  * `color` - component's color. Method `JComponent.setForeground(Color)` is called for this property
+  * `display` - identifier of the layout manager for the component, associated with tag. Defaults to `flow (java.awt.BorderLayout)`), `div` defaults to `border (java.awt.BorderLayout)`).
+  * `enabled` - enables or disables component
+  * `font-family` - component's font family.
+  * `font-size` - component's font size in pixels.
+  * `font-style` - component's font style. If value is `italic`, font will be italic.
+  * `font-weight` - component's font weight. Default's to default component style (JLabel prints text in bold, for example). Values: `normal`, `bold`, `bolder`, `lighter`.
+  * `height` - component's height, layout specific. This sets preffered height of the component by default (layout manager can override this)
+  * `icon` - component's icon. Method `setIcon(Icon)` is called for this property. If there's no such methos, warning is printed to log. Value - icons path (icon must be available for  `getClass().getResource("url"))`.
+  * `id` - component identifier
+  * `max-height` - sets maximum height of component. int
+  * `min-height` - sets minimum height of component. int
+  * `max-width` - sets maximum width of component. int
+  * `min-width` - sets minimum width of component. int
+  * `opaque` - opacity. Same as `JComponent.opaque`. Values: `true` or `false`
   * `style` - this is treated as properties list, but in form of css
   * `text` - text of the component. Method `setText(String)` is called for this property. If there's no such methos, warning is printed to log.
-  * `opaque` - opacity. Same as `JComponent.opaque`. Values: `true` or `false`
-  * `icon` - component's icon. Method `setIcon(Icon)` is called for this property. If there's no such methos, warning is printed to log. Value - icons path (icon must be available for  `getClass().getResource("url"))`.
-  * `border` - component's border. Value - border description (see border section for details)
-  * `enabled` - enables or disables component
-  * `color` - component's color. Method `JComponent.setForeground(Color)` is called for this property
-  * `background-color` - component's background color. Method `JComponent.setBackground(Color)` is called for this property
-  * `font-size` - component's font size in pixels.
-  * `font-weight` - component's font weight. Default's to default component style (JLabel prints text in bold, for example). Values: `normal`, `bold`, `bolder`, `lighter`.
-  * `font-style` - component's font style. If value is `italic`, font will be italic.
-  * `font-family` - component's font family.
+  * `text-align` - layout specific. Used to align on left/right side (but can be ignored, if layout manager doesn't supports aligning)
+  * `type` - depends on tag. Used to specify the type of component to produce. Examples: `<input type="text" /> -> JTextField`, `<input type="button" /> -> JButton`
+  * `vertial-align` - layout specific. Used to align on top/bottom side (but can be ignored, if layout manager doesn't supports aligning)
+  * `width` - component's width, layout specific. This sets preffered width of the component by default (layout manager can override this)
 
 
 == default namespace ==
