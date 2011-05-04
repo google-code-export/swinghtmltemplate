@@ -41,6 +41,9 @@ public class SwingTagFactory implements TagFactory {
         else if ("spinner".equals(name)) {
             return new Spinner();
         }
+        else if ("slider".equals(name)) {
+            return new Slider();
+        }
         else if ("dataTable".equals(name)) {
             return new DataTable();
         }
