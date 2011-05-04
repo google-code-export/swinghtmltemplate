@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:mydoggy="http://mydoggy.sourceforge.net">
+<head>
+    <title>Image Browser</title>
+    <meta name='display-as' content="frame"/>
+    <meta name='size' content="800 600"/>
+    <meta name='onclose' content="exit"/>
+</head>
+<body style="display: border;">
+
+    <mydoggy:mainWindow align="center">
+
+        <mydoggy:toolWindow title='Folders' id='folders' align='left' visible='true'>
+            <j:scroll>
+                <j:tree id='foldersTree' value="${folders}" renderer='${folderRenderer}'
+                        showRoot='false' showRootHandles='true' onchange='onFolderSelect'/>
+            </j:scroll>
+        </mydoggy:toolWindow>
+
+        <mydoggy:contentWindow>
+            <div>
+                <div align="top">
+
+                </div>
+                
+                <j:scroll align='center'>
+                    <j:list id='imagesList' type='horizontal-wrap' rowsPerColumn="0" renderer="${imageRenderer}">
+                        <j:selectItems value="${model.files}"/>
+                    </j:list>
+                </j:scroll>
+
+                <div align="bottom" style="display:box;x-boxlayout-orientation:horizontal">
+                    <p content='el'>${model.totalText}</p>
+                    <j:glue type='horizontal'/>
+                    <j:slider value="${model.thumbnailSize}" max="150" min="50" onchange='onThumbSizeChange'/>
+                </div>
+
+            </div>
+        </mydoggy:contentWindow>
+
+    </mydoggy:mainWindow>
+
+</body>
+</html>
