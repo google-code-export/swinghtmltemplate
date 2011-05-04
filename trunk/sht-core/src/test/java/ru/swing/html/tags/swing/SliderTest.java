@@ -21,6 +21,15 @@ public class SliderTest extends TestCase {
         slider.setAttribute("min", "101");
         assertEquals("101", slider.getMin());
 
+        slider.setAttribute("majorspace", "11");
+        assertEquals("11", slider.getMajorSpace());
+
+        slider.setAttribute("minorspace", "3");
+        assertEquals("3", slider.getMinorSpace());
+
+        slider.setAttribute("snap", "true");
+        assertEquals("true", slider.getSnap());
+
         slider.setAttribute("value", "12");
         assertEquals("12", slider.getValue());
 
@@ -58,19 +67,26 @@ public class SliderTest extends TestCase {
         String html = "<html xmlns:j='http://www.oracle.com/swing'>" +
                 "<head></head>" +
                 "<body>" +
-                "   <j:slider id='slider' max='${max}' min='${min}'/>" +
+                "   <j:slider id='slider' max='${max}' min='${min}' snap='${snap}'" +
+                "      majorSpace='${major}' minorSpace='${minor}' />" +
                 "</body>" +
                 "</html>";
 
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         model.addModelElement("max", 123);
-        model.addModelElement("min", 111);
+        model.addModelElement("min", 11);
+        model.addModelElement("major", 19);
+        model.addModelElement("minor", 13);
+        model.addModelElement("snap", true);
         DomConverter.toSwing(model);
 
 
         JSlider slider = (JSlider) model.getTagById("slider").getComponent();
         assertEquals(123, slider.getMaximum());
-        assertEquals(111, slider.getMinimum());
+        assertEquals(11, slider.getMinimum());
+        assertEquals(true, slider.getSnapToTicks());
+        assertEquals(19, slider.getMajorTickSpacing());
+        assertEquals(13, slider.getMinorTickSpacing());
 
     }
 
