@@ -1064,6 +1064,25 @@ Example:
 </c:split>
 }}}
 
+=== slider ===
+Tag is converted to `javax.swing.JSlider`
+
+Tag supports attributes:
+  * `max` - a maximum value for slider. Supports placeholders.
+  * `min` - a minimum value for slider. Supports placeholders.
+  * `majorSpace` - Same as `JSlider.setMajorTickSpacing`. Supports placeholders.
+  * `minorSpace` - Same as `JSlider.setMinorTickSpacing`. Supports placeholders.
+  * `snap` - `true` or `false`. Sets if slider will snap to ticks. Supports placeholders.
+  * `value` - en EL expression, describing a property of a model element, the value of the component is binded to.
+
+Tag supports events:
+  * `onchange` - invoked when slider value changes. This is the name of controller's method. Method must take no arguments or one argument of type `java.awt.ChangeEvent`
+
+Example:
+{{{
+<c:slider value='${model.value}' max='1000' min='10' onchange='onSliderChange' />
+}}}
+
 
 === strut ===
 Tag is converted to the component, that is returned from
