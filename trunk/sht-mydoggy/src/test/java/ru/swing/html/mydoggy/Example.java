@@ -28,12 +28,16 @@ public class Example extends JPanel {
 
 
         Example form = new Example();
-        JFrame f = new JFrame("Test");
+        final JFrame f = new JFrame("Test");
         f.setSize(400, 200);
 
         f.getContentPane().add(form);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                f.setVisible(true);
+            }
+        });
 
     }
 

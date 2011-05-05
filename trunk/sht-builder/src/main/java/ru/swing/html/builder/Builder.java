@@ -18,7 +18,11 @@ public class Builder extends JFrame {
         instance = new MainPanel();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         instance.setLocation((screenSize.width - instance.getWidth()) / 2, (screenSize.height - instance.getHeight()) / 3);
-        instance.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                instance.setVisible(true);
+            }
+        });
     }
 }
 

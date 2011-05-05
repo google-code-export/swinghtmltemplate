@@ -62,12 +62,16 @@ public class FormTableForm extends JPanel {
     public static void main(String[] args) {
         FormTableForm form = new FormTableForm();
 
-        JFrame f = new JFrame("Test");
+        final JFrame f = new JFrame("Test");
         f.setSize(500, 200);
 
         f.getContentPane().add(form);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                f.setVisible(true);
+            }
+        });
     }
 
     public void onClick() {

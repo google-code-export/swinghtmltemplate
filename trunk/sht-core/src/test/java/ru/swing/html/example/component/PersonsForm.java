@@ -1,5 +1,7 @@
 package ru.swing.html.example.component;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import ru.swing.html.Binder;
 import ru.swing.html.DomModel;
@@ -22,6 +24,8 @@ public class PersonsForm extends JFrame {
 
     private DomModel domModel;
 
+    private Log logger = LogFactory.getLog(getClass());
+
     public PersonsForm() throws JDOMException, IOException {
         model.getPersons().add(new Person("Bill", "1-123-00"));
         model.getPersons().add(new Person("Mary", "1-123-01"));
@@ -34,14 +38,19 @@ public class PersonsForm extends JFrame {
 
 
     public static void main(String[] args) throws JDOMException, IOException {
-        new PersonsForm().setVisible(true);
+        final PersonsForm personsForm = new PersonsForm();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                personsForm.setVisible(true);
+            }
+        });
     }
 
     public void dump() {
         for (Person person : model.getPersons()) {
-            System.out.println(person.getName());
+            logger.info(person.getName());
         }
-        System.out.println(domModel.dump());
+        logger.info(domModel.dump());
     }
 
 
