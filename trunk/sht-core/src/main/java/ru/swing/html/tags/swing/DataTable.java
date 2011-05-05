@@ -51,62 +51,6 @@ public class DataTable extends Tag {
             return;
         }
 
-        //set selection model
-        JTable table = (JTable) getComponent();
-        if (StringUtils.isNotEmpty(getSelectionType())) {
-            int selectionMode = table.getSelectionModel().getSelectionMode();
-            if ("single".equals(getSelectionType())) {
-                selectionMode = ListSelectionModel.SINGLE_SELECTION;
-            }
-            else if ("multiple".equals(getSelectionType())) {
-                selectionMode = ListSelectionModel.SINGLE_INTERVAL_SELECTION;
-            }
-            else if ("custom".equals(getSelectionType())) {
-                selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
-            }
-            table.getSelectionModel().setSelectionMode(selectionMode);
-            logger.trace(toString()+": set selection mode: "+getSelectionType());
-        }
-
-
-        //bind selected row
-        if (StringUtils.isNotEmpty(getSelectedElement())) {
-            BeanProperty selectedElement = BeanProperty.create("selectedElement");
-            getModel().bind(getSelectedElement(), getComponent(), selectedElement);
-            logger.trace(toString()+": binded 'selectedElement' to "+getSelectedElement());
-        }
-
-        //bind selected rows
-        if (StringUtils.isNotEmpty(getSelectedElements())) {
-            BeanProperty selectedElement = BeanProperty.create("selectedElements");
-            getModel().bind(getSelectedElements(), getComponent(), selectedElement);
-            logger.trace(toString()+": binded 'selectedElements' to "+getSelectedElements());
-        }
-
-        //set column autoresize mode
-        if (StringUtils.isNotEmpty(getAutoresize())) {
-            int mode = table.getAutoResizeMode();
-            if ("off".equals(getAutoresize())) {
-                mode = JTable.AUTO_RESIZE_OFF;
-            }
-            else if ("all".equals(getAutoresize())) {
-                mode = JTable.AUTO_RESIZE_ALL_COLUMNS;
-            }
-            else if ("last".equals(getAutoresize())) {
-                mode = JTable.AUTO_RESIZE_LAST_COLUMN;
-            }
-            else if ("next".equals(getAutoresize())) {
-                mode = JTable.AUTO_RESIZE_NEXT_COLUMN;
-            }
-            else if ("auto".equals(getAutoresize())) {
-                mode = JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS;
-            }
-            logger.trace(toString()+": set autoResizeMode to "+getAutoresize());
-            table.setAutoResizeMode(mode);
-        }
-
-
-
         //get items for table model
         ELProperty beanProperty = ELProperty.create(getValue());
         Object propertyValue = beanProperty.getValue(getModel().getModelElements());
@@ -121,7 +65,7 @@ public class DataTable extends Tag {
 
 
 
-
+        //bind each child <column> to corresponding prop
         for (Tag childTag : getChildren()) {
 
             if (childTag instanceof Column) {
@@ -234,6 +178,68 @@ public class DataTable extends Tag {
 
         }
         binding.bind();
+
+
+    }
+
+
+    @Override
+    public void applyAttributes(JComponent component) {
+        super.applyAttributes(component);
+
+        //set selection model
+        JTable table = (JTable) getComponent();
+        if (StringUtils.isNotEmpty(getSelectionType())) {
+            int selectionMode = table.getSelectionModel().getSelectionMode();
+            if ("single".equals(getSelectionType())) {
+                selectionMode = ListSelectionModel.SINGLE_SELECTION;
+            }
+            else if ("multiple".equals(getSelectionType())) {
+                selectionMode = ListSelectionModel.SINGLE_INTERVAL_SELECTION;
+            }
+            else if ("custom".equals(getSelectionType())) {
+                selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+            }
+            table.getSelectionModel().setSelectionMode(selectionMode);
+            logger.trace(toString()+": set selection mode: "+getSelectionType());
+        }
+
+
+        //bind selected row
+        if (StringUtils.isNotEmpty(getSelectedElement())) {
+            BeanProperty selectedElement = BeanProperty.create("selectedElement");
+            getModel().bind(getSelectedElement(), getComponent(), selectedElement);
+            logger.trace(toString()+": binded 'selectedElement' to "+getSelectedElement());
+        }
+
+        //bind selected rows
+        if (StringUtils.isNotEmpty(getSelectedElements())) {
+            BeanProperty selectedElement = BeanProperty.create("selectedElements");
+            getModel().bind(getSelectedElements(), getComponent(), selectedElement);
+            logger.trace(toString()+": binded 'selectedElements' to "+getSelectedElements());
+        }
+
+        //set column autoresize mode
+        if (StringUtils.isNotEmpty(getAutoresize())) {
+            int mode = table.getAutoResizeMode();
+            if ("off".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_OFF;
+            }
+            else if ("all".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_ALL_COLUMNS;
+            }
+            else if ("last".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_LAST_COLUMN;
+            }
+            else if ("next".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_NEXT_COLUMN;
+            }
+            else if ("auto".equals(getAutoresize())) {
+                mode = JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS;
+            }
+            logger.trace(toString()+": set autoResizeMode to "+getAutoresize());
+            table.setAutoResizeMode(mode);
+        }
 
 
     }
