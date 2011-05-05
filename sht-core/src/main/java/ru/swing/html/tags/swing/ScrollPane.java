@@ -47,7 +47,7 @@ public class ScrollPane extends Tag {
             }
 
             if (childrenWithComponents.size()>=1) {
-                JComponent childComponent = childrenWithComponents.get(0).getComponent();
+                JComponent childComponent = childrenWithComponents.get(0).getComponentWrapper();
                 pane.setViewportView(childComponent);
             }
 

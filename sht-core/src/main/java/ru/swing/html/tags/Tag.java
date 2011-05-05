@@ -5,8 +5,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
 import org.jdesktop.jxlayer.JXLayer;
-import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
-import org.jdesktop.jxlayer.plaf.LayerUI;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableMap;
 import org.jdesktop.observablecollections.ObservableMapListener;
@@ -23,10 +21,18 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
-import java.lang.*;
+import java.lang.Boolean;
+import java.lang.Cloneable;
+import java.lang.Double;
+import java.lang.Exception;
+import java.lang.Float;
+import java.lang.IllegalAccessException;
+import java.lang.NoSuchMethodException;
 import java.lang.Object;
+import java.lang.Override;
+import java.lang.String;
+import java.lang.StringBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
@@ -44,6 +50,11 @@ public class Tag implements Cloneable {
 
     private DomModel model;
     private JComponent component;
+    /**
+     * This is an component, which will be actually added to the parent's component.
+     * Most of the time is is the same as 'component', but you can wrap original component
+     * with this wrapper for some needs (e.g. use JXLayer).
+     */
     private JComponent componentWrapper;
     private Log logger = LogFactory.getLog(Tag.class);
     private String id;
@@ -159,6 +170,17 @@ public class Tag implements Cloneable {
         attributes.put(name, value);
     }
 
+    /**
+     * In this method tag must set layout for the component. Default implementation
+     * creates LayoutManagerSupport with the help of LayoutManagerSupportFactory,
+     * then it creates LayoutManager from LayoutManagerSupport and assigns it to the component.
+     * <p>
+     * This method is called by the DomConverter after "applyAttributes"
+     * method in "component-conversion" phase.
+     * </p>
+     * @see LayoutManagerSupport
+     * @see LayoutManagerSupportFactory
+     */
     public void handleLayout() {
         final String layoutName = getDisplay();
         LayoutManagerSupport layoutManagerSupport = null;
@@ -174,6 +196,10 @@ public class Tag implements Cloneable {
      * Handle means:
      * 1. create child
      * 2. place child using layout manager
+     * <p>
+     * This method is called by the DomConverter after "handleLayout"
+     * method in "component-conversion" phase.
+     * </p>
      * @param substitutions substitutions map for domModel
      */
     public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
@@ -323,15 +349,29 @@ public class Tag implements Cloneable {
         return component;
     }
 
+    /**
+     * Sets the component for this tag. This will also set componentWrapper with the same argument.
+     * @param component component for this tag
+     */
     public void setComponent(JComponent component) {
         this.component = component;
         this.setComponentWrapper(component);
     }
 
+    /**
+     * returns the component wrapper.
+     * @return component wrapper
+     * @see #componentWrapper
+     */
     public JComponent getComponentWrapper() {
         return componentWrapper;
     }
 
+    /**
+     * Sets the component wrapper. It will be actually added to the parent tag's component.
+     * @param componentWrapper component wrapper.
+     * @see #componentWrapper
+     */
     public void setComponentWrapper(JComponent componentWrapper) {
         this.componentWrapper = componentWrapper;
     }
@@ -401,11 +441,36 @@ public class Tag implements Cloneable {
         this.fontFamily = fontFamily;
     }
 
+    /**
+     * <p>
+     * Implementations must create tag's component in this method. Some initial properties
+     * can be set for the component here too.
+     * </p>
+     * <p>
+     *     This method is invoked in DomConverter during 'component-conversion' phase. After invoking this method
+     *     DomConverter invokes "setComponent" with the value, returned from this methos, as argument.
+     * </p>
+     * @return created component for the tag.
+     * @see DomConverter#convertComponent(Tag)
+     * @see #setComponent(javax.swing.JComponent)
+     */
     public JComponent createComponent() {
         logger.warn("Can't create component for tag "+getName());
         return null;
     }
 
+    /**
+     * <p>
+     * Implementations must apply tag's attribute to the component, individual to that tag.
+     * Default implementation applies common
+     * attributes, such as 'text', 'font', 'opaque' etc.
+     * </p>
+     * <p>
+     *     This method is called by the DomConverter after "createComponent" and "setComponent" method
+     *     in "component-conversion" phase
+     * </p>    
+     * @param component the component, to which attributes must be applied to
+     */
     public void applyAttributes(JComponent component) {
         actualApplyAttributes(component, getAttributes());
     }
@@ -512,7 +577,7 @@ public class Tag implements Cloneable {
                     ImageIcon hoverBkg = new ImageIcon(getClass().getResource(hover));
                     ImageIcon clickedBkg = new ImageIcon(getClass().getResource(clicked));
 
-                    BackgroundLayerUI backgroundLayerUI = new BackgroundLayerUI(staticBkg, hoverBkg, clickedBkg, staticBkg);
+                    BackgroundImageLayerUI backgroundLayerUI = new BackgroundImageLayerUI(staticBkg, hoverBkg, clickedBkg, staticBkg);
                     JXLayer layer = new JXLayer(component, backgroundLayerUI);
                     setComponentWrapper(layer);
 
@@ -826,56 +891,4 @@ public class Tag implements Cloneable {
         return result;
     }
 
-    private static class BackgroundLayerUI extends AbstractLayerUI {
-        private ImageIcon staticBkg;
-        private ImageIcon hoverBkg;
-        private ImageIcon clickedBkg;
-        private ImageIcon disabledBkg;
-        private int lastMouseState = MouseEvent.MOUSE_FIRST;
-
-
-        public BackgroundLayerUI(ImageIcon staticBkg, ImageIcon hoverBkg, ImageIcon clickedBkg, ImageIcon disabledBkg) {
-            this.staticBkg = staticBkg;
-            this.hoverBkg = hoverBkg;
-            this.clickedBkg = clickedBkg;
-            this.disabledBkg = disabledBkg;
-        }
-
-        @Override
-        protected void paintLayer(Graphics2D graphics2D, JXLayer jxLayer) {
-            int state = 0;
-            //mouse over
-            if (jxLayer.getMousePosition()!=null) {
-                state = lastMouseState;
-            }
-            else {
-                state = 0;
-            }
-
-            if (!jxLayer.getView().isEnabled()) {
-                state = -1;
-            }
-
-
-            ImageIcon img;
-            switch (state) {
-                case -1 : img = disabledBkg; break;
-                case 0 : img = staticBkg; break;
-                case MouseEvent.MOUSE_PRESSED : img = clickedBkg; break;
-                case MouseEvent.MOUSE_RELEASED : img = hoverBkg; break;
-                default: img = jxLayer.getMousePosition() != null ? hoverBkg : staticBkg; break;
-            }
-            graphics2D.drawImage(img.getImage(), 0, 0, null);
-
-
-            super.paintLayer(graphics2D, jxLayer);
-        }
-
-
-        @Override
-        protected void processMouseEvent(MouseEvent mouseEvent, JXLayer jxLayer) {
-            super.processMouseEvent(mouseEvent, jxLayer);
-            lastMouseState = mouseEvent.getID();
-        }
-    }
 }
