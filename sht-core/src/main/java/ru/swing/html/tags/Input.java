@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import ru.swing.html.DomModel;
+import ru.swing.html.Utils;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -51,9 +52,22 @@ public class Input extends Tag {
     @Override
     public void applyAttributes(JComponent component) {
         super.applyAttributes(component);
-        if (getComponent() instanceof JTextComponent) {
+        if (component instanceof JTextComponent) {
             JTextComponent c = (JTextComponent) getComponent();
             c.setText(getContent());
+        }
+
+
+        if (component instanceof AbstractButton) {
+            AbstractButton b = (AbstractButton) component;
+            String borderPainted = getAttribute("border-painted");
+            String contentAreaFilled = getAttribute("content-area-filled");
+            if (StringUtils.isNotEmpty(borderPainted)) {
+                b.setBorderPainted((Boolean) Utils.convertStringToObject(borderPainted, Boolean.class));
+            }
+            if (StringUtils.isNotEmpty(contentAreaFilled)) {
+                b.setContentAreaFilled((Boolean) Utils.convertStringToObject(contentAreaFilled, Boolean.class));
+            }
         }
 
         //perform binding
