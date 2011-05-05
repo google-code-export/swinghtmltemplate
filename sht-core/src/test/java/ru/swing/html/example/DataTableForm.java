@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 12.04.11
- * Time: 16:59
+ * Example of <dataTable> tag
  */
 public class DataTableForm extends JPanel {
 
@@ -67,6 +64,9 @@ public class DataTableForm extends JPanel {
         });
     }
 
+    /**
+     * Adds new person to model's person list. Check that new row is added to the table.
+     */
     public void onClick() {
         Person person = new Person();
         person.setAge(new Random().nextInt(80));
@@ -74,20 +74,16 @@ public class DataTableForm extends JPanel {
         model.getItems().add(person);
     }
 
+    /**
+     * Modifies every person's age to see binding in action
+     */
     public void onClick2() {
+
         for (Person p : model.getItems()) {
             p.setAge(new Random().nextInt(80));
         }
     }
 
-
-    public ColorTableCellRenderer getColorRenderer() {
-        return colorRenderer;
-    }
-
-    public void setColorRenderer(ColorTableCellRenderer colorRenderer) {
-        this.colorRenderer = colorRenderer;
-    }
 
     public class Model {
 
