@@ -12,11 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 19.11.2010
- * Time: 16:04:52
- * </pre>
+ * <p>
+ *     This tag is converted to the javax.swing.JScrollPane.
+ * </p>
+ * <p>
+ *     This tag allows only one child with non-null component.
+ *     If more than one child is added to it, the first one (with non-null component) will be used.
+ * </p>
+ * <p>
+ *     This tag places child's component to the scroll's viewport.
+ * </p>
  */
 public class ScrollPane extends Tag {
 

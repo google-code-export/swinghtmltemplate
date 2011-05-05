@@ -323,7 +323,7 @@ public class DomConverter {
             componentTag.setAttribute(attrName, value);
         }
 
-        //create component by the tag
+        //create component for the tag
         JComponent component = null;
         //if component is contained in substitution map, use it
         for (SelectorGroup selector : substitutions.keySet()) {

@@ -1,4 +1,4 @@
-package ru.swing.html.tags;
+package ru.swing.html.components;
 
 import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.jxlayer.plaf.AbstractLayerUI;

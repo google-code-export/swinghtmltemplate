@@ -22,6 +22,9 @@ public class Attribute extends Tag {
     public static final String NAME_ATTRIBUTE = "name";
     public static final String VALUE_ATTRIBUTE = "value";
 
+    private String attributeName;
+    private String value;
+
     @Override
     public JComponent createComponent() {
         return null;
@@ -37,11 +40,12 @@ public class Attribute extends Tag {
 
     @Override
     public void applyAttributes(JComponent component) {
-        //проставляем атрибут для родительского компонента
+        //attribute will be applied to the parent's tag component
         component = getParent().getComponent();
-        String name = getAttribute(NAME_ATTRIBUTE);
-        String valueStr = getAttribute(VALUE_ATTRIBUTE);
-        String type = getAttribute(TYPE_ATTRIBUTE);
+
+        String name = getAttributeName();
+        String valueStr = getValue();
+        String type = getType();
 
         if (StringUtils.isEmpty(type)) {
             type = String.class.getName();
@@ -69,4 +73,33 @@ public class Attribute extends Tag {
         }
     }
 
+
+    @Override
+    public void setAttribute(String name, String value) {
+        super.setAttribute(name, value);
+
+        if (NAME_ATTRIBUTE.equals(name)) {
+            setAttributeName(value);
+        }
+        else if (VALUE_ATTRIBUTE.equals(name)) {
+            setValue(value);
+        }
+
+    }
+
+    public String getAttributeName() {
+        return attributeName;
+    }
+
+    public void setAttributeName(String attributeName) {
+        this.attributeName = attributeName;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

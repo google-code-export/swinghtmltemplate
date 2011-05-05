@@ -20,6 +20,7 @@ public class P extends Tag {
 
     private Log logger = LogFactory.getLog(getClass());
     public static final String CONTENT_ATTRIBUTE = "content";
+    private String contentType;
 
     @Override
     public JComponent createComponent() {
@@ -31,8 +32,11 @@ public class P extends Tag {
     @Override
     public void applyAttributes(JComponent component) {
         super.applyAttributes(component);
+
         JLabel label = (JLabel) component;
-        String contentType = getAttribute(CONTENT_ATTRIBUTE);
+
+        String contentType = getContentType();
+
         if ("html".equals(contentType)) {
             String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
             label.setText("<html>"+text+"</html>");
@@ -55,9 +59,24 @@ public class P extends Tag {
     }
 
     @Override
+    public void setAttribute(String name, String value) {
+        super.setAttribute(name, value);
+
+        if (CONTENT_ATTRIBUTE.equals(name)) {
+            setContentType(value);
+        }
+
+    }
+
+    @Override
     public void handleLayout() {
     }
 
+    public String getContentType() {
+        return contentType;
+    }
 
-
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 }

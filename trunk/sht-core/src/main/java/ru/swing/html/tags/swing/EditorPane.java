@@ -8,6 +8,8 @@ import javax.swing.*;
 
 public class EditorPane extends Tag {
 
+    private String value;
+
     @Override
     public JComponent createComponent() {
         JEditorPane c = new JTextPane();
@@ -28,13 +30,30 @@ public class EditorPane extends Tag {
 
 
         //perform binding
-        if (StringUtils.isNotEmpty(getAttribute("value"))) {
-            String el = getAttribute("value");
+        if (StringUtils.isNotEmpty(getValue())) {
+            String el = getValue();
             BeanProperty componentProperty;
 
             componentProperty = BeanProperty.create("text");
             getModel().bind(el, getComponent(), componentProperty);
 
         }
+    }
+
+    @Override
+    public void setAttribute(String name, String value) {
+        super.setAttribute(name, value);
+
+        if ("value".equals(name)) {
+            setValue(value);
+        }
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }
