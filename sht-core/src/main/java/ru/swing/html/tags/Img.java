@@ -15,6 +15,7 @@ import javax.swing.*;
 public class Img extends Tag {
     
     private Log logger = LogFactory.getLog(getClass());
+    private String source;
 
     @Override
     public JComponent createComponent() {
@@ -25,7 +26,7 @@ public class Img extends Tag {
 
     @Override
     public void applyAttributes(JComponent component) {
-        setAttribute("icon", getAttribute("src"));
+        setAttribute("icon", getSource());
         super.applyAttributes(component);
     }
 
@@ -33,5 +34,19 @@ public class Img extends Tag {
     public void handleLayout() {
     }
 
-    
+    @Override
+    public void setAttribute(String name, String value) {
+        super.setAttribute(name, value);
+        if ("src".equals(name)) {
+            setSource(value);
+        }
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 }

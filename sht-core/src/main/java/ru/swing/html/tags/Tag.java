@@ -9,6 +9,7 @@ import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableMap;
 import org.jdesktop.observablecollections.ObservableMapListener;
 import ru.swing.html.*;
+import ru.swing.html.components.BackgroundImageLayerUI;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
@@ -115,6 +116,20 @@ public class Tag implements Cloneable {
         return attributes;
     }
 
+    /**
+     * <p>
+     * Sets attribute to the tag. Successors must call super method, when override.
+     * Default implementation sets common propeties ("display", "id" etc), parses
+     * "style" attribute (splits it into token and invokes setAttribute for each token)
+     * and stores all atrinutes in local map (that is why invoking super is needed).
+     * </p>
+     * <p>
+     *     This method is invoked in DomLoader when loading document and converting it to the dom model.
+     * </p>
+
+     * @param name the name of the attribute
+     * @param value the string representation if the value for attribute
+     */
     public void setAttribute(String name, String value) {
         if ("display".equals(name)) {
             setDisplay(value);
@@ -200,7 +215,19 @@ public class Tag implements Cloneable {
      * This method is called by the DomConverter after "handleLayout"
      * method in "component-conversion" phase.
      * </p>
-     * @param substitutions substitutions map for domModel
+     * <p>
+     *     The default implementation do the following:
+     *     <ul>
+     *         <li>if tag's component is null (this tag do not produce any component), when find first
+     *         parent tag with non-null component, if noone is found, exit</li>
+     *         <li>Create LayoutManagerSupport for founded tag using LayoutManagerSupportFactory</li>
+     *         TODO creating LayoutManagerSupport is done twice, first in handleLayout, 2nd - here
+     *         <li>for every child: converts tag using DomConverter.convertComponent and add child's componentWrapper
+     *         (if it is not null) to founded parent using LayoutManagerSupport</li>
+     *      </ul>
+     * </p>
+     * @param substitutions substitutions map for domModel. The only need of this parameter is to pass it to DomConverter
+     * in default implementation for converting child tag.
      */
     public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
         //если для тега нет компонента (например, это неизвестный тег), то найдем первый родительский
@@ -214,13 +241,15 @@ public class Tag implements Cloneable {
             }
         }
 
-        for (Tag childTag : getChildren()) {
-            JComponent child = DomConverter.convertComponent(childTag, substitutions);
-            if (parent!=null && child!=null && c!=null) {
-                LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
-                JComponent cw = childTag.getComponentWrapper();
-                layoutManagerSupport.addComponent(c, cw, childTag.getAlign());
-//                layoutManagerSupport.addComponent(c, child, childTag.getAlign());
+        if (parent!=null) {
+            LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
+            for (Tag childTag : getChildren()) {
+                JComponent child = DomConverter.convertComponent(childTag, substitutions);
+                if (child!=null) {
+                    JComponent cw = childTag.getComponentWrapper();
+                    layoutManagerSupport.addComponent(c, cw, childTag.getAlign());
+    //                layoutManagerSupport.addComponent(c, child, childTag.getAlign());
+                }
             }
         }
     }
@@ -447,8 +476,8 @@ public class Tag implements Cloneable {
      * can be set for the component here too.
      * </p>
      * <p>
-     *     This method is invoked in DomConverter during 'component-conversion' phase. After invoking this method
-     *     DomConverter invokes "setComponent" with the value, returned from this methos, as argument.
+     *     This method is invoked in DomConverter during 'component-conversion' phase after invoking 'setAttribute()'.
+     *     After invoking this method DomConverter invokes "setComponent" with the value, returned from this methos, as argument.
      * </p>
      * @return created component for the tag.
      * @see DomConverter#convertComponent(Tag)

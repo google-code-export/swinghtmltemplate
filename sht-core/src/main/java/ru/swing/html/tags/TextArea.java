@@ -15,6 +15,7 @@ public class TextArea extends Tag {
     private Log logger = LogFactory.getLog(getClass());
     private int rows = -1;
     private int columns = -1;
+    private String value;
 
     @Override
     public JComponent createComponent() {
@@ -30,8 +31,8 @@ public class TextArea extends Tag {
         textArea.setText(getContent());
 
         //perform binding
-        if (StringUtils.isNotEmpty(getAttribute("value"))) {
-            String el = getAttribute("value");
+        if (StringUtils.isNotEmpty(getValue())) {
+            String el = getValue();
             BeanProperty componentProperty;
             String type = getType();
 
@@ -58,6 +59,9 @@ public class TextArea extends Tag {
         else if ("columns".equals(name)) {
             setColumns((Integer) Utils.convertStringToObject(value, Integer.class));
         }
+        else if ("value".equals(name)) {
+            setValue(value);
+        }
     }
 
     public int getRows() {
@@ -74,5 +78,13 @@ public class TextArea extends Tag {
 
     public void setColumns(int columns) {
         this.columns = columns;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

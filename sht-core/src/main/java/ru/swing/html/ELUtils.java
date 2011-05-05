@@ -19,6 +19,13 @@ public class ELUtils {
     public static final boolean ignoreUnresolvablePlaceholders = false;
 
 
+    /**
+     * Parses string for a placeholders recursively. The placeholders are evaled against
+     * model.
+     * @param original original string to parse
+     * @param model model, containing values to be used for placeholders
+     * @return parsed string
+     */
     public static String parseStringValue(String original, Map<String, Object> model) {
         if (StringUtils.isEmpty(original)) {
             return original;
