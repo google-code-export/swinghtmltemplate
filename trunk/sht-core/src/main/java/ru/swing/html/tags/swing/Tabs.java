@@ -79,7 +79,7 @@ public class Tabs extends Tag {
         for (Tag child : getChildren()) {
             JComponent childComponent = DomConverter.convertComponent(child, substitutions);
             if (childComponent!=null) {
-                tabs.addTab(child.getAttribute("title"), childComponent);
+                tabs.addTab(child.getAttribute("title"), child.getComponentWrapper());
             }
         }
     }

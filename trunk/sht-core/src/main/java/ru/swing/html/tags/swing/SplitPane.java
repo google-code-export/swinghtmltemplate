@@ -81,8 +81,8 @@ public class SplitPane extends Tag {
             }
 
             if (childrenWithComponents.size()<=2) {
-                JComponent childComponent1 = childrenWithComponents.size()>0 ? childrenWithComponents.get(0).getComponent() : null;
-                JComponent childComponent2 = childrenWithComponents.size()>1 ? childrenWithComponents.get(1).getComponent() : null;
+                JComponent childComponent1 = childrenWithComponents.size()>0 ? childrenWithComponents.get(0).getComponentWrapper() : null;
+                JComponent childComponent2 = childrenWithComponents.size()>1 ? childrenWithComponents.get(1).getComponentWrapper() : null;
 
                 if (childComponent1!=null) {
                     placeChild(childComponent1, childrenWithComponents.get(0).getAlign(), "left");
