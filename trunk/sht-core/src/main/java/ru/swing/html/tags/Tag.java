@@ -4,6 +4,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
+import org.jdesktop.jxlayer.JXLayer;
+import org.jdesktop.jxlayer.plaf.AbstractLayerUI;
+import org.jdesktop.jxlayer.plaf.LayerUI;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableMap;
 import org.jdesktop.observablecollections.ObservableMapListener;
@@ -20,6 +23,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.lang.*;
 import java.lang.Object;
@@ -40,6 +44,7 @@ public class Tag implements Cloneable {
 
     private DomModel model;
     private JComponent component;
+    private JComponent componentWrapper;
     private Log logger = LogFactory.getLog(Tag.class);
     private String id;
     private String name;
@@ -187,7 +192,9 @@ public class Tag implements Cloneable {
             JComponent child = DomConverter.convertComponent(childTag, substitutions);
             if (parent!=null && child!=null && c!=null) {
                 LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
-                layoutManagerSupport.addComponent(c, child, childTag.getAlign());
+                JComponent cw = childTag.getComponentWrapper();
+                layoutManagerSupport.addComponent(c, cw, childTag.getAlign());
+//                layoutManagerSupport.addComponent(c, child, childTag.getAlign());
             }
         }
     }
@@ -318,6 +325,15 @@ public class Tag implements Cloneable {
 
     public void setComponent(JComponent component) {
         this.component = component;
+        this.setComponentWrapper(component);
+    }
+
+    public JComponent getComponentWrapper() {
+        return componentWrapper;
+    }
+
+    public void setComponentWrapper(JComponent componentWrapper) {
+        this.componentWrapper = componentWrapper;
     }
 
     public String getHeight() {
@@ -481,6 +497,28 @@ public class Tag implements Cloneable {
                 Dimension d = component.getMaximumSize();
                 d.setSize(d.getWidth(), (Double) Utils.convertStringToObject(attrValue, Double.class));
                 component.setMaximumSize(d);
+            }
+            else if ("background-image".equals(attrName)) {
+                try {
+                    ImageIcon staticBkg = new ImageIcon(getClass().getResource(attrValue));
+                    String hover = getAttribute("background-image-hover");
+                    String clicked = getAttribute("background-image-clicked");
+                    if (StringUtils.isEmpty(hover)) {
+                        hover = attrValue;
+                    }
+                    if (StringUtils.isEmpty(clicked)) {
+                        clicked = attrValue;
+                    }
+                    ImageIcon hoverBkg = new ImageIcon(getClass().getResource(hover));
+                    ImageIcon clickedBkg = new ImageIcon(getClass().getResource(clicked));
+
+                    BackgroundLayerUI backgroundLayerUI = new BackgroundLayerUI(staticBkg, hoverBkg, clickedBkg, staticBkg);
+                    JXLayer layer = new JXLayer(component, backgroundLayerUI);
+                    setComponentWrapper(layer);
+
+                } catch (Exception e) {
+                    logger.warn("Can't load icon from resource '"+attrValue+"': "+e.getMessage());
+                }
             }
 
 
@@ -786,5 +824,58 @@ public class Tag implements Cloneable {
         result = 31 * result + (namespace != null ? namespace.hashCode() : 0);
         result = 31 * result + (attributes != null ? attributes.hashCode() : 0);
         return result;
+    }
+
+    private static class BackgroundLayerUI extends AbstractLayerUI {
+        private ImageIcon staticBkg;
+        private ImageIcon hoverBkg;
+        private ImageIcon clickedBkg;
+        private ImageIcon disabledBkg;
+        private int lastMouseState = MouseEvent.MOUSE_FIRST;
+
+
+        public BackgroundLayerUI(ImageIcon staticBkg, ImageIcon hoverBkg, ImageIcon clickedBkg, ImageIcon disabledBkg) {
+            this.staticBkg = staticBkg;
+            this.hoverBkg = hoverBkg;
+            this.clickedBkg = clickedBkg;
+            this.disabledBkg = disabledBkg;
+        }
+
+        @Override
+        protected void paintLayer(Graphics2D graphics2D, JXLayer jxLayer) {
+            int state = 0;
+            //mouse over
+            if (jxLayer.getMousePosition()!=null) {
+                state = lastMouseState;
+            }
+            else {
+                state = 0;
+            }
+
+            if (!jxLayer.getView().isEnabled()) {
+                state = -1;
+            }
+
+
+            ImageIcon img;
+            switch (state) {
+                case -1 : img = disabledBkg; break;
+                case 0 : img = staticBkg; break;
+                case MouseEvent.MOUSE_PRESSED : img = clickedBkg; break;
+                case MouseEvent.MOUSE_RELEASED : img = hoverBkg; break;
+                default: img = jxLayer.getMousePosition() != null ? hoverBkg : staticBkg; break;
+            }
+            graphics2D.drawImage(img.getImage(), 0, 0, null);
+
+
+            super.paintLayer(graphics2D, jxLayer);
+        }
+
+
+        @Override
+        protected void processMouseEvent(MouseEvent mouseEvent, JXLayer jxLayer) {
+            super.processMouseEvent(mouseEvent, jxLayer);
+            lastMouseState = mouseEvent.getID();
+        }
     }
 }

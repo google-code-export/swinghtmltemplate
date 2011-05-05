@@ -123,7 +123,8 @@ public class Table extends Tag {
             tagAtPosition.setAttribute(ALIGN_ATTRIBUTE, align);
 
             JComponent childComponent = DomConverter.convertComponent(tagAtPosition, substitutions);
-            tableLayoutSupport.addComponent(getComponent(), childComponent, align);
+            tableLayoutSupport.addComponent(getComponent(), tagAtPosition.getComponentWrapper(), align);
+//            tableLayoutSupport.addComponent(getComponent(), childComponent, align);
             logger.trace(toString()+ ": added '"+tagAtPosition+"' to '"+align+"'");
         }
 
