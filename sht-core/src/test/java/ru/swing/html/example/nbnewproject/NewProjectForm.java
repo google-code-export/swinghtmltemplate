@@ -117,12 +117,16 @@ public class NewProjectForm extends JPanel {
     public static void main(String[] args) {
         NewProjectForm form = new NewProjectForm();
 
-        JFrame f = new JFrame("New Project");
+        final JFrame f = new JFrame("New Project");
         f.setSize(800, 700);
 
         f.getContentPane().add(form);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                f.setVisible(true);
+            }
+        });
     }
 
 

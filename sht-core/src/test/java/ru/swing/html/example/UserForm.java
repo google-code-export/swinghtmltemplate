@@ -30,14 +30,18 @@ public class UserForm {
 
         UserForm form = new UserForm();
 
-        JFrame f = new JFrame("Test");
+        final JFrame f = new JFrame("Test");
 
 
         f.getContentPane().add(form.getRootPanel());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.pack();
         f.setSize(400, f.getHeight());
-        f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                f.setVisible(true);
+            }
+        });
 
     }
 }

@@ -68,12 +68,16 @@ public class CreateProjectForm extends JPanel {
     public static void main(String[] args) {
         CreateProjectForm form = new CreateProjectForm();
 
-        JFrame f = new JFrame("New Dynamic Web Project");
+        final JFrame f = new JFrame("New Dynamic Web Project");
         f.setSize(800, 700);
 
         f.getContentPane().add(form);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                f.setVisible(true);
+            }
+        });
     }
 
 

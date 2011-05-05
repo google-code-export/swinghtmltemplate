@@ -68,12 +68,16 @@ public class LoginForm extends JFrame {
 
     public static void main(String[] args) throws JDOMException, IOException {
 
-        LoginForm loginForm = new LoginForm();
+        final LoginForm loginForm = new LoginForm();
         Account acc = new Account();
         acc.setName("John Doe");
         loginForm.setAccount(acc);
 
-        loginForm.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                loginForm.setVisible(true);
+            }
+        });
 
     }
 

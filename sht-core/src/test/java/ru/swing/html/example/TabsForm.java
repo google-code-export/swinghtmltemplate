@@ -7,13 +7,6 @@ import ru.swing.html.Binder;
 import javax.swing.*;
 import java.io.IOException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 21.11.2010
- * Time: 23:43:57
- * To change this template use File | Settings | File Templates.
- */
 public class TabsForm {
     @Bind("rootPanel")
     private JPanel rootPanel;
@@ -22,9 +15,9 @@ public class TabsForm {
         try {
             Binder.bind(this);
         } catch (JDOMException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
@@ -36,13 +29,17 @@ public class TabsForm {
 
         TabsForm form = new TabsForm();
 
-        JFrame f = new JFrame("Test");
+        final JFrame f = new JFrame("Test");
         f.setSize(400, 150);
 
 
         f.getContentPane().add(form.getRootPanel());
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                f.setVisible(true);
+            }
+        });
 
     }
 }
