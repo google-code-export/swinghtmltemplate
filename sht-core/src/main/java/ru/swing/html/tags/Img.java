@@ -3,6 +3,7 @@ package ru.swing.html.tags;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomModel;
+import ru.swing.html.ELUtils;
 
 import javax.swing.*;
 
@@ -30,7 +31,7 @@ public class Img extends Tag {
     public void setAttribute(String name, String value) {
         super.setAttribute(name, value);
         if (SOURCE_ATTRIBUTE.equals(name)) {
-            setSource(value);
+            setSource(ELUtils.parseStringValue(value, getModelElements()));
             setAttribute("icon", getSource());
         }
     }

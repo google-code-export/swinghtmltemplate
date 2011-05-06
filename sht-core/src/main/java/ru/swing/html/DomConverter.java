@@ -348,7 +348,7 @@ public class DomConverter {
     }
 
 
-    private static void recursivellyVisitTags(Tag root, TagVisitor visitor) {
+    public static void recursivellyVisitTags(Tag root, TagVisitor visitor) {
         visitor.visit(root);
         List<Tag> children = new ArrayList<Tag>(root.getChildren());
         List<Tag> visited = new ArrayList<Tag>();

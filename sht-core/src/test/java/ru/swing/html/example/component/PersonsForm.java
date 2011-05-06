@@ -48,7 +48,7 @@ public class PersonsForm extends JFrame {
 
     public void dump() {
         for (Person person : model.getPersons()) {
-            logger.info(person.getName());
+            logger.info(person.getName()+" - "+person.getPhone());
         }
         logger.info(domModel.dump());
     }

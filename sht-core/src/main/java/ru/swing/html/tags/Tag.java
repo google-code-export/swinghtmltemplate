@@ -17,6 +17,7 @@ import ru.swing.html.layout.LayoutManagerSupportFactory;
 import ru.swing.html.tags.event.ClickDelegator;
 import ru.swing.html.tags.event.DocumentDelegator;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
@@ -559,7 +560,8 @@ public class Tag implements Cloneable {
         else if ("icon".equals(attrName) && StringUtils.isNotBlank(getAttribute("icon"))) {
             Icon icon = null;
             try {
-                icon = new ImageIcon(getClass().getResource(getAttribute("icon")));
+                Image image = ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), getAttribute("icon")));
+                icon = new ImageIcon(image);
             } catch (Exception e) {
                 logger.warn("Can't load icon from resource '"+getAttribute("icon")+"': "+e.getMessage());
             }
@@ -622,15 +624,15 @@ public class Tag implements Cloneable {
             String clicked = getAttribute("background-image-clicked");
 
             try {
-                ImageIcon staticBkg = new ImageIcon(getClass().getResource(staticB));
+                ImageIcon staticBkg = new ImageIcon(ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), staticB)));
                 if (StringUtils.isEmpty(hover)) {
                     hover = staticB;
                 }
                 if (StringUtils.isEmpty(clicked)) {
                     clicked = staticB;
                 }
-                ImageIcon hoverBkg = new ImageIcon(getClass().getResource(hover));
-                ImageIcon clickedBkg = new ImageIcon(getClass().getResource(clicked));
+                ImageIcon hoverBkg = new ImageIcon(ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), hover)));
+                ImageIcon clickedBkg = new ImageIcon(ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), clicked)));
 
                 BackgroundImageLayerUI backgroundLayerUI = new BackgroundImageLayerUI(staticBkg, hoverBkg, clickedBkg, staticBkg);
                 JXLayer layer = new JXLayer(component, backgroundLayerUI);
@@ -836,7 +838,8 @@ public class Tag implements Cloneable {
 
     @Override
     public Tag clone()  {
-        Tag clone = DomLoader.createTag(getNamespace(), getName());
+        Tag clone = DomLoader.createTag(getModel().getConfiguration().getLibraryLoader().getLibraryRegistry(),
+                getNamespace(), getName());
         clone.setModel(model);
         for (String attrName : attributes.keySet()) {
             clone.setAttribute(attrName, attributes.get(attrName));
