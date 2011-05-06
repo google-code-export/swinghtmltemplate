@@ -25,28 +25,38 @@ public class TextArea extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
         JTextArea textArea = (JTextArea) component;
-        textArea.setText(getContent());
 
-        //perform binding
-        if (StringUtils.isNotEmpty(getValue())) {
-            String el = getValue();
-            BeanProperty componentProperty;
-            String type = getType();
+        if (TAG_CONTENT.equals(name)) {
+            textArea.setText(getContent());
+        }
+        else if ("value".equals(name)) {
+            //perform binding
+            if (StringUtils.isNotEmpty(getValue())) {
+                String el = getValue();
+                BeanProperty componentProperty;
 
-            componentProperty = BeanProperty.create("text");
-            getModel().bind(el, getComponent(), componentProperty);
+                componentProperty = BeanProperty.create("text");
+                getModel().bind(el, getComponent(), componentProperty);
 
+            }
+        }
+        else if ("rows".equals(name)) {
+            if (getRows()>=0) {
+                textArea.setRows(getRows());
+            }
+        }
+        else if ("columns".equals(name)) {
+            if (getColumns()>=0) {
+                textArea.setColumns(getColumns());
+            }
+        }
+        else {
+            super.applyAttribute(component, name);
         }
 
-        if (getRows()>=0) {
-            textArea.setRows(getRows());
-        }
-        if (getColumns()>=0) {
-            textArea.setColumns(getColumns());
-        }
+
     }
 
     @Override
@@ -54,10 +64,10 @@ public class TextArea extends Tag {
         super.setAttribute(name, value);
 
         if ("rows".equals(name)) {
-            setRows((Integer) Utils.convertStringToObject(value, Integer.class));
+            setRows(Utils.convertStringToObject(value, Integer.class));
         }
         else if ("columns".equals(name)) {
-            setColumns((Integer) Utils.convertStringToObject(value, Integer.class));
+            setColumns(Utils.convertStringToObject(value, Integer.class));
         }
         else if ("value".equals(name)) {
             setValue(value);

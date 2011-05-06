@@ -139,38 +139,38 @@ public class Utils {
      * @param type тип объекта
      * @return объект указанного типа или null
      */
-    public static java.lang.Object convertStringToObject(String string, Class type) {
+    public static <T> T convertStringToObject(String string, Class<T> type) {
         if (String.class.equals(type)) {
-            return string;
+            return (T) string;
         }
         else if (Integer.class.equals(type) || Integer.TYPE.equals(type)) {
-            return new Integer(string);
+            return (T) new Integer(string);
         }
         else if (Boolean.class.equals(type) || Boolean.TYPE.equals(type)) {
-            return Boolean.valueOf(string);
+            return (T) Boolean.valueOf(string);
         }
         else if (Short.class.equals(type) || Short.TYPE.equals(type)) {
-            return new Short(string);
+            return (T) new Short(string);
         }
         else if (Byte.class.equals(type) || Byte.TYPE.equals(type)) {
-            return new Byte(string);
+            return (T) new Byte(string);
         }
         else if (Character.class.equals(type) || Character.TYPE.equals(type)) {
-            return StringUtils.isEmpty(string) ? null : string.charAt(0);
+            return (T) (StringUtils.isEmpty(string) ? null : string.charAt(0));
         }
         else if (Double.class.equals(type) || Double.TYPE.equals(type)) {
-            return new Double(string);
+            return (T) new Double(string);
         }
         else if (Float.class.equals(type) || Float.TYPE.equals(type)) {
-            return new Float(string);
+            return (T) new Float(string);
         }
         else if (Long.class.equals(type) || Long.TYPE.equals(type)) {
-            return new Long(string);
+            return (T) new Long(string);
         }
         else if (Dimension.class.equals(type)) {
             int[] tokens = parseIntegers(string);
             if (tokens!=null && tokens.length==2) {
-                return new Dimension(tokens[0], tokens[1]);
+                return (T) new Dimension(tokens[0], tokens[1]);
             }
             else {
                 logger.warn("Wrong dimension format. Correct format: 'int int'");
@@ -180,7 +180,7 @@ public class Utils {
         else if (Insets.class.equals(type)) {
             int[] tokens = parseIntegers(string);
             if (tokens!=null && tokens.length==4) {
-                return new Insets(tokens[0], tokens[1], tokens[2], tokens[3]);
+                return (T) new Insets(tokens[0], tokens[1], tokens[2], tokens[3]);
             }
             else {
                 logger.warn("Wrong Insets format. Correct format: 'int int int int'");
@@ -190,7 +190,7 @@ public class Utils {
         else if (Point.class.equals(type)) {
             int[] tokens = parseIntegers(string);
             if (tokens!=null && tokens.length==2) {
-                return new Point(tokens[0], tokens[1]);
+                return (T) new Point(tokens[0], tokens[1]);
             }
             else {
                 logger.warn("Wrong Point format. Correct format: 'int int'");
@@ -200,7 +200,7 @@ public class Utils {
         else if (Rectangle.class.equals(type)) {
             int[] tokens = parseIntegers(string);
             if (tokens!=null && tokens.length==4) {
-                return new Rectangle(tokens[0], tokens[1], tokens[2], tokens[3]);
+                return (T) new Rectangle(tokens[0], tokens[1], tokens[2], tokens[3]);
             }
             else {
                 logger.warn("Wrong Rectangle format. Correct format: 'int int int int'");

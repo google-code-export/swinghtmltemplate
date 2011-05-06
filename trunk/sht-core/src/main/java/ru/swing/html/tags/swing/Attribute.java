@@ -39,37 +39,43 @@ public class Attribute extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        //attribute will be applied to the parent's tag component
-        component = getParent().getComponent();
+    public void applyAttribute(JComponent component, String attrName) {
+        if (VALUE_ATTRIBUTE.equals(attrName)) {
+            //attribute will be applied to the parent's tag component
+            component = getParent().getComponent();
 
-        String name = getAttributeName();
-        String valueStr = getValue();
-        String type = getType();
+            String name = getAttributeName();
+            String valueStr = getValue();
+            String type = getType();
 
-        if (StringUtils.isEmpty(type)) {
-            type = String.class.getName();
+            if (StringUtils.isEmpty(type)) {
+                type = String.class.getName();
+            }
+
+
+            try {
+                Class<java.lang.Object> typeClass = Utils.convertStringToClass(type);
+
+                java.lang.Object value = Utils.convertStringToObject(valueStr, typeClass);
+
+                String setterName = "set"+StringUtils.capitalize(name);
+                Method m = component.getClass().getMethod(setterName, typeClass);
+                m.invoke(component, value);
+                logger.trace("Assigned value "+value+" ["+valueStr+"] to component ["+component+"] of tag "+getParent().getName());
+
+            } catch (ClassNotFoundException e) {
+                logger.error("Can't find class for type: "+type, e);
+            } catch (NoSuchMethodException e) {
+                logger.error("Can't find setter for property "+name, e);
+            } catch (IllegalAccessException e) {
+                logger.warn("Can't assign value '"+valueStr+"' to field '"+name+"': "+e.getMessage(), e);
+            } catch (InvocationTargetException e) {
+                logger.warn("Can't assign value '"+valueStr+"' to field '"+name+"': "+e.getMessage(), e);
+            }
+
         }
-
-
-        try {
-            Class typeClass = Utils.convertStringToClass(type);
-
-            java.lang.Object value = Utils.convertStringToObject(valueStr, typeClass);
-
-            String setterName = "set"+StringUtils.capitalize(name);
-            Method m = component.getClass().getMethod(setterName, typeClass);
-            m.invoke(component, value);
-            logger.trace("Assigned value "+value+" ["+valueStr+"] to component ["+component+"] of tag "+getParent().getName());
-
-        } catch (ClassNotFoundException e) {
-            logger.error("Can't find class for type: "+type, e);
-        } catch (NoSuchMethodException e) {
-            logger.error("Can't find setter for property "+name, e);
-        } catch (IllegalAccessException e) {
-            logger.warn("Can't assign value '"+valueStr+"' to field '"+name+"': "+e.getMessage(), e);
-        } catch (InvocationTargetException e) {
-            logger.warn("Can't assign value '"+valueStr+"' to field '"+name+"': "+e.getMessage(), e);
+        else {
+            super.applyAttribute(component, attrName);
         }
     }
 

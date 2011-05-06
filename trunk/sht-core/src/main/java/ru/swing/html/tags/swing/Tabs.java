@@ -44,30 +44,35 @@ public class Tabs extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
 
-        JTabbedPane tabs = (JTabbedPane) getComponent();
+        JTabbedPane tabs = (JTabbedPane) component;
+        if (TAB_POSITION_ATTRIBUTE.equals(name)) {
+            String tabPlacement = getAttribute(TAB_POSITION_ATTRIBUTE);
+            int tabPlacementPos = JTabbedPane.TOP;
+            if (StringUtils.isEmpty(tabPlacement) || "top".equals(tabPlacement)) {
+                tabPlacementPos = JTabbedPane.TOP;
+            }
+            else if ("bottom".equals(tabPlacement)) {
+                tabPlacementPos = JTabbedPane.BOTTOM;
+            }
+            else if ("left".equals(tabPlacement)) {
+                tabPlacementPos = JTabbedPane.LEFT;
+            }
+            else if ("right".equals(tabPlacement)) {
+                tabPlacementPos = JTabbedPane.RIGHT;
+            }
+            else {
+                logger.warn("Unknown tab-position: "+tabPlacement);
+            }
 
-        String tabPlacement = getAttribute(TAB_POSITION_ATTRIBUTE);
-        int tabPlacementPos = JTabbedPane.TOP;
-        if (StringUtils.isEmpty(tabPlacement) || "top".equals(tabPlacement)) {
-            tabPlacementPos = JTabbedPane.TOP;
-        }
-        else if ("bottom".equals(tabPlacement)) {
-            tabPlacementPos = JTabbedPane.BOTTOM;
-        }
-        else if ("left".equals(tabPlacement)) {
-            tabPlacementPos = JTabbedPane.LEFT;
-        }
-        else if ("right".equals(tabPlacement)) {
-            tabPlacementPos = JTabbedPane.RIGHT;
+            tabs.setTabPlacement(tabPlacementPos);
+
         }
         else {
-            logger.warn("Unknown tab-position: "+tabPlacement);
+            super.applyAttribute(component, name);
         }
 
-        tabs.setTabPlacement(tabPlacementPos);
 
     }
 

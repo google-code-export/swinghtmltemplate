@@ -16,13 +16,8 @@ public class Form extends Tag {
     public JComponent createComponent() {
         JPanel c = new JPanel();
         setComponent(c);
-        return c;
-    }
-
-    @Override
-    public void applyAttributes(JComponent component) {
         setDisplay("mig");
-        super.applyAttributes(component);
+        return c;
     }
 
 

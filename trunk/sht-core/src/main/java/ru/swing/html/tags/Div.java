@@ -17,16 +17,12 @@ public class Div extends Tag {
     public JComponent createComponent() {
         JPanel c = new JPanel();
         setComponent(c);
-        return c;
-    }
-
-    @Override
-    public void applyAttributes(JComponent component) {
         if (StringUtils.isEmpty(getDisplay())) {
             setAttribute("display", "border");
         }
-        super.applyAttributes(component);
+        return c;
     }
+
 
 
 }

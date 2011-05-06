@@ -7,13 +7,11 @@ import ru.swing.html.DomModel;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 20.11.2010
- * Time: 23:47:45
+ * Tag converts to JLabel with specified image as label's icon.
  */
 public class Img extends Tag {
-    
+
+    private static final String SOURCE_ATTRIBUTE = "src";
     private Log logger = LogFactory.getLog(getClass());
     private String source;
 
@@ -25,20 +23,15 @@ public class Img extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        setAttribute("icon", getSource());
-        super.applyAttributes(component);
-    }
-
-    @Override
     public void handleLayout() {
     }
 
     @Override
     public void setAttribute(String name, String value) {
         super.setAttribute(name, value);
-        if ("src".equals(name)) {
+        if (SOURCE_ATTRIBUTE.equals(name)) {
             setSource(value);
+            setAttribute("icon", getSource());
         }
     }
 

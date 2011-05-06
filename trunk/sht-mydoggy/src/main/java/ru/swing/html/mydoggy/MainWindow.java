@@ -51,27 +51,31 @@ public class MainWindow extends Tag {
 
 
     @Override
-    public void applyAttributes(JComponent component) {
+    public void applyAttribute(JComponent component, String attrName) {
         MyDoggyToolWindowManager myDoggyToolWindowManager = (MyDoggyToolWindowManager) component;
 
-        super.applyAttributes(component);
 
-        //set content manager ui
-        if (StringUtils.isNotEmpty(getType())) {
+        if (TYPE_ATTRIBUTE.equals(attrName)) {
+            //set content manager ui
+            if (StringUtils.isNotEmpty(getType())) {
 
-            if ("split".equals(getType())) {
-                myDoggyToolWindowManager.getContentManager().setContentManagerUI(new MyDoggyMultiSplitContentManagerUI());
-            }
-            else if ("tabbed".equals(getType())) {
-                myDoggyToolWindowManager.getContentManager().setContentManagerUI(new MyDoggyTabbedContentManagerUI());
-            }
-            else if ("desktop".equals(getType())) {
-                myDoggyToolWindowManager.getContentManager().setContentManagerUI(new MyDoggyDesktopContentManagerUI());
-            }
-            else {
-                logger.warn(toString()+ ": unknown type '"+getType()+"'");
-            }
+                if ("split".equals(getType())) {
+                    myDoggyToolWindowManager.getContentManager().setContentManagerUI(new MyDoggyMultiSplitContentManagerUI());
+                }
+                else if ("tabbed".equals(getType())) {
+                    myDoggyToolWindowManager.getContentManager().setContentManagerUI(new MyDoggyTabbedContentManagerUI());
+                }
+                else if ("desktop".equals(getType())) {
+                    myDoggyToolWindowManager.getContentManager().setContentManagerUI(new MyDoggyDesktopContentManagerUI());
+                }
+                else {
+                    logger.warn(toString()+ ": unknown type '"+getType()+"'");
+                }
 
+            }
+        }
+        else {
+            super.applyAttribute(component, attrName);
         }
     }
 

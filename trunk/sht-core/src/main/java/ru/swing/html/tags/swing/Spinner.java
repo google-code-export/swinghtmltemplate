@@ -24,23 +24,30 @@ public class Spinner extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
         JSpinner c = (JSpinner) getComponent();
-        if (StringUtils.isNotEmpty(getContent())) {
-            try {
-                Integer value = new Integer(getContent());
-                c.setValue(value);
-            } catch (NumberFormatException e) {
-                logger.warn(getContent()+" cannot be parsed as integer");
+
+        if (TAG_CONTENT.equals(name)) {
+            if (StringUtils.isNotEmpty(getContent())) {
+                try {
+                    Integer value = new Integer(getContent());
+                    c.setValue(value);
+                } catch (NumberFormatException e) {
+                    logger.warn(getContent()+" cannot be parsed as integer");
+                }
             }
         }
-
-        //perform binding
-        if (StringUtils.isNotEmpty(getAttribute("value"))) {
-            BeanProperty componentProperty = BeanProperty.create("value");
-            getModel().bind(getAttribute("value"), getComponent(), componentProperty);
+        else if ("value".equals(name)) {
+            //perform binding
+            if (StringUtils.isNotEmpty(getAttribute("value"))) {
+                BeanProperty componentProperty = BeanProperty.create("value");
+                getModel().bind(getAttribute("value"), getComponent(), componentProperty);
+            }
         }
+        else {
+            super.applyAttribute(component, name);
+        }
+
 
 
     }

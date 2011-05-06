@@ -50,45 +50,58 @@ public class Input extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
-        if (component instanceof JTextComponent) {
-            JTextComponent c = (JTextComponent) getComponent();
-            c.setText(getContent());
-        }
+    public void applyAttribute(JComponent component, String name) {
 
-
-        if (component instanceof AbstractButton) {
-            AbstractButton b = (AbstractButton) component;
-            String borderPainted = getAttribute("border-painted");
-            String contentAreaFilled = getAttribute("content-area-filled");
-            if (StringUtils.isNotEmpty(borderPainted)) {
-                b.setBorderPainted((Boolean) Utils.convertStringToObject(borderPainted, Boolean.class));
-            }
-            if (StringUtils.isNotEmpty(contentAreaFilled)) {
-                b.setContentAreaFilled((Boolean) Utils.convertStringToObject(contentAreaFilled, Boolean.class));
+        //tag content is always equals to empty string, so when binding is uses,
+        //an empty string will be assigned to binded model property during conversion phase.
+        //to avoid this check that no binding is used
+        if (TAG_CONTENT.equals(name) && StringUtils.isEmpty(getAttribute("value"))) {
+            if (component instanceof JTextComponent) {
+                JTextComponent c = (JTextComponent) getComponent();
+                c.setText(getContent());
             }
         }
-
-        //perform binding
-        if (StringUtils.isNotEmpty(getAttribute("value"))) {
-            String el = getAttribute("value");
-            BeanProperty componentProperty;
-            String type = getType();
-
-            if ("text".equals(type) || "password".equals(type) || StringUtils.isEmpty(type)) {
-                componentProperty = BeanProperty.create("text");
+        else if ("border-painted".equals(name)) {
+            if (component instanceof AbstractButton) {
+                AbstractButton b = (AbstractButton) component;
+                String borderPainted = getAttribute("border-painted");
+                if (StringUtils.isNotEmpty(borderPainted)) {
+                    b.setBorderPainted(Utils.convertStringToObject(borderPainted, Boolean.class));
+                }
             }
-            else if ("checkbox".equals(type)) {
-                componentProperty = BeanProperty.create("selected");
-            }
-            else {
-                componentProperty = BeanProperty.create("text");
-            }
-
-            bind(el, getComponent(), componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);
         }
+        else if ("content-area-filled".equals(name)) {
+            if (component instanceof AbstractButton) {
+                AbstractButton b = (AbstractButton) component;
+                String contentAreaFilled = getAttribute("content-area-filled");
+                if (StringUtils.isNotEmpty(contentAreaFilled)) {
+                    b.setContentAreaFilled(Utils.convertStringToObject(contentAreaFilled, Boolean.class));
+                }
+            }
+        }
+        else if ("value".equals(name)) {
+            //perform binding
+            if (StringUtils.isNotEmpty(getAttribute("value"))) {
+                String el = getAttribute("value");
+                BeanProperty componentProperty;
+                String type = getType();
 
+                if ("text".equals(type) || "password".equals(type) || StringUtils.isEmpty(type)) {
+                    componentProperty = BeanProperty.create("text");
+                }
+                else if ("checkbox".equals(type)) {
+                    componentProperty = BeanProperty.create("selected");
+                }
+                else {
+                    componentProperty = BeanProperty.create("text");
+                }
+
+                bind(el, getComponent(), componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);
+            }
+        }
+        else {
+            super.applyAttribute(component, name);
+        }
 
     }
 }
