@@ -82,9 +82,10 @@ public class Component extends Tag {
     public void beforeComponentsConvertion() {
 
         //loading target document model
-        InputStream in = getClass().getClassLoader().getResourceAsStream(getSource());
+//        InputStream in = getClass().getClassLoader().getResourceAsStream(getSource());
         DomModel targetModel = null;
         try {
+            InputStream in = getModel().getConfiguration().getResourceLoader().loadResource(getModel(), getSource());
             targetModel = DomLoader.loadModel(in);
         } catch (JDOMException e) {
             logger.error(toString() + ": Can't load document: " + getSource(), e);
@@ -102,8 +103,8 @@ public class Component extends Tag {
 
             BindingGroup group = new BindingGroup();
             for (String attrName : getAttributes().keySet()) {
-                if (!"src".equals(attrName)) {
-                    ELProperty sourceProp = ELProperty.create(getAttributes().get(attrName));
+                if (!"src".equals(attrName) && !TAG_CONTENT.equals(attrName)) {
+                    ELProperty sourceProp = ELProperty.create(getAttribute(attrName));
                     BeanProperty targetProp = BeanProperty.create(attrName);
 
                     for (Tag targetChild : target.getChildren()) {

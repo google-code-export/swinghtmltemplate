@@ -5,6 +5,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableCollections;
+import ru.swing.html.configuration.Configuration;
+import ru.swing.html.configuration.DefaultConfiguration;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
@@ -36,6 +38,7 @@ public class DomModel {
     private String sourcePath;
     private Window window;
     private Map<String, Map<String, Binding>> bindingsByModelElementName = new HashMap<String, Map<String, Binding>>();
+    private Configuration configuration = new DefaultConfiguration();
     /**
      * Contains meta data, filled by <meta> tags inside <head>
      */
@@ -318,6 +321,11 @@ public class DomModel {
             }
         }
 
+        DomConverter.recursivellyVisitTags(parent, new TagVisitor() {
+            public void visit(Tag tag) {
+                tag.setModel(DomModel.this);
+            }
+        });
     }
 
     /**
@@ -341,6 +349,14 @@ public class DomModel {
 
     public int nextTagCount() {
         return tagCounter++;
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public String dump() {
