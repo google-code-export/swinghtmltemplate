@@ -1,7 +1,11 @@
 package ru.swing.html.tags.ui;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.ELProperty;
+import ru.swing.html.DomConverter;
+import ru.swing.html.TagVisitor;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -33,6 +37,8 @@ public class ForEach extends Tag {
     public String items;
     public String varStatus;
 
+    private Log logger = LogFactory.getLog(getClass());
+
     @Override
     public JComponent createComponent() {
         return null;
@@ -49,10 +55,13 @@ public class ForEach extends Tag {
 
 
         ELProperty<Map, Object> prop = ELProperty.create(getItems());
-        Object raw = prop.getValue(getModel().getModelElements());
+        Object raw = prop.getValue(getModelElements());
 
 
-        if (raw instanceof Iterable) {
+        if (raw == null) {
+            logger.warn(toString()+": value of '"+getItems()+"' el resolved to null");
+        }
+        else if (raw instanceof Iterable) {
 
             Tag parent = getParent();
             int tagIndex = getParent().getChildren().indexOf(this);
@@ -80,17 +89,27 @@ public class ForEach extends Tag {
                 status.setIndex(index);
 
                 for (Tag child : children) {
-                    Tag childClone = child.clone();
+                    final Tag childClone = child.clone();
                     parent.addChild(childClone, tagIndex++);
                     childClone.addModelElement(getVar(), item);
                     if (StringUtils.isNotEmpty(getVarStatus())) {
                         childClone.addModelElement(getVarStatus(), status);
                     }
+                    DomConverter.recursivellyVisitTags(childClone, new TagVisitor() {
+                        public void visit(Tag tag) {
+                            if (!childClone.equals(tag)) {
+                                tag.createContextModel();
+                            }
+                        }
+                    });
                 }
 
                 first = false;
                 index++;
             }
+        }
+        else {
+            logger.warn(toString()+": value of '"+getItems()+"' el must be instance of "+Iterable.class);
         }
 
     }

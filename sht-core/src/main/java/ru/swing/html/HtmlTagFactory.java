@@ -55,6 +55,9 @@ public class HtmlTagFactory implements TagFactory {
         else if ("textarea".equals(name)) {
             return new TextArea();
         }
+        else if ("tr".equals(name)) {
+            return new Tr();
+        }
         else if ("scroll".equals(name)) {
             logger.warn("scroll tag moved to 'http://www.oracle.com/swing' namespace");
             return new ScrollPane();

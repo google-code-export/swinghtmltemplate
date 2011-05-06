@@ -26,7 +26,7 @@ public class UITagFactory implements TagFactory {
         else if ("define".equals(name)) {
             return new Define();
         }
-        else if ("forEach".equals(name)) {
+        else if ("foreach".equalsIgnoreCase(name)) {
             return new ForEach();
         }
         else if ("if".equals(name)) {

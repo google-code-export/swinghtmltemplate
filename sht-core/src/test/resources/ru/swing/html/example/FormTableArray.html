@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head>
+    <title></title>
+    <meta name='display-as' content="frame"/>
+    <meta name='onclose' content="exit"/>
+    <meta name='size' content="800 600"/>
+</head>
+<body style="display:border">
+
+    <j:scroll>
+        <j:formTable>
+            <ui:forEach items="${model.datas}" var="row">
+                <tr>
+                    <ui:forEach items="${row}" var="cell">
+                        <td value="${cell.value}" width="15"/>
+                    </ui:forEach>
+                </tr>
+            </ui:forEach>
+        </j:formTable>
+    </j:scroll>
+
+
+    <input align="bottom" type='button' onclick="dump" text='dump'/>
+
+</body>
+</html>
