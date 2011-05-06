@@ -6,11 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 14.04.11
- * Time: 12:15
- * To change this template use File | Settings | File Templates.
+ * Tag is converted to JSeparator.
  */
 public class Hr extends Tag  {
 
@@ -24,15 +20,19 @@ public class Hr extends Tag  {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
         JSeparator separator = (JSeparator) getComponent();
-        String orientation = getType();
-        if ("horizontal".equals(orientation)) {
-            separator.setOrientation(SwingConstants.HORIZONTAL);
+        if (TYPE_ATTRIBUTE.equals(name)) {
+            String orientation = getType();
+            if ("horizontal".equals(orientation)) {
+                separator.setOrientation(SwingConstants.HORIZONTAL);
+            }
+            else {
+                separator.setOrientation(SwingConstants.VERTICAL);
+            }
         }
         else {
-            separator.setOrientation(SwingConstants.VERTICAL);
+            super.applyAttribute(component, name);
         }
     }
 

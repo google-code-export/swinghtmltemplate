@@ -11,14 +11,9 @@ import ru.swing.html.tags.event.TreeSelectionDelegator;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.lang.*;
-import java.lang.Object;
 import java.lang.reflect.Method;
 
 /**
@@ -43,115 +38,124 @@ public class Tree extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
         JTree tree = (JTree) getComponent();
 
-        String modelEL = getAttribute("value");
-        if (StringUtils.isNotEmpty(modelEL)) {
-            ELProperty beanProperty = ELProperty.create(modelEL);
 
-            java.lang.Object propertyValue = beanProperty.getValue(getModel().getModelElements());
-            if (!(propertyValue instanceof TreeModel)) {
-                logger.warn(toString()+": value must be binded to the property of type "+TreeModel.class.getName());
-                return;
-            }
+        if ("value".equals(name)) {
+            String modelEL = getAttribute("value");
+            if (StringUtils.isNotEmpty(modelEL)) {
+                ELProperty beanProperty = ELProperty.create(modelEL);
 
-
-            tree.setModel((TreeModel) propertyValue);
-            logger.trace(toString()+" set tree model from el: "+modelEL);
-        }
-
-
-        tree.setRootVisible(isShowRoot());
-        tree.setShowsRootHandles(isShowRootHandles());
-
-        //install renderer
-        String rendererAttr = getRenderer();
-        if (StringUtils.isNotEmpty(rendererAttr)) {
-            ELProperty rendererProperty = ELProperty.create(rendererAttr);
-            Object rendererVal = rendererProperty.getValue(getModel().getModelElements());
-            if (renderer == null) {
-                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + "' is null");
-            }
-            else if (rendererVal instanceof TreeCellRenderer) {
-                tree.setCellRenderer((TreeCellRenderer) rendererVal);
-                logger.trace(toString() + ": set renderer: '" + rendererAttr + "'");
-            }
-            else {
-                logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + "' is not instance of "+TreeCellRenderer.class.getName());
-            }
-
-        }
-
-
-
-        //install model selection listener
-        final String onchangeMethod = getAttribute("onchange");
-        if (StringUtils.isNotEmpty(onchangeMethod)) {
-
-            Object controller = getModel().getController();
-            Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, TreeSelectionEvent.class);
-            //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-            if (method!=null) {
-                //добавляем слушатель, который вызывает метод
-                if (treeModelDelegator !=null) {
-                    tree.getSelectionModel().removeTreeSelectionListener(treeModelDelegator);
+                java.lang.Object propertyValue = beanProperty.getValue(getModel().getModelElements());
+                if (!(propertyValue instanceof TreeModel)) {
+                    logger.warn(toString()+": value must be binded to the property of type "+TreeModel.class.getName());
+                    return;
                 }
-                treeModelDelegator = new TreeSelectionDelegator(controller, method);
-            }
-            else {
-                logger.warn(toString()+ ": can't find method " + onchangeMethod + " in class " +controller.getClass().getName());
-            }
 
 
-            tree.getSelectionModel().addTreeSelectionListener(treeModelDelegator);
+                tree.setModel((TreeModel) propertyValue);
+                logger.trace(toString()+" set tree model from el: "+modelEL);
+            }
         }
-
-        //install click listener
-        final String onclickMethod = getAttribute("onclick");
-        if (StringUtils.isNotEmpty(onclickMethod)) {
-
-            Object controller = getModel().getController();
-            Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, MouseEvent.class);
-            //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-            if (method!=null) {
-                //добавляем слушатель, который вызывает метод
-                if (mouseListenerClickDelegator !=null) {
-                    tree.removeMouseListener(mouseListenerClickDelegator);
+        else if ("showroot".equals(name)) {
+            tree.setRootVisible(isShowRoot());
+        }
+        else if ("showroothandles".equals(name)) {
+            tree.setShowsRootHandles(isShowRootHandles());
+        }
+        else if ("renderer".equals(name)) {
+            //install renderer
+            String rendererAttr = getRenderer();
+            if (StringUtils.isNotEmpty(rendererAttr)) {
+                ELProperty rendererProperty = ELProperty.create(rendererAttr);
+                Object rendererVal = rendererProperty.getValue(getModel().getModelElements());
+                if (renderer == null) {
+                    logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + "' is null");
                 }
-                mouseListenerClickDelegator = new MouseListenerClickDelegator(controller, method, 1);
-            }
-            else {
-                logger.warn(toString()+ ": can't find method " + onchangeMethod + " in class " +controller.getClass().getName());
-            }
-
-
-            tree.addMouseListener(mouseListenerClickDelegator);
-        }
-
-        //install dblclick listener
-        final String ondblclickMethod = getAttribute("ondblclick");
-        if (StringUtils.isNotEmpty(ondblclickMethod)) {
-
-            Object controller = getModel().getController();
-            Method method = Utils.findActionMethod(controller.getClass(), ondblclickMethod, MouseEvent.class);
-            //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-            if (method!=null) {
-                //добавляем слушатель, который вызывает метод
-                if (mouseListenerDblClickDelegator !=null) {
-                    tree.removeMouseListener(mouseListenerDblClickDelegator);
+                else if (rendererVal instanceof TreeCellRenderer) {
+                    tree.setCellRenderer((TreeCellRenderer) rendererVal);
+                    logger.trace(toString() + ": set renderer: '" + rendererAttr + "'");
                 }
-                mouseListenerDblClickDelegator = new MouseListenerClickDelegator(controller, method, 2);
-            }
-            else {
-                logger.warn(toString()+ ": can't find method " + ondblclickMethod + " in class " +controller.getClass().getName());
+                else {
+                    logger.warn(toString()+ ": can't set renderer. Object '"+rendererAttr + "' is not instance of "+TreeCellRenderer.class.getName());
+                }
+
             }
 
-
-            tree.addMouseListener(mouseListenerDblClickDelegator);
         }
+        else if ("onchange".equals(name)) {
+            //install model selection listener
+            final String onchangeMethod = getAttribute("onchange");
+            if (StringUtils.isNotEmpty(onchangeMethod)) {
 
+                Object controller = getModel().getController();
+                Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, TreeSelectionEvent.class);
+                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                if (method!=null) {
+                    //добавляем слушатель, который вызывает метод
+                    if (treeModelDelegator !=null) {
+                        tree.getSelectionModel().removeTreeSelectionListener(treeModelDelegator);
+                    }
+                    treeModelDelegator = new TreeSelectionDelegator(controller, method);
+                }
+                else {
+                    logger.warn(toString()+ ": can't find method " + onchangeMethod + " in class " +controller.getClass().getName());
+                }
+
+
+                tree.getSelectionModel().addTreeSelectionListener(treeModelDelegator);
+            }
+        }
+        else if ("onclick".equals(name)) {
+            //install click listener
+            final String onclickMethod = getAttribute("onclick");
+            if (StringUtils.isNotEmpty(onclickMethod)) {
+
+                Object controller = getModel().getController();
+                Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, MouseEvent.class);
+                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                if (method!=null) {
+                    //добавляем слушатель, который вызывает метод
+                    if (mouseListenerClickDelegator !=null) {
+                        tree.removeMouseListener(mouseListenerClickDelegator);
+                    }
+                    mouseListenerClickDelegator = new MouseListenerClickDelegator(controller, method, 1);
+                }
+                else {
+                    logger.warn(toString()+ ": can't find method " + onclickMethod + " in class " +controller.getClass().getName());
+                }
+
+
+                tree.addMouseListener(mouseListenerClickDelegator);
+            }
+        }
+        else if ("ondblclick".equals(name)) {
+            //install dblclick listener
+            final String ondblclickMethod = getAttribute("ondblclick");
+            if (StringUtils.isNotEmpty(ondblclickMethod)) {
+
+                Object controller = getModel().getController();
+                Method method = Utils.findActionMethod(controller.getClass(), ondblclickMethod, MouseEvent.class);
+                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                if (method!=null) {
+                    //добавляем слушатель, который вызывает метод
+                    if (mouseListenerDblClickDelegator !=null) {
+                        tree.removeMouseListener(mouseListenerDblClickDelegator);
+                    }
+                    mouseListenerDblClickDelegator = new MouseListenerClickDelegator(controller, method, 2);
+                }
+                else {
+                    logger.warn(toString()+ ": can't find method " + ondblclickMethod + " in class " +controller.getClass().getName());
+                }
+
+
+                tree.addMouseListener(mouseListenerDblClickDelegator);
+            }
+        }
+        else {
+            super.applyAttribute(component, name);
+        }
     }
 
     @Override

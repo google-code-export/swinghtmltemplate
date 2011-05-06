@@ -40,6 +40,13 @@ import java.lang.reflect.Method;
  */
 public class Slider extends Tag {
 
+    public static final String MAXIMUM_ATTRIBUTE = "max";
+    public static final String MINIMUM_ATTRIBUTE = "min";
+    public static final String VALUE = "value";
+    public static final String SNAP_TO_TICKS_ATTRIBUTE = "snap";
+    public static final String MAJOR_SPACE_ATTRIBUTE = "majorspace";
+    public static final String MINOR_SPACE_ATTRIBUTE = "minorspace";
+    public static final String ONCHANGE_ATTRIBUTE = "onchange";
     private Log logger = LogFactory.getLog(getClass());
     private String max;
     private String min;
@@ -59,79 +66,91 @@ public class Slider extends Tag {
 
 
     @Override
-    public void applyAttributes(JComponent component) {
+    public void applyAttribute(JComponent component, String name) {
         JSlider slider = (JSlider) component;
 
-        //orientaion
-        if (StringUtils.isNotEmpty(getType())) {
-            int type = SwingConstants.HORIZONTAL;
-            if ("vertical".equals(getType())) {
-                type = SwingConstants.VERTICAL;
-            }
-            slider.setOrientation(type);
-        }
-
-        //maximum
-        if (StringUtils.isNotEmpty(getMax())) {
-            String max = ELUtils.parseStringValue(getMax(), getModelElements());
-            int maxV = (Integer) Utils.convertStringToObject(max, Integer.class);
-            slider.setMaximum(maxV);
-        }
-
-        //minimum
-        if (StringUtils.isNotEmpty(getMin())) {
-            String min = ELUtils.parseStringValue(getMin(), getModelElements());
-            int minV = (Integer) Utils.convertStringToObject(min, Integer.class);
-            slider.setMinimum(minV);
-        }
-
-        //snapToTicks
-        if (StringUtils.isNotEmpty(getSnap())) {
-            String val = ELUtils.parseStringValue(getSnap(), getModelElements());
-            Boolean snap = (Boolean) Utils.convertStringToObject(val, Boolean.class);
-            slider.setSnapToTicks(snap);
-        }
-
-        //majorTickSpacing
-        if (StringUtils.isNotEmpty(getMajorSpace())) {
-            String val = ELUtils.parseStringValue(getMajorSpace(), getModelElements());
-            int v = (Integer) Utils.convertStringToObject(val, Integer.class);
-            slider.setMajorTickSpacing(v);
-        }
-
-        //minorTickSpacing
-        if (StringUtils.isNotEmpty(getMinorSpace())) {
-            String val = ELUtils.parseStringValue(getMinorSpace(), getModelElements());
-            int v = (Integer) Utils.convertStringToObject(val, Integer.class);
-            slider.setMinorTickSpacing(v);
-        }
-
-        //bind value
-        if (StringUtils.isNotEmpty(getValue())) {
-            BeanProperty prop = BeanProperty.create("value");
-            bind(getValue(), slider, prop, AutoBinding.UpdateStrategy.READ_WRITE);
-        }
-
-        //onchange listener
-        if (StringUtils.isNotEmpty(getOnChange())) {
-
-            Object controller = getModel().getController();
-            Method method = Utils.findActionMethod(controller.getClass(), getOnChange(), ChangeEvent.class);
-            //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-            if (method!=null) {
-                //добавляем слушатель, который вызывает метод
-                if (changeDelegator !=null) {
-                    slider.removeChangeListener(changeDelegator);
+        if (TYPE_ATTRIBUTE.equals(name)) {
+            //orientaion
+            if (StringUtils.isNotEmpty(getType())) {
+                int type = SwingConstants.HORIZONTAL;
+                if ("vertical".equals(getType())) {
+                    type = SwingConstants.VERTICAL;
                 }
-                changeDelegator = new ChangeDelegator(controller, method);
+                slider.setOrientation(type);
             }
-            else {
-                logger.warn(toString()+ ": can't find method " + getOnChange() + " in class " +controller.getClass().getName());
+        }
+        else if (MAXIMUM_ATTRIBUTE.equals(name)) {
+            //maximum
+            if (StringUtils.isNotEmpty(getMax())) {
+                String max = ELUtils.parseStringValue(getMax(), getModelElements());
+                int maxV = (Integer) Utils.convertStringToObject(max, Integer.class);
+                slider.setMaximum(maxV);
             }
+        }
+        else if (MINIMUM_ATTRIBUTE.equals(name)) {
+            //minimum
+            if (StringUtils.isNotEmpty(getMin())) {
+                String min = ELUtils.parseStringValue(getMin(), getModelElements());
+                int minV = (Integer) Utils.convertStringToObject(min, Integer.class);
+                slider.setMinimum(minV);
+            }
+        }
+        else if (SNAP_TO_TICKS_ATTRIBUTE.equals(name)) {
+            //snapToTicks
+            if (StringUtils.isNotEmpty(getSnap())) {
+                String val = ELUtils.parseStringValue(getSnap(), getModelElements());
+                Boolean snap = (Boolean) Utils.convertStringToObject(val, Boolean.class);
+                slider.setSnapToTicks(snap);
+            }
+        }
+        else if (MAJOR_SPACE_ATTRIBUTE.equals(name)) {
+            //majorTickSpacing
+            if (StringUtils.isNotEmpty(getMajorSpace())) {
+                String val = ELUtils.parseStringValue(getMajorSpace(), getModelElements());
+                int v = (Integer) Utils.convertStringToObject(val, Integer.class);
+                slider.setMajorTickSpacing(v);
+            }
+        }
+        else if (MINOR_SPACE_ATTRIBUTE.equals(name)) {
+            //minorTickSpacing
+            if (StringUtils.isNotEmpty(getMinorSpace())) {
+                String val = ELUtils.parseStringValue(getMinorSpace(), getModelElements());
+                int v = (Integer) Utils.convertStringToObject(val, Integer.class);
+                slider.setMinorTickSpacing(v);
+            }
+        }
+        else if (VALUE.equals(name)) {
+            //bind value
+            if (StringUtils.isNotEmpty(getValue())) {
+                BeanProperty prop = BeanProperty.create("value");
+                bind(getValue(), slider, prop, AutoBinding.UpdateStrategy.READ_WRITE);
+            }
+        }
+        else if (ONCHANGE_ATTRIBUTE.equals(name)) {
+            //onchange listener
+            if (StringUtils.isNotEmpty(getOnChange())) {
+
+                Object controller = getModel().getController();
+                Method method = Utils.findActionMethod(controller.getClass(), getOnChange(), ChangeEvent.class);
+                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                if (method!=null) {
+                    //добавляем слушатель, который вызывает метод
+                    if (changeDelegator !=null) {
+                        slider.removeChangeListener(changeDelegator);
+                    }
+                    changeDelegator = new ChangeDelegator(controller, method);
+                }
+                else {
+                    logger.warn(toString()+ ": can't find method " + getOnChange() + " in class " +controller.getClass().getName());
+                }
 
 
-            slider.addChangeListener(changeDelegator);
+                slider.addChangeListener(changeDelegator);
 
+            }
+        }
+        else {
+            super.applyAttribute(component, name);
         }
 
     }
@@ -139,25 +158,25 @@ public class Slider extends Tag {
     @Override
     public void setAttribute(String name, String value) {
         super.setAttribute(name, value);
-        if ("max".equals(name)) {
+        if (MAXIMUM_ATTRIBUTE.equals(name)) {
             setMax(value);
         }
-        else if ("min".equals(name)) {
+        else if (MINIMUM_ATTRIBUTE.equals(name)) {
             setMin(value);
         }
-        else if ("value".equals(name)) {
+        else if (VALUE.equals(name)) {
             setValue(value);
         }
-        else if ("onchange".equals(name)) {
+        else if (ONCHANGE_ATTRIBUTE.equals(name)) {
             setOnChange(value);
         }
-        else if ("snap".equals(name)) {
+        else if (SNAP_TO_TICKS_ATTRIBUTE.equals(name)) {
             setSnap(value);
         }
-        else if ("majorspace".equals(name)) {
+        else if (MAJOR_SPACE_ATTRIBUTE.equals(name)) {
             setMajorSpace(value);
         }
-        else if ("minorspace".equals(name)) {
+        else if (MINOR_SPACE_ATTRIBUTE.equals(name)) {
             setMinorSpace(value);
         }
     }

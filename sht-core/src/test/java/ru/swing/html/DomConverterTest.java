@@ -26,7 +26,7 @@ public class DomConverterTest extends TestCase {
         Tag head = new Tag();
         Tag style = new Tag();
         style.setName("style");
-        style.setContent(
+        style.setAttribute(Tag.TAG_CONTENT,
                 ".foo { " +
                         "   name1: val1" +
                         "}" +

@@ -103,8 +103,7 @@ public class List extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
         JList jlist = (JList) component;
 
         //set layout orientation
@@ -129,6 +128,10 @@ public class List extends Tag {
             else {
                 logger.warn(toString()+": can't parse 'rowsPerColumn' attribute value, it is not numeric");
             }
+        }
+        else {
+            super.applyAttribute(component, name);
+
         }
     }
 

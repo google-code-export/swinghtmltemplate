@@ -50,7 +50,7 @@ public class OnclickTest  extends TestCase {
                 "</body>\n" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
-        DomConverter.toSwing(model);
+        //DomConverter.toSwing(model);
 
         TestClick2 controller = new TestClick2();
         Binder.bind(controller, false, model);

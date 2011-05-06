@@ -30,31 +30,35 @@ public class P extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String attrName) {
 
         JLabel label = (JLabel) component;
+        if (CONTENT_ATTRIBUTE.equals(attrName) || TAG_CONTENT.equals(attrName)) {
 
-        String contentType = getContentType();
+            String contentType = getContentType();
 
-        if ("html".equals(contentType)) {
-            String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
-            label.setText("<html>"+text+"</html>");
-        }
-        else if ("text".equals(contentType)) {
-            String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
-            label.setText(text);
-        }
-        else if ("el".equals(contentType)) {
-            bind(getContent(), label, BeanProperty.create("text"), AutoBinding.UpdateStrategy.READ_WRITE);
-        }
-        else if (StringUtils.isEmpty(contentType)) {
-            String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
-            label.setText(text);
+            if ("html".equals(contentType)) {
+                String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
+                label.setText("<html>"+text+"</html>");
+            }
+            else if ("text".equals(contentType)) {
+                String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
+                label.setText(text);
+            }
+            else if ("el".equals(contentType)) {
+                bind(getContent(), label, BeanProperty.create("text"), AutoBinding.UpdateStrategy.READ_WRITE);
+            }
+            else if (StringUtils.isEmpty(contentType)) {
+                String text = StringUtils.isNotEmpty(getContent()) ? ELUtils.parseStringValue(getContent(), getModelElements()) : getContent();
+                label.setText(text);
+            }
+            else {
+                logger.warn("Unknown type: "+ contentType +", defaulting to text");
+                label.setText(ELUtils.parseStringValue(getContent(), createContextModel()));
+            }
         }
         else {
-            logger.warn("Unknown type: "+ contentType +", defaulting to text");
-            label.setText(ELUtils.parseStringValue(getContent(), createContextModel()));
+            super.applyAttribute(component, attrName);
         }
     }
 

@@ -18,26 +18,34 @@ public class EditorPane extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
+    public void applyAttribute(JComponent component, String name) {
 
         JEditorPane c = (JEditorPane) getComponent();
 
-        if (StringUtils.isNotEmpty(getType())) {
-            c.setContentType(getType());
+        if (TYPE_ATTRIBUTE.equals(name)) {
+            if (StringUtils.isNotEmpty(getType())) {
+                c.setContentType(getType());
+            }
         }
-        c.setText(getContent());
-
-
-        //perform binding
-        if (StringUtils.isNotEmpty(getValue())) {
-            String el = getValue();
-            BeanProperty componentProperty;
-
-            componentProperty = BeanProperty.create("text");
-            getModel().bind(el, getComponent(), componentProperty);
-
+        else if ("content".equals(name)) {
+            c.setText(getContent());
         }
+        else if ("value".equals(name)) {
+            //perform binding
+            if (StringUtils.isNotEmpty(getValue())) {
+                String el = getValue();
+                BeanProperty componentProperty;
+
+                componentProperty = BeanProperty.create("text");
+                getModel().bind(el, getComponent(), componentProperty);
+
+            }
+        }
+        else {
+            super.applyAttribute(component, name);
+        }
+
+
     }
 
     @Override

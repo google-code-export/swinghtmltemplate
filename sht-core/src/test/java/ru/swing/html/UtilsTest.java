@@ -71,8 +71,8 @@ public class UtilsTest extends TestCase {
         assertEquals(Boolean.TRUE, Utils.convertStringToObject("true", Boolean.TYPE));
         assertEquals(Boolean.FALSE, Utils.convertStringToObject("false", Boolean.TYPE));
 
-        assertEquals(1, Utils.convertStringToObject("1", Integer.class));
-        assertEquals(1, Utils.convertStringToObject("1", Integer.TYPE));
+        assertEquals((Integer)1, Utils.convertStringToObject("1", Integer.class));
+        assertEquals((Integer)1, Utils.convertStringToObject("1", Integer.TYPE));
 
         assertEquals(2.1f, Utils.convertStringToObject("2.1", Float.class));
         assertEquals(2.1f, Utils.convertStringToObject("2.1", Float.TYPE));
@@ -80,17 +80,17 @@ public class UtilsTest extends TestCase {
         assertEquals(1.01d, Utils.convertStringToObject("1.01", Double.class));
         assertEquals(1.01d, Utils.convertStringToObject("1.01", Double.TYPE));
         
-        assertEquals(50L, Utils.convertStringToObject("50", Long.class));
-        assertEquals(50L, Utils.convertStringToObject("50", Long.TYPE));
+        assertEquals((Long)50L, Utils.convertStringToObject("50", Long.class));
+        assertEquals((Long)50L, Utils.convertStringToObject("50", Long.TYPE));
 
-        assertEquals((short)50, Utils.convertStringToObject("50", Short.class));
-        assertEquals((short)50, Utils.convertStringToObject("50", Short.TYPE));
+        assertEquals(Short.valueOf((short) 50), Utils.convertStringToObject("50", Short.class));
+        assertEquals(Short.valueOf((short) 50), Utils.convertStringToObject("50", Short.TYPE));
 
-        assertEquals((byte)50, Utils.convertStringToObject("50", Byte.class));
-        assertEquals((byte)50, Utils.convertStringToObject("50", Byte.TYPE));
+        assertEquals(Byte.valueOf((byte) 50), Utils.convertStringToObject("50", Byte.class));
+        assertEquals(Byte.valueOf((byte) 50), Utils.convertStringToObject("50", Byte.TYPE));
 
-        assertEquals('f', Utils.convertStringToObject("f", Character.class));
-        assertEquals('f', Utils.convertStringToObject("f", Character.TYPE));
+        assertEquals(Character.valueOf('f'), Utils.convertStringToObject("f", Character.class));
+        assertEquals(Character.valueOf('f'), Utils.convertStringToObject("f", Character.TYPE));
 
         assertEquals(new Dimension(1, 2), Utils.convertStringToObject("1 2", Dimension.class));
         assertEquals(new Insets(1, 2, 3, 4), Utils.convertStringToObject("1 2 3 4", Insets.class));

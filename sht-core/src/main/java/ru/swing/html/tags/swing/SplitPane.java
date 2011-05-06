@@ -132,23 +132,33 @@ public class SplitPane extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
+    public void applyAttribute(JComponent component, String name) {
         if (component instanceof JSplitPane) {
 
             JSplitPane pane = (JSplitPane) component;
-            pane.setOrientation(orientation);
-            pane.setDividerSize(dividerWidth);
-            if (dividerPercentLocation!=null) {
-                pane.setDividerLocation(dividerPercentLocation);
+
+
+            if (ORIENTATION_ATTRIBUTE.equals(name)) {
+                pane.setOrientation(orientation);
             }
-            else if (dividerLocation>=0) {
-                pane.setDividerLocation(dividerLocation);
+            else if (DIVIDER_SIZE_ATTRIBUTE.equals(name)) {
+                pane.setDividerSize(dividerWidth);
+            }
+            else if (DIVIDER_POSITION_ATTRIBUTE.equals(name)) {
+                if (dividerPercentLocation!=null) {
+                    pane.setDividerLocation(dividerPercentLocation);
+                }
+                else if (dividerLocation>=0) {
+                    pane.setDividerLocation(dividerLocation);
+                }
+            }
+            else {
+                super.applyAttribute(component, name);
             }
         }
         else {
             logger.fatal("Expected component of type "+JSplitPane.class+" but recieved: "+component.getClass());
         }
-        super.applyAttributes(component);
     }
 
     @Override
@@ -180,8 +190,6 @@ public class SplitPane extends Tag {
                 dividerLocation = new Integer(value);
             }
         }
-        else {
-            super.setAttribute(name, value);
-        }
+        super.setAttribute(name, value);
     }
 }

@@ -37,7 +37,7 @@ public class Meta extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
+    public void applyAttribute(JComponent component, String name) {
     }
 
     public String getMetaName() {

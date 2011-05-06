@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.swing.Spinner;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class SpinnerTest extends TestCase {
         assertEquals(JSpinner.class, DomConverter.convertComponent(tag).getClass());
 
         tag = new Spinner();
-        tag.setContent("10");
+        tag.setAttribute(Tag.TAG_CONTENT, "10");
         assertEquals(10, ((JSpinner) DomConverter.convertComponent(tag)).getValue());
 
     }

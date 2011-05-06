@@ -25,10 +25,14 @@ public class Label extends Tag {
     }
 
     @Override
-    public void applyAttributes(JComponent component) {
-        super.applyAttributes(component);
-        JLabel label = (JLabel) component;
-        label.setText(getContent());
+    public void applyAttribute(JComponent component, String name) {
+        if (TAG_CONTENT.equals(name)) {
+            JLabel label = (JLabel) component;
+            label.setText(getContent());
+        }
+        else {
+            super.applyAttribute(component, name);
+        }
     }
 
     @Override

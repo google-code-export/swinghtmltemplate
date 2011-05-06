@@ -87,7 +87,7 @@ public class DomLoader {
 
 
         //assign tag's content
-        tag.setContent(element.getText());
+        tag.setAttribute(Tag.TAG_CONTENT, element.getText());
 
         //recursively convert children
         for (java.lang.Object o : element.getChildren()) {
