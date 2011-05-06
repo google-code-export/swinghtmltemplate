@@ -26,8 +26,8 @@ public class FormTableArray extends JFrame {
     @ModelElement("model")
     private Model model;
     private DomModel domModel;
-    private Integer w = 35;
-    private Integer h = 35;
+    private Integer w = 55;
+    private Integer h = 55;
 
     public FormTableArray() throws HeadlessException, JDOMException, IOException {
 

@@ -28,7 +28,6 @@ public class FormTableArray extends JFrame {
     public FormTableArray() throws HeadlessException, JDOMException, IOException {
 
         formModel = new Model(w, h);
-        model = Binder.bind(this, true);
     }
 
     public void dump() {
