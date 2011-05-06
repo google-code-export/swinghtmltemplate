@@ -844,7 +844,7 @@ public class Tag implements Cloneable {
         for (String attrName : attributes.keySet()) {
             clone.setAttribute(attrName, attributes.get(attrName));
         }
-        clone.setContent(content);
+        clone.setAttribute(TAG_CONTENT, content);
 
         for (Tag child : getChildren()) {
             Tag childClone = child.clone();

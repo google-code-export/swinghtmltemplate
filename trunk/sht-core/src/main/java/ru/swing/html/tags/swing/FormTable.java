@@ -132,7 +132,7 @@ public class FormTable extends Tag {
                     if ("td".equals(cell.getName())) {
                         String value = cell.getAttribute("value");
                         if (StringUtils.isNotEmpty(value)) {
-                            new TableCellBinding(AutoBinding.UpdateStrategy.READ_WRITE, getModel().getModelElements(),
+                            new TableCellBinding(AutoBinding.UpdateStrategy.READ_WRITE, cell.getModelElements(),
                                     ELProperty.create(value), table, currentRow, currentColumn, "foo").bind();
                         }
                         else {
