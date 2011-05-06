@@ -25,6 +25,8 @@ public class ExamplesService {
                 "examples/createproject/CreateProjectForm.groovy", new String[] {"Forms"}));
         examples.add(new Example("Login form", "examples/loginform/LoginForm.html",
                 "examples/loginform/LoginForm.groovy", new String[] {"Forms"}));
+        examples.add(new Example("Matrix binded to formTable", "examples/matrixformtable/MatrixFormTable.html",
+                "examples/matrixformtable/MatrixFormTable.groovy", new String[] {"Tags"}));
 
         //group examples by path. Key - path. Value - list of the examples
         examplesByPath = new HashMap<String[], List<Example>>();
