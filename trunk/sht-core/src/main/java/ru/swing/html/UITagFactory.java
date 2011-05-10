@@ -38,6 +38,9 @@ public class UITagFactory implements TagFactory {
         else if ("insert".equals(name)) {
             return new Insert();
         }
+        else if ("loadBundle".equals(name)) {
+            return new LoadBundle();
+        }
         else if ("otherwise".equals(name)) {
             return new Otherwise();
         }
