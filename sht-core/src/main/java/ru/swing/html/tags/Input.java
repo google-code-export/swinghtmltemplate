@@ -19,6 +19,7 @@ import javax.swing.text.JTextComponent;
  */
 public class Input extends Tag {
 
+    public static final String VALUE_ATTRIBUTE = "value";
     private Log logger = LogFactory.getLog(getClass());
     @Override
     public JComponent createComponent() {
@@ -55,7 +56,7 @@ public class Input extends Tag {
         //tag content is always equals to empty string, so when binding is uses,
         //an empty string will be assigned to binded model property during conversion phase.
         //to avoid this check that no binding is used
-        if (TAG_CONTENT.equals(name) && StringUtils.isEmpty(getAttribute("value"))) {
+        if (TAG_CONTENT.equals(name) && StringUtils.isEmpty(getAttribute(VALUE_ATTRIBUTE))) {
             if (component instanceof JTextComponent) {
                 JTextComponent c = (JTextComponent) getComponent();
                 c.setText(getContent());
@@ -79,10 +80,10 @@ public class Input extends Tag {
                 }
             }
         }
-        else if ("value".equals(name)) {
+        else if (VALUE_ATTRIBUTE.equals(name)) {
             //perform binding
-            if (StringUtils.isNotEmpty(getAttribute("value"))) {
-                String el = getAttribute("value");
+            if (StringUtils.isNotEmpty(getAttribute(VALUE_ATTRIBUTE))) {
+                String el = getAttribute(VALUE_ATTRIBUTE);
                 BeanProperty componentProperty;
                 String type = getType();
 

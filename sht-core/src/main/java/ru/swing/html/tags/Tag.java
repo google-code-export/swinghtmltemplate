@@ -4,40 +4,24 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.*;
-import org.jdesktop.jxlayer.JXLayer;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableMap;
 import org.jdesktop.observablecollections.ObservableMapListener;
 import ru.swing.html.*;
-import ru.swing.html.components.BackgroundImageLayerUI;
+import ru.swing.html.configuration.AttributeParser;
+import ru.swing.html.configuration.DefaultAttributeParser;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
-import ru.swing.html.tags.event.ClickDelegator;
-import ru.swing.html.tags.event.DocumentDelegator;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.font.TextAttribute;
-import java.lang.Boolean;
 import java.lang.Cloneable;
-import java.lang.Double;
-import java.lang.Exception;
-import java.lang.Float;
-import java.lang.IllegalAccessException;
-import java.lang.NoSuchMethodException;
 import java.lang.Object;
 import java.lang.Override;
 import java.lang.String;
 import java.lang.StringBuilder;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.AttributedCharacterIterator;
 import java.util.*;
 import java.util.List;
 
@@ -67,8 +51,8 @@ public class Tag implements Cloneable {
     private List<Tag> children = new ArrayList<Tag>();
     private String content;
     private String display;
-    private Color color;
-    private Color backgroundColor;
+    private String color;
+    private String backgroundColor;
     /**
      * Constraint для размещения компонента в родительском компоненте.
      */
@@ -88,8 +72,6 @@ public class Tag implements Cloneable {
     public static final String BORDER_ATTRIBUTE = "border";
     public static final String ALIGN_ATTRIBUTE = "align";
     public static final String TYPE_ATTRIBUTE = "type";
-    private ClickDelegator clickDelegator;
-    private DocumentDelegator documentDelegator;
     private Map<String, Object> modelElements;
     private ObservableMapListener parentMapListener;
     private ObservableMap parentMap;
@@ -162,10 +144,10 @@ public class Tag implements Cloneable {
             setMargin(value);
         }
         else if ("color".equals(name)) {
-            setColor(ColorFactory.getColor(value));
+            setColor(value);
         }
         else if ("background-color".equals(name)) {
-            setBackgroundColor(ColorFactory.getColor(value));
+            setBackgroundColor(value);
         }
         else if ("width".equals(name)) {
             setWidth(value);
@@ -431,19 +413,19 @@ public class Tag implements Cloneable {
     }
 
 
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
-    public Color getBackgroundColor() {
+    public String getBackgroundColor() {
         return backgroundColor;
     }
 
-    public void setBackgroundColor(Color backgroundColor) {
+    public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
 
@@ -539,237 +521,14 @@ public class Tag implements Cloneable {
      * @param attrName the name of the attribute to apply.
      */
     public void applyAttribute(JComponent component, String attrName) {
-        if (component==null) {
-            return;
+        AttributeParser attributeParser;
+        if (getModel()==null || getModel().getConfiguration()==null || getModel().getConfiguration().getAttributeParser()==null) {
+            attributeParser = new DefaultAttributeParser();
         }
-        if ("text".equals(attrName)) {
-            try {
-                Method m = component.getClass().getMethod("setText", String.class);
-                m.invoke(component, getText());
-            } catch (NoSuchMethodException e) {
-                logger.warn("Failed to set text property for component of class "+component.getClass());
-            } catch (IllegalAccessException e) {
-                logger.warn("Failed to set text property for component of class "+component.getClass());
-            } catch (InvocationTargetException e) {
-                logger.warn("Failed to set text property for component of class "+component.getClass());
-            }
+        else {
+            attributeParser = getModel().getConfiguration().getAttributeParser();
         }
-        else if ("opaque".equals(attrName)) {
-            component.setOpaque(Boolean.parseBoolean(getAttribute("opaque")));
-        }
-        else if ("icon".equals(attrName) && StringUtils.isNotBlank(getAttribute("icon"))) {
-            Icon icon = null;
-            try {
-                Image image = ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), getAttribute("icon")));
-                icon = new ImageIcon(image);
-            } catch (Exception e) {
-                logger.warn("Can't load icon from resource '"+getAttribute("icon")+"': "+e.getMessage());
-            }
-
-            if (icon!=null) {
-
-                try {
-                    Method m = component.getClass().getMethod("setIcon", Icon.class);
-                    m.invoke(component, icon);
-                } catch (NoSuchMethodException e) {
-                    logger.warn("Failed to set icon property for component of class "+component.getClass());
-                } catch (IllegalAccessException e) {
-                    logger.warn("Failed to set icon property for component of class "+component.getClass());
-                } catch (InvocationTargetException e) {
-                    logger.warn("Failed to set icon property for component of class "+component.getClass());
-                }
-            }
-
-        }
-        else if ("border".equals(attrName)) {
-            component.setBorder(ru.swing.html.BorderFactory.createBorder(this));
-        }
-        else if ("enabled".equals(attrName)) {
-            component.setEnabled(Utils.convertStringToObject(getAttribute("enabled"), Boolean.class));
-        }
-        else if ("min-width".equals(attrName)) {
-            Dimension d = component.getMinimumSize();
-            d.setSize(Utils.convertStringToObject(getAttribute("min-width"), Double.class), d.getHeight());
-            component.setMinimumSize(d);
-        }
-        else if ("min-height".equals(attrName)) {
-            Dimension d = component.getMinimumSize();
-            d.setSize(d.getWidth(), Utils.convertStringToObject(getAttribute("min-height"), Double.class));
-            component.setMinimumSize(d);
-        }
-        else if ("width".equals(attrName)) {
-            Dimension d = component.getPreferredSize();
-            d.setSize(Utils.convertStringToObject(getAttribute("width"), Double.class), d.getHeight());
-            component.setPreferredSize(d);
-        }
-        else if ("height".equals(attrName)) {
-            Dimension d = component.getPreferredSize();
-            d.setSize(d.getWidth(), Utils.convertStringToObject(getAttribute("height"), Double.class));
-            component.setPreferredSize(d);
-        }
-        else if ("max-width".equals(attrName)) {
-            Dimension d = component.getMaximumSize();
-            d.setSize(Utils.convertStringToObject(getAttribute("max-width"), Double.class), d.getHeight());
-            component.setMaximumSize(d);
-        }
-        else if ("max-height".equals(attrName)) {
-            Dimension d = component.getMaximumSize();
-            d.setSize(d.getWidth(), Utils.convertStringToObject(getAttribute("max-height"), Double.class));
-            component.setMaximumSize(d);
-        }
-        else if ("background-image".equals(attrName)) {
-
-            String staticB = getAttribute("background-image");
-            String hover = getAttribute("background-image-hover");
-            String clicked = getAttribute("background-image-clicked");
-
-            try {
-                ImageIcon staticBkg = new ImageIcon(ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), staticB)));
-                if (StringUtils.isEmpty(hover)) {
-                    hover = staticB;
-                }
-                if (StringUtils.isEmpty(clicked)) {
-                    clicked = staticB;
-                }
-                ImageIcon hoverBkg = new ImageIcon(ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), hover)));
-                ImageIcon clickedBkg = new ImageIcon(ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), clicked)));
-
-                BackgroundImageLayerUI backgroundLayerUI = new BackgroundImageLayerUI(staticBkg, hoverBkg, clickedBkg, staticBkg);
-                JXLayer layer = new JXLayer(component, backgroundLayerUI);
-                setComponentWrapper(layer);
-
-            } catch (Exception e) {
-                logger.warn("Can't load icon from resource '"+staticB+"': "+e.getMessage());
-            }
-        }
-        else if ("id".equals(attrName)) {
-            String resolvedId = ELUtils.parseStringValue(getId(), getModelElements());
-            setId(resolvedId);
-        }
-        else if ("readonly".equals(attrName)) {
-            if (StringUtils.isNotEmpty(getAttribute("readonly")) && component instanceof JTextComponent) {
-                ((JTextComponent)component).setEditable(!Boolean.valueOf(getAttribute("readonly")));
-            }
-        }
-        else if ("font-size".equals(attrName)) {
-            if (component.getFont()!=null) {
-                if (getFontSize()!=null) {
-                    component.setFont(component.getFont().deriveFont(new Float(getFontSize())));
-                }
-            }
-        }
-        else if ("font-weight".equals(attrName) || "font-family".equals(attrName) || "font-style".equals(attrName)) {
-            if (component.getFont()!=null) {
-                Map<AttributedCharacterIterator.Attribute, Object> map = new HashMap<AttributedCharacterIterator.Attribute, Object>();
-                if ("bold".equals(getFontWeight()) || "bolder".equals(getFontWeight())) {
-                    map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD);
-                }
-                else if ("normal".equals(getFontWeight()) || "lighter".equals(getFontWeight())) {
-                    map.put(TextAttribute.WEIGHT, TextAttribute.WEIGHT_REGULAR);
-                }
-                if (getFontFamily()!=null) {
-                    map.put(TextAttribute.FAMILY, getFontFamily());
-                }
-
-                Font font;
-                if (map.size()>0) {
-                    font = component.getFont().deriveFont(map);
-                }
-                else {
-                    font = component.getFont();
-                }
-                if ("italic".equals(getFontStyle())) {
-                    font = font.deriveFont(font.getStyle()+Font.ITALIC);
-                }
-                component.setFont(font);
-            }
-        }
-        else if ("color".equals(attrName)) {
-            component.setForeground(getColor());
-        }
-        else if ("background-color".equals(attrName)) {
-            component.setBackground(getBackgroundColor());
-        }
-        else if ("text-align".equals(attrName)) {
-            float alignment = JComponent.CENTER_ALIGNMENT;
-            if ("left".equals(getTextAlign())) {
-                alignment = JComponent.LEFT_ALIGNMENT;
-            }
-            else if ("right".equals(getTextAlign())) {
-                alignment = JComponent.RIGHT_ALIGNMENT;
-            }
-            component.setAlignmentX(alignment);
-
-        }
-        else if ("vertical-align".equals(attrName)) {
-            float alignment = JComponent.CENTER_ALIGNMENT;
-            if ("top".equals(getVerticalAlign())) {
-                alignment = JComponent.TOP_ALIGNMENT;
-            }
-            else if ("bottom".equals(getVerticalAlign())) {
-                alignment = JComponent.BOTTOM_ALIGNMENT;
-            }
-            component.setAlignmentY(alignment);
-        }
-        else if ("onclick".equals(attrName)) {
-            //если задан атрибут onclick и компонент - это кнопка (то есть ее можно нажать),
-            //то значение атрибута - название метода в контроллере, который необходимо
-            //вызвать при нажатии
-            final String onclickMethod = getAttribute("onclick");
-            if (StringUtils.isNotEmpty(onclickMethod) && (component instanceof AbstractButton)) {
-
-                final Object controller = model.getController();
-                if (controller!=null) {
-
-                    //находим требуемый метод
-                    Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
-
-                    //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-                    if (method!=null) {
-                        //добавляем слушатель, который вызывает метод
-                        AbstractButton b = (AbstractButton) component;
-                        if (clickDelegator !=null) {
-                            b.removeActionListener(clickDelegator);
-                        }
-                        clickDelegator = new ClickDelegator(controller, method);
-                        b.addActionListener(clickDelegator);
-                    }
-                    else {
-                        logger.warn("Can't find method " +onclickMethod+" in class "+controller.getClass().getName());
-                    }
-                }
-            }
-        }
-        else if ("onchange".equals(attrName)) {
-            //если задан атрибут onchange и компонент - это текстовое поле (то есть у нее есть документ),
-            //то значение атрибута - название метода в контроллере, который необходимо
-            //вызвать при изменении документа
-            final String onchangeMethod = getAttribute("onchange");
-            if (StringUtils.isNotEmpty(onchangeMethod) && (component instanceof JTextComponent)) {
-
-                final Object controller = model.getController();
-                if (controller!=null) {
-
-                    //находим требуемый метод
-                    Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, DocumentEvent.class);
-
-                    //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-                    if (method!=null) {
-                        //добавляем слушатель, который вызывает метод
-                        JTextComponent b = (JTextComponent) component;
-                        if (documentDelegator!=null) {
-                            b.getDocument().removeDocumentListener(documentDelegator);
-                        }
-                        documentDelegator = new DocumentDelegator(controller, method);
-                        b.getDocument().addDocumentListener(documentDelegator);
-                    }
-                    else {
-                        logger.warn("Can't find method " +onchangeMethod+" in class "+controller.getClass().getName());
-                    }
-                }
-            }
-
-        }
+        attributeParser.applyAttribute(this, component, attrName);
     }
 
 

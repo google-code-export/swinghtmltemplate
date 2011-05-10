@@ -21,10 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * dom-модель компонент. Хранит в себе дерево тегов (начиная с корневого элемента getRootTag()), список css стилей
- * (getGlobalStyles()).
- *
- * css стили - это стили, описанные в теге &lt;style&gt; внутри тега &lt;head&gt;. 
+ * dom-model. Holds the tags tree (starting with root tag), css styles etc
  */
 public class DomModel {
 
@@ -59,8 +56,8 @@ public class DomModel {
     }
 
     /**
-     * Возвращает корневой элемент модели. Корневой элемент соответствует тегу &lt;html%gt;.
-     * @return корневой элемент модели
+     * Returns the root tag of the model. The root tag is usual &lt;html%gt; tag.
+     * @return the root tag
      */
     public Tag getRootTag() {
         return rootTag;
@@ -71,10 +68,14 @@ public class DomModel {
     }
 
     /**
-     * Возвращает тег по его идентификатору. Если такой тег не найден, возвращает null.
-     * Идентификатор тега задается в html документе с помощью атрибута id.
-     * @param id идентфикатор тега
-     * @return тег
+     * <p>
+     * Returns tag by it's id. If no tag is found, returns null.
+     * </p>
+     * <p>
+     *     Tag's id is set with "id" attribute.
+     * </p>
+     * @param id tag's id
+     * @return tag with supplied id or null
      */
     public Tag getTagById(String id) {
         return tagsById.get(id);
@@ -103,9 +104,9 @@ public class DomModel {
     }
 
     /**
-     * Выбирает компоненты по селектору.
-     * @param selector строка селектора
-     * @return компоненты, теги которых удовлетворяют селектору.
+     * Selects component with selector.
+     * @param selector selector
+     * @return components, whose tags match selector.
      */
     public JComponent[] select(String selector) {
         SelectorGroup s = new SelectorGroup(selector);
@@ -121,14 +122,24 @@ public class DomModel {
     }
 
     /**
-     * Selects tags using selector
+     * Selects tags using selector within root tag.
      * @param selector selector string (comma separated selectors)
-     * @return matched tags
+     * @return matched tags, wrapped with QueryResult
      */
-    public Tag[] query(String selector) {
+    public QueryResult query(String selector) {
+        return query(selector, getRootTag());
+    }
+
+    /**
+     * Selects tags using selector within specified tag.
+     * @param selector selector string (comma separated selectors)
+     * @param context the tag, searching is done within it
+     * @return matched tags, wrapped with QueryResult
+     */
+    public QueryResult query(String selector, Tag context) {
         SelectorGroup s = new SelectorGroup(selector);
-        List<Tag> tags = selectTags(getRootTag(), s);
-        return tags.toArray(new Tag[tags.size()]);
+        List<Tag> tags = selectTags(context, s);
+        return new QueryResult(tags.toArray(new Tag[tags.size()]));
     }
 
     private List<Tag> selectTags(Tag tag, SelectorGroup selector) {
@@ -144,32 +155,34 @@ public class DomModel {
 
 
     /**
-     * Добавляет css стиль в модель. Стиль при этом не применяется к имеющимся в модели тегам.
-     * @param cssBlock css стиль
+     * Adds css style to the mode. Style doesn't being applied to the tags.
+     * @param cssBlock css style
      */
     public void addGlobalStyle(CssBlock cssBlock) {
         globalStyles.add(cssBlock);
     }
 
     /**
-     * Возвращает список css стилей.
-     * @return список css стилей
+     * Returns collection of css styles for model.
+     * @return collection of css styles
      */
     public List<CssBlock> getGlobalStyles() {
         return globalStyles;
     }
 
     /**
-     * Возвращает путь до документа, из которого была загружена данная модель.
-     * @return путь до документа
+     * Returns the document path for the model. This is used when parsing relative paths in urls.
+     * @return document path
+     * @see ru.swing.html.configuration.ResourceLoader#loadResource(DomModel, String)
      */
     public String getSourcePath() {
         return sourcePath;
     }
 
     /**
-     * Устанавливает путь до документа, из которого была загружена данная модель.
-     * @param sourcePath путь до документа
+     * Sets the document path for the model. This is used when parsing relative paths in urls.
+     * @param sourcePath document path
+     * @see ru.swing.html.configuration.ResourceLoader#loadResource(DomModel, String)
      */
     public void setSourcePath(String sourcePath) {
         this.sourcePath = sourcePath;

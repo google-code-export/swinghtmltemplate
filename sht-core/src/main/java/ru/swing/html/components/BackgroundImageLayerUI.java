@@ -25,7 +25,7 @@ import java.awt.event.MouseEvent;
  *     </ul>
  * </p>
  */
-public class BackgroundImageLayerUI extends AbstractLayerUI {
+public class BackgroundImageLayerUI extends AbstractLayerUI<JComponent> {
 
     private ImageIcon staticBkg;
     private ImageIcon hoverBkg;
@@ -42,8 +42,8 @@ public class BackgroundImageLayerUI extends AbstractLayerUI {
     }
 
     @Override
-    protected void paintLayer(Graphics2D graphics2D, JXLayer jxLayer) {
-        int state = 0;
+    protected void paintLayer(Graphics2D graphics2D, JXLayer<? extends JComponent> jxLayer) {
+        int state;
         //mouse over
         if (jxLayer.getMousePosition()!=null) {
             state = lastMouseState;
@@ -71,9 +71,8 @@ public class BackgroundImageLayerUI extends AbstractLayerUI {
         super.paintLayer(graphics2D, jxLayer);
     }
 
-
     @Override
-    protected void processMouseEvent(MouseEvent mouseEvent, JXLayer jxLayer) {
+    protected void processMouseEvent(MouseEvent mouseEvent, JXLayer<? extends JComponent> jxLayer) {
         super.processMouseEvent(mouseEvent, jxLayer);
         lastMouseState = mouseEvent.getID();
     }

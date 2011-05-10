@@ -30,6 +30,7 @@ import java.util.Map;
  */
 public class DataTable extends Tag {
 
+    public static final String VALUE_ATTRIBUTE = "value";
     private Log logger = LogFactory.getLog(getClass());
     private String value;
     private String selectedElement;
@@ -261,8 +262,8 @@ public class DataTable extends Tag {
 
                 Column col = (Column) childTag;
                 if (StringUtils.isNotEmpty(col.getWidth())) {
-                    model.getColumn(i).setWidth((Integer) Utils.convertStringToObject(col.getWidth(), Integer.class));
-                    model.getColumn(i).setPreferredWidth((Integer) Utils.convertStringToObject(col.getWidth(), Integer.class));
+                    model.getColumn(i).setWidth(Utils.convertStringToObject(col.getWidth(), Integer.class));
+                    model.getColumn(i).setPreferredWidth(Utils.convertStringToObject(col.getWidth(), Integer.class));
                 }
                 i++;
             }
@@ -273,7 +274,7 @@ public class DataTable extends Tag {
     @Override
     public void setAttribute(String name, String value) {
         super.setAttribute(name, value);
-        if ("value".equals(name)) {
+        if (VALUE_ATTRIBUTE.equals(name)) {
             setValue(value);
         }
         else if ("selectedelement".equals(name)) {

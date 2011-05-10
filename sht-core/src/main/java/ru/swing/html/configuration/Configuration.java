@@ -24,4 +24,9 @@ public interface Configuration {
      */
     public ResourceLoader getResourceLoader();
 
+    /**
+     * Returns the service for the parsing and applying common attribute values to the component.
+     * @return atribute parser
+     */
+    public AttributeParser getAttributeParser();
 }

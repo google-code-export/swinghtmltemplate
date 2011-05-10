@@ -12,6 +12,7 @@ import javax.swing.*;
 
 public class TextArea extends Tag {
 
+    public static final String VALUE_ATTRIBUTE = "value";
     private Log logger = LogFactory.getLog(getClass());
     private int rows = -1;
     private int columns = -1;
@@ -31,7 +32,7 @@ public class TextArea extends Tag {
         if (TAG_CONTENT.equals(name)) {
             textArea.setText(getContent());
         }
-        else if ("value".equals(name)) {
+        else if (VALUE_ATTRIBUTE.equals(name)) {
             //perform binding
             if (StringUtils.isNotEmpty(getValue())) {
                 String el = getValue();
@@ -69,7 +70,7 @@ public class TextArea extends Tag {
         else if ("columns".equals(name)) {
             setColumns(Utils.convertStringToObject(value, Integer.class));
         }
-        else if ("value".equals(name)) {
+        else if (VALUE_ATTRIBUTE.equals(name)) {
             setValue(value);
         }
     }
