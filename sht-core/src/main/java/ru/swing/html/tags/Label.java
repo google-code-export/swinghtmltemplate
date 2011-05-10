@@ -3,6 +3,7 @@ package ru.swing.html.tags;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ru.swing.html.ELUtils;
 
 import javax.swing.*;
 
@@ -28,7 +29,7 @@ public class Label extends Tag {
     public void applyAttribute(JComponent component, String name) {
         if (TAG_CONTENT.equals(name)) {
             JLabel label = (JLabel) component;
-            label.setText(getContent());
+            label.setText(ELUtils.parseStringValue(getContent(), getModelElements()));
         }
         else {
             super.applyAttribute(component, name);
