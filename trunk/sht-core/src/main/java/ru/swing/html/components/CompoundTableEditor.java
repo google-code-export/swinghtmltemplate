@@ -11,10 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 13.04.11
- * Time: 17:24
+ * This cell editor delegates editing to the editor supplied for the concrete cell.
  */
 public class CompoundTableEditor extends AbstractCellEditor implements TableCellEditor {
 

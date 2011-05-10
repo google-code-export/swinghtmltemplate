@@ -8,6 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Maybe to use as model elements store in child tag.
+ * Or to remove.
+ * Currently unused
+ */
 public class WrapperMap extends HashMap {
 
     private ObservableMap wrappedMap;

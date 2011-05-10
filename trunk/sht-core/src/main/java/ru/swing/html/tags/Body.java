@@ -8,7 +8,7 @@ import ru.swing.html.DomModel;
 import javax.swing.*;
 
 /**
- * Тег преобразуется в панель JPanel. По умолчанию подставляется FlowLayout.
+ * Tag is converted into JPanel with FlowLayout as layout by default.
  */
 public class Body extends Tag {
 

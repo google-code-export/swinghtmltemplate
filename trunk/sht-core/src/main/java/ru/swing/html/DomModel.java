@@ -82,7 +82,7 @@ public class DomModel {
     }
 
     /**
-     * Проходит по дереву тегов и составляет карту <Id, Тэг>
+     * For each tag extract tag ids and store them in the map
      */
     public void fillIds() {
         fillIdsWithinTag(rootTag);
@@ -226,10 +226,10 @@ public class DomModel {
     }
 
     /**
-     * Вызывает #bind() с типом синхронизации AutoBinding.UpdateStrategy.READ_WRITE
-     * @param elPath описывает свойство элемента модели, которое следует синхронизировать.
-     * @param component компонент, с которым следует выполнять синхронизацию.
-     * @param componentProperty свойства компонента, которое требуется синхронизировать.
+     * Calls #bind() this AutoBinding.UpdateStrategy.READ_WRITE as binding type
+     * @param elPath el to model element property, with which the binding will be created
+     * @param component component to bind
+     * @param componentProperty component's property to bind
      * @see #bind(String, javax.swing.JComponent, org.jdesktop.beansbinding.Property, org.jdesktop.beansbinding.AutoBinding.UpdateStrategy)
      */
     public void bind(String elPath, JComponent component, Property componentProperty) {
@@ -238,20 +238,19 @@ public class DomModel {
 
     /**
      * <p>
-     * Синхронизирует элемент модели с компонентом. Элемент должен быть предварительно помещен в модель с помощью
-     * метода #addModelElement.
+     *     Binds model element with component. Element must be already contained in the model (use #addModelElement).
      * </p>
      * <p>
-     *     elPath задается в формате EL, например, ${foo.name}, где
+     *     elPath is set in the format of EL, e.g., ${foo.name}, where
      *     <ul>
-     *         <li>foo - имя элемента модели</li>
-     *         <li>name - свойства объекта foo, подлежащее синхронизации</li>
+     *         <li>foo - the name of the model element</li>
+     *         <li>name - foo's property, to be binded</li>
      *     </ul>
      * </p>
-     * @param elPath описывает свойство элемента модели, которое следует синхронизировать.
-     * @param component компонент, с которым следует выполнять синхронизацию.
-     * @param componentProperty свойства компонента, которое требуется синхронизировать.
-     * @param type тип синхронизации
+     * @param elPath el to the model's property ti bind
+     * @param component component to bind
+     * @param componentProperty component's property to bind
+     * @param type binding type
      */
     public void bind(String elPath, JComponent component, Property componentProperty, AutoBinding.UpdateStrategy type) {
         //extract model element name from elPath

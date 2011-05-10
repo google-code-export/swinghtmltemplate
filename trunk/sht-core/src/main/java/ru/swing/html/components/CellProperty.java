@@ -5,11 +5,7 @@ import org.jdesktop.beansbinding.PropertyHelper;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 13.04.11
- * Time: 15:17
- * To change this template use File | Settings | File Templates.
+ * Helper class for TableCellBinding.
  */
 public class CellProperty extends PropertyHelper {
 

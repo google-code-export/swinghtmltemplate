@@ -19,9 +19,9 @@ public class DomLoader {
     private static Log logger = LogFactory.getLog(DomLoader.class);
 
     /**
-     * Загружает dom-модель html-документа с конфигурацией по умолчанию.
-     * @param in поток, из которого происходит считывание html-документа
-     * @return dom-модель документа
+     * Loads dom model for the html document with default configuration.
+     * @param in input stream from which the html document will be readen
+     * @return dom-model for the document
      * @throws JDOMException
      * @throws IOException
      */
@@ -30,10 +30,10 @@ public class DomLoader {
     }
 
     /**
-     * Загружает dom-модель html-документа.
-     * @param in поток, из которого происходит считывание html-документа
-     * @param configuration конфигурация модели
-     * @return dom-модель документа
+     * Loads dom model for the html document.
+     * @param in input stream from which the html document will be readen
+     * @param configuration model's configuration
+     * @return dom-model for the document
      * @throws JDOMException
      * @throws IOException
      */

@@ -1,7 +1,7 @@
 package ru.swing.html.layout;
 
 /**
- * Вспомогательный класс для хранения информации о растяжении ячейки таблицы в tableLayout.
+ * Helper class for storing information about cell cpan in  tableLayout.
  */
 public class CellSpan {
 

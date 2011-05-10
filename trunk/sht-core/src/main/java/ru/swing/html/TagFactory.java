@@ -9,9 +9,9 @@ import ru.swing.html.tags.Tag;
 public interface TagFactory {
 
     /**
-     * Фабрика тегов. Создает тег по имени тега.
-     * @param name имя тега
-     * @return тег
+     * Tag factory. Creates tag by it's name.
+     * @param name tag's name
+     * @return tag
      */
     public Tag createTag(String name);
 

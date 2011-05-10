@@ -9,8 +9,8 @@ import ru.swing.html.tags.Tag;
 import java.io.IOException;
 
 /**
- * Селектор. Формат селектора: http://www.w3.org/TR/CSS2/selector.html.
- * Разбор строки селектора происходит с помощью библиотеки batik-css.
+ * CSS Selector. Selector format: http://www.w3.org/TR/CSS2/selector.html.
+ * Selector is parsed with batik-css.
  */
 public class Selector {
 
@@ -36,15 +36,14 @@ public class Selector {
     }
 
     /**
-     * Рекурсивно обрабатывает селектор sac, постепенно выделяя из него дочерние элементы и преобразуя
-     * их в токены.
-     * Селектор sac имеет вид бинарного дерева. Правый узел - информация по правому подселектору,
-     * левый - информация по поддереву для оставшейся левой части селектора.
-     * Например, для
+     * Recursievly parses selector sac (batik-css class) by extracting child elements and converting them into tokens.
+     * Selector sac is binary tree. Right node is the information on right sub-selector. Left is
+     * the information rest subtree of the left part of the selector.
+     * For example, for
      * <pre>
      * div a>p
      * </pre>
-     * , дерево выглядит примерно так:
+     * , the tree looks like this:
      * <pre>
      *       child
      *      |    |
@@ -52,46 +51,47 @@ public class Selector {
      *   |    |
      *  div   a
      * </pre>
-     * @param s селектор
-     * @return токен, если для данного типа селектора возможно создать токен (а именно, когда
-     * селектор реализует SimpleSelector), иначе null
+     * The main idea of this method is to convert css-batik tree into plain chain of tokens.
+     * @param s selector
+     * @return token, if it can be created for this type of selector (it can be created for
+     * SimpleSelector) or null
      */
     private SelectorToken appendSelector(org.w3c.css.sac.Selector s) {
-        //обрабатываем случаи "div p" и "div>p". В обоих случаях тип sac селектора будет DescendantSelector,
-        //причем в поле simpleSelector будут храниться данные по токену p, а в  getAncestorSelector -
-        //дерево токенов для всего, что левее p (div в данном случае)
+        //process cases "div p" and "div>p". In both cases sac selector type is DescendantSelector,
+        //the field simpleSelector will contain data for token "p", and getAncestorSelector -
+        //the tokens tree for the left side of "p" ("div" in this example)
         if (s instanceof DescendantSelector) {
 
             DescendantSelector ds = (DescendantSelector) s;
-            //обрабатываем правый селектор. Так как это simpleSelector, то в результате
-            //вызова метода вернется созданный токен. Добавим его в цепочку токенов
+            //process right selector. This is simpleSelector, so the returned object is the created token.
+            //We add it to the token chain
             SelectorToken token = appendSelector(ds.getSimpleSelector());
-            //поправим тип связи для токена
+            //Update relation type for token
             chain.setRelationType(token, s.getSelectorType()== org.w3c.css.sac.Selector.SAC_DESCENDANT_SELECTOR ?
                     SelectorTokenRelation.ANY : SelectorTokenRelation.PARENT);
-            //обрабатываем дерево левого селектора
+            //process the tree for left selector
             appendSelector(ds.getAncestorSelector());
         }
-        //обрабатываем случаи "div+p". В поле siblingSelector хранится правый селектор, в selector - левый
+        //process cases "div+p". The "siblingSelector" field hold right selector ("p"), and "selector" field - left selector ("div")
         else if (s instanceof SiblingSelector) {
             SiblingSelector ds = (SiblingSelector) s;
-            //sublingSelector - это simpleSelector, создаем его и добавляем в цепочку токенов
+            //sublingSelector is simpleSelector, create it and append to the tokens chain
             SelectorToken token = appendSelector(ds.getSiblingSelector());
-            //поправим тип связи для токена
+            //Update relation type for token
             chain.setRelationType(token, SelectorTokenRelation.SUBLING);
-            //обрабатываем дерево левого селектора
+            //process the tree for left selector
             appendSelector(ds.getSelector());
         }
-        //обрабатываем данные по конерктному единичному кусочку селектора
+        //process data for concrete single selector token
         else if (s instanceof SimpleSelector) {
             SimpleSelector selector = (SimpleSelector) s;
             SelectorToken token = new SelectorToken();
-            //если тип селектора - селектор по названию тега ("p"), выставим имя тега в токене
+            //selector type is selctor by tag name ("p"), set tag name in token
             if (selector.getSelectorType()== org.w3c.css.sac.Selector.SAC_ELEMENT_NODE_SELECTOR) {
                 ElementSelector elementSelector = (ElementSelector) s;
                 token.setName(elementSelector.getLocalName()==null ? "*" : elementSelector.getLocalName());
             }
-            //если тип селектора - селектор с условием ("p.foo"), выставим имя тега в токене, и обработаем условие
+            //selector type is selector with condition ("p.foo"), set tag name in the token and parse the condition
             else if (selector.getSelectorType()== org.w3c.css.sac.Selector.SAC_CONDITIONAL_SELECTOR) {
                 ConditionalSelector cs = (ConditionalSelector) s;
                 ElementSelector elementSelector = (ElementSelector) cs.getSimpleSelector();
@@ -100,9 +100,9 @@ public class Selector {
                 Condition cond = cs.getCondition();
                 parseCondition(token, cond);
             }
-            //добавляем тег в цепочку токенов. При этом в качестве связи установим любую связь, так как
-            //в данном вызове нет информации о том, какой тип связи для этого листа селекторов.
-            //выставлять правильный тип связи будет метод, вызвавший данный метод.
+            //add tag to the tokens chain. The relation type is set to SelectorTokenRelation.ANY, because
+            //we have no information here for the type of the relation for this node.
+            //The correct relation type will be set in the caller method
             chain.append(token, SelectorTokenRelation.ANY);
             return token;
         }
@@ -111,15 +111,15 @@ public class Selector {
     }
 
     /**
-     * Рекурсивно обрабатывает условия для данного токена. Условия берутся из соответствующего узла sac селектора.
-     * @param token токен
-     * @param cond условия
+     * Recursivelly process conditions for the token. Conditions are taken from corresponding node of the sac selector.
+     * @param token token
+     * @param cond conditions
      */
     private void parseCondition(SelectorToken token, Condition cond) {
-        //если это условие на наличие аттрибута или условие на идентификатор, то
-        //в обоих случаях тип условия - AttributeCondition.
-        //Если задан value, то значит условие - на равенство значений (a[class='foo']),
-        //иначе - условие на наличие атрибута (a[href])
+        //if this is condition for the "existence of the attribute" or the condition for the id, then
+        //the type of the condition is AttributeCondition.
+        //if value is set, then the condition - for the equality of the values (a[class='foo']),
+        //otherwise it is the condition for the existence of the attribute (a[href])
         if (cond.getConditionType()== Condition.SAC_ATTRIBUTE_CONDITION ||
                 cond.getConditionType()== Condition.SAC_ID_CONDITION) {
 
@@ -130,13 +130,13 @@ public class Selector {
 
             token.getAttributeMatchers().add(m);
         }
-        //условие на наличие классов будет разбито на группу условий, по условию на каждый класс, объединенных
-        //в родительское условие с типом Condition.SAC_AND_CONDITION. Для каждого такого подусловия
-        //будет вызываться данный метод. Его тип - AttributeCondition, как в случае
-        //условия на наличие аттрибута или условия на идентификатор, но для него нужно
-        //проставить constraint=AttributeConstraint.HAS_VALUE, а аттрибутные условия
-        //проставят ему AttributeConstraint.EQUALS (так как значение будет указано),
-        //поэтому условие на класс обрабатываем отдельно от аттрибутных
+        //the condition for the existence of classes will be splitted into the group of conditions (one
+        //condition per class name) groupped into parent condition with condition type Condition.SAC_AND_CONDITION.
+        //For every such subcondition this method will be called. Subcondition type is AttributeCondition, as in
+        //case of condition for "existence of attribute" or the condition on id, but we must set
+        //constraint=AttributeConstraint.HAS_VALUE, and attribute conditions will set it  AttributeConstraint.EQUALS
+        //(because the value will be also set),
+        //that is why we process this separatelly from conditions on attributes
         else if (cond.getConditionType()== Condition.SAC_CLASS_CONDITION) {
             AttributeCondition ac = (AttributeCondition) cond;
             AttributeMatcher m = new AttributeMatcher(ac.getLocalName(),
@@ -145,7 +145,7 @@ public class Selector {
             token.getAttributeMatchers().add(m);
 
         }
-        //условие на наличие среди значений атрибута указанного значения (div[class~="foo"])
+        //condition for the existence of the supplied attribute among the attribute values (div[class~="foo"])
         else if (cond.getConditionType()== Condition.SAC_ONE_OF_ATTRIBUTE_CONDITION) {
             AttributeCondition ac = (AttributeCondition) cond;
             AttributeMatcher m = new AttributeMatcher(ac.getLocalName(),
@@ -154,7 +154,7 @@ public class Selector {
             token.getAttributeMatchers().add(m);
 
         }
-        //условие чтобы значение атрибута начиналось с указанной строки
+        //condition that the attribute value starts with supplied string
         else if (cond.getConditionType()== Condition.SAC_BEGIN_HYPHEN_ATTRIBUTE_CONDITION) {
             AttributeCondition ac = (AttributeCondition) cond;
             AttributeMatcher m = new AttributeMatcher(ac.getLocalName(),
@@ -163,8 +163,8 @@ public class Selector {
             token.getAttributeMatchers().add(m);
 
         }
-        //компонентное условие, содержит 2 подусловия, обязательных к исполнению.
-        //выбираем оба подусловия и рекурсивно обрабатываем их для нашего токена.
+        //compound condition. holds 2 subcondition, both required.
+        //recursivelly process both for our token
         else if (cond.getConditionType()== Condition.SAC_AND_CONDITION) {
             CombinatorCondition c = (CombinatorCondition) cond;
             parseCondition(token, c.getFirstCondition());
@@ -173,9 +173,9 @@ public class Selector {
     }
 
     /**
-     * Проверяет, удовлетворяет ли тег условию селектора.
-     * @param tag тег
-     * @return true, если тег удовлетворяет условию селектора, иначе false
+     * Check does tag matches the selector. This delegate matching to token chain
+     * @param tag tag
+     * @return true, if tag matches the condition, false otherwise
      */
     public boolean matches(Tag tag) {
         return chain.matches(tag);

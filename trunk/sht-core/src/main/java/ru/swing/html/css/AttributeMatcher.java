@@ -6,17 +6,17 @@ import ru.swing.html.tags.Tag;
 import java.util.*;
 
 /**
- * Описывает условие, налагаемое на аттрибуты тега в токене селектора.
- * Содержит название атрибута, его значение (может быть null) и условие на совпадение.
- * Например, для
+ * Describes the condition for tag attribute in the selector token.
+ * Holds attribute name, it's value (can be null) and condition for the match.
+ * For example,
  * <pre>
  * a[name='foo']
  * </pre>
- * значения полей:
+ * these are:
  * <ul>
- *    <li>название - name</li>
- *    <li>значение - foo</li>
- *    <li>условие на совпадение - AttributeConstraint.EQUALS</li>
+ *    <li>name - name</li>
+ *    <li>value - foo</li>
+ *    <li>condition for the match - AttributeConstraint.EQUALS</li>
  * </ul>
  *
  */
@@ -28,16 +28,15 @@ public class AttributeMatcher {
 
     public AttributeMatcher(String name, String value, AttributeConstraint constraint) {
         this.name = name;
-        //переданное значение разбиваем на подстроки по пробелу, для того, чтобы
-        //проверять совпадение на наличие
+        //split value into substring to allow checking 'exist' condition
         values = extractValues(value);
         this.constraint = constraint;
     }
 
     /**
-     * Разбивает строку на подстроки по пробелу.
-     * @param value строка
-     * @return список подстрок или пустой список, если строка - пустая или null
+     * Splits string into substring with a space as separator
+     * @param value source string
+     * @return collection of substrings or empty collection, if source string is empty or null
      */
     private List<String> extractValues(String value) {
         List<String> values;

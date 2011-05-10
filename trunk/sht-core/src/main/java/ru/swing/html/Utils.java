@@ -11,16 +11,16 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
- * Вспомогательные утилиты.
+ * Helper class
  */
 public class Utils {
 
     private static Log logger = LogFactory.getLog(Utils.class);
 
     /**
-     * Преобразует строку чисел в массив чисел.
-     * @param text строка чисел, например, "10 10 12 234"
-     * @return массив чисел
+     * Converts string with integers, separated with spaces, into array.
+     * @param text string with integers, e.g., "10 10 12 234"
+     * @return array of integers
      */
     public static int[] parseIntegers(String text) {
         if (StringUtils.isEmpty(text)) {
@@ -42,9 +42,9 @@ public class Utils {
     }
 
     /**
-     * Разбивает строку на параметры. Разделителем выступает пробельный символ.
-     * @param text строка
-     * @return параметры
+     * Splits the line into tokens with space as separator.
+     * @param text line
+     * @return tokens
      */
     public static String[] extractParams(String text) {
         text = mergeSpaces(text);
@@ -52,11 +52,13 @@ public class Utils {
     }
 
     /**
-     * Удаляет лишние пробельные символы в строке. Все пробельные символы переводит в пробелы.
-     * Пример:
+     * <p>
+     * Deletes double spaces in the line. All space symbols (\t etc) are replaced with space (" ").
+     * </p>
+     * <h2>Example:</h2?
      * "aa    aa;\tqq" -> "aa aa; qq"
-     * @param text строка
-     * @return строка без лишних пробелов
+     * @param text line
+     * @return line without extra spaces
      */
     public static String mergeSpaces(String text) {
         text = text.replaceAll("\\s", " ");
@@ -67,14 +69,14 @@ public class Utils {
     }
 
     /**
-     * Возвращает индекс позиции, в которой находится соответствующая закрывающая скобка
-     * @param text строка
-     * @param openingBracketIndex индекс открывающей скобки
-     * @return индекс закрывающей скобки или -1, если такой скобки нет
+     * Returns the position of the corresponding closing bracket.
+     * @param text line
+     * @param openingBracketIndex the position of the opening bracket
+     * @return index of the closing bracket or -1 if there is no such bracket
      */
     public static int fingMatchingClosingBracket(String text, int openingBracketIndex) {
         int outerEnd = -1;
-        int currentOpened = 0;//количество открытых скобок (при вложенных скобках)
+        int currentOpened = 0;//the number of opened brackets (in case of nested brackets)
         for (int i = openingBracketIndex+1; i<text.length() && outerEnd<0; i++) {
             char c = text.charAt(i);
             if (c =='(') {
@@ -93,15 +95,15 @@ public class Utils {
     }
 
     /**
-     * Преобразует название класса в объект класса. Для примитивных классов возвращается
-     * соответствующий класс-обертка, например, для int вернется Integer.TYPE.
+     * Converts the name of the class into Class type. For primitive types (int, byte etc)
+     * the corresponding wrapper is used, e.g. "int" is converted to Integer.TYPE.
      *
-     * Поддерживаются следующие простые типы:
-     * boolean, byte, short, int, char, long, float, double 
+     * The following primitive types are supported:
+     * boolean, byte, short, int, char, long, float, double
      *
-     * @param classname имя класса
-     * @return класс
-     * @throws ClassNotFoundException если класс с указанным именем не найден
+     * @param classname the name of class
+     * @return Class
+     * @throws ClassNotFoundException if there's no class with such name
      */
     public static Class convertStringToClass(String classname) throws ClassNotFoundException {
         if ("boolean".equals(classname)) {
@@ -134,10 +136,10 @@ public class Utils {
     }
 
     /**
-     * Преобразует строку в объект указанного типа. Если объект не поддерэивается, возвращается null.
-     * @param string строка
-     * @param type тип объекта
-     * @return объект указанного типа или null
+     * Converts the string into the object of the specified class. If the object is not supported, the null is returned.
+     * @param string string
+     * @param type objects's type
+     * @return the object with the specified type or null
      */
     public static <T> T convertStringToObject(String string, Class<T> type) {
         if (String.class.equals(type)) {
@@ -215,10 +217,10 @@ public class Utils {
 
 
     /**
-     * Вычитывает поток в строку
+     * Reads InputStream into string
      * http://www.kodejava.org/examples/266.html
-     * @param is поток
-     * @return  строка
+     * @param is inputStream
+     * @return string
      * @throws IOException
      */
     public static String readStringIntoString(InputStream is) throws IOException {
@@ -248,22 +250,22 @@ public class Utils {
     }
 
     /**
-     * Ищет метод в классе контроллера с указанным именем. Сначала ищется
-     * метод без параметров, если такой не найден, ищется метод с параметром указанного типа.
-     * @param controllerClass класс контроллера, в котором ищется метод
-     * @param name название метода
-     * @param param тип параметра
-     * @return найденный метод или null, если метод не найден
+     * Searches for the method within the controller's class with the specified name. The name with no params is
+     * searched first, if noone found. the name with the specified param is searched.
+     * @param controllerClass controller's class within which the search will occur
+     * @param name the method name
+     * @param param the possible parameter type
+     * @return founded method or null, of no method is found
      */
     public static Method findActionMethod(Class controllerClass, String name, Class param) {
-        //находим требуемый метод
+        //search specified method
         Method method;
         try {
-            //1. ищем метод без параметров
+            //1. search no-args method
             method = controllerClass.getDeclaredMethod(name);
 
         } catch (NoSuchMethodException e1) {
-            //2. ищем метод, который принимает параметром объект ActionEvent
+            //2. search the method with the argument of specified type
             try {
                 method = controllerClass.getDeclaredMethod(name, param);
             } catch (NoSuchMethodException e) {

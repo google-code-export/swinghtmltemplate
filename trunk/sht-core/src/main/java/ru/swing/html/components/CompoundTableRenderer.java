@@ -8,10 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 13.04.11
- * Time: 18:05
+ * This cell renderer delegates rendering to the renderer supplied for the concrete cell.
  */
 public class CompoundTableRenderer implements TableCellRenderer {
 

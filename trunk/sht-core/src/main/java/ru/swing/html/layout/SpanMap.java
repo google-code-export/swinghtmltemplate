@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Вспомогательный класс для хранения списка всех растянутых ячеек в tableLayout.
+ * Helper class for storing list of spanned cells in tableLayout.
  */
 public class SpanMap {
 

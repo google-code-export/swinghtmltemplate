@@ -5,7 +5,7 @@ import ru.swing.html.tags.Tag;
 import java.util.*;
 
 /**
- * Группа селекторов, разделенных запятыми.
+ * Group of selectors, separated by commas.
  */
 public class SelectorGroup {
 
@@ -25,9 +25,9 @@ public class SelectorGroup {
 
 
     /**
-     * Проверяет, попадает ли тег под выборку селектора.
-     * @param tag тег
-     * @return true, если тег попадает под выборку селектора, иначе false
+     * Check if the tag matches the selector
+     * @param tag tag
+     * @return true, if tag matches selector, false otherwise
      */
     public boolean matches(Tag tag) {
 

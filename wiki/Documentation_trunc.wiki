@@ -51,10 +51,51 @@ InputStream in = ...;
 DomModel model = DomLoader.loadModel(in);
 }}}
 
+
+During the loading procedure a `Tag` object is created for every element in xml tree and attrubutes are set with
+`setAttribute` method. Notice, no real component is created at this time, so `setAttribute` must simply
+store attributes value. Applying value to the component will be done further during convertion process.
+
 To built swing-components tree use
 {{{
 DomConverter.toSwing(model);
 }}}
+
+The conversion consists of several phases:
+ # parsing-head
+ # before-component-conversion
+ # component-conversion
+ # after-conversion phase
+
+In "parsing-head" phase all `<head>` elements are parsed and stored in dom model. These elements include
+ * `title`
+ * `meta`
+ * `link`
+ * `style`
+
+E.g. all `meta` tags are stored in dom model in the `metas` property as `java.util.Map`.
+
+In the "before-component-conversion" phase the `beforeComponentsConvertion()` callback is called for each tag in the
+model. Here tag can do some work needed to be done before actual convertion is started. For example, `ui:loadBundle`
+loads resource bundle in this phase, so every tag can use values from resource bundle in conversion phase.
+
+In the "component-conversion" phase the recursive conversion procedure is started. This procedure converts every
+component (started with root) to swing in following steps:
+ # set all global attributes (those, specified with `<style>` and `<link>` tags) to the tag, but not overriding
+  local attributes
+ # create component for the tag: use component from substitution map (if provided, see below) or call `createComponent()`
+  method on tag
+ # install component into tag (using `setComponent()` method)
+ # apply all tag attributes to the component. The default implementation calls `applyAttribute()` method for every
+  attribute. Placeholder resolving can be done in this step.
+ # create layout for the component (if it is supported by the tag)
+ # handle all tag children. The default implementation simply calls convertion procedure for every child.
+
+In the "after-component-conversion" phase the `afterComponentsConvertion()` callback is called for each tag in the
+model. Here tag can do some work needed to be done after actual convertion was finished. For example, `j:dataTable`
+restores all columns widths here (model can be changed in conversion phase and this breaks column widths).
+
+
 
 You can self-create some components and pass them to converter, so these components will be used
 as corresponding tag components, rather than creating new ones:
@@ -105,6 +146,23 @@ Also you can get any tag by it's id:
 {{{
 model.getTagById("someId");
 }}}
+
+
+You can customize the default behavior of convertion process or some of it parts. Some procedures are done with the
+help of the default services, which are contained in DefaultConfiguration. This configuration is assigned to the
+model by default. To use custom configuration use:
+{{{
+Configuration conf = ...;
+InputStream in = ...;
+DomModel model = DomLoader.loadModel(in, configuration);
+}}}
+
+Currently configuration holds services for
+ * library loader. This service loads different tag libraries for the model. The default implementation searches
+  classpath for `META-INF/services/ru.swing.html.TagFactory` file and loads tag factories from it.
+ * resource loader. This service loads resources by provided url for different tag (`link`, `img` etc). The default
+  implementation loades resources from classpath with the help of classloader.
+ * attribute parser. This service parses and applies common attributes for every tag. 
 
 == Auto binding of components ==
 You can automatically load dom-model for some object (which is a controller for some form) and assign
@@ -271,6 +329,13 @@ DomModel model = DomLoader.loadModel(in);
 for (JComponent c : model.select(".button")) {
    c.setEnabled(false);
 }
+}}}
+
+
+There is also special method for querying in JQuery style:
+{{{
+DomModel model = ...;
+model.query("div.loginArea .button").attr('enabled', 'false');
 }}}
 
 = Components =
@@ -1391,6 +1456,51 @@ The value of the `src` attribute is the address of the target html file in `getC
 === insert ===
 This tag inserts named snippet (defined with `<define>` tag) into a template. The name of the snippet
 is set with `name` attrubute.
+
+
+=== loadBundle ===
+This tag loads resource bundle and adds it to the dom model as map, so you can use placeholders to
+set attributes with this bundle.
+Attributes:
+ * `var` - name of the new model element under which bundle properties can be accessed
+ * `baseName` - the full path to the resource bundle
+ * `locale` - the locale for the resource bundle (can be skipped)
+
+Locale can be specified via `locale` attribute or via the meta tag with the name `locale` in the head section.
+
+Do not use dots in propetrties names, as they will be resolved as field separators.
+
+Example
+{{{
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+
+<head>
+    <ui:loadBundle baseName="ru.swing.html.example.tabsform" var='msg' locale='en_EN'/>
+</head>
+
+<body display="border">
+
+<div id="rootPanel" style="display:border">
+
+<j:tabs>
+    <div title="${msg.tab1_title}">
+        <p>${msg.tab1_text}</p>
+    </div>
+
+    <div title="${msg.tab2_title}">
+        <j:scroll style='border: titled "${msg.tab2_jeditorpane}"'>
+            <object classid="javax.swing.JEditorPane"></object>
+        </j:scroll>
+
+    </div>
+</j:tabs>
+</div>
+</body>
+</html>
+}}}
+
+
 
 
 === set ===
