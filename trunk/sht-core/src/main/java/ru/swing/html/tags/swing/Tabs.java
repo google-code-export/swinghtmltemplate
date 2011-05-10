@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.DomConverter;
+import ru.swing.html.ELUtils;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
 
@@ -84,7 +85,8 @@ public class Tabs extends Tag {
         for (Tag child : getChildren()) {
             JComponent childComponent = DomConverter.convertComponent(child, substitutions);
             if (childComponent!=null) {
-                tabs.addTab(child.getAttribute("title"), child.getComponentWrapper());
+                String title = ELUtils.parseStringValue(child.getAttribute("title"), getModelElements());
+                tabs.addTab(title, child.getComponentWrapper());
             }
         }
     }
