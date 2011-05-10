@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 
 /**
- * Тег преобразуется в панель JPanel. По умолчанию подставляется BorderLayout.
+ * Tag is converted into JPanel with BorderLayout as layout by default.
  */
 public class Div extends Tag {
 

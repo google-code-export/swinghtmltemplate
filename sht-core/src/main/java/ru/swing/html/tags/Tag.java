@@ -54,7 +54,7 @@ public class Tag implements Cloneable {
     private String color;
     private String backgroundColor;
     /**
-     * Constraint для размещения компонента в родительском компоненте.
+     * Constraint for the positioning in the parent component
      */
     private String align;
     private String type;
@@ -77,9 +77,9 @@ public class Tag implements Cloneable {
     private ObservableMap parentMap;
 
     /**
-     * Возвращает первый дочерний тег с указанным именем.
-     * @param name имя тега (p, body, div)
-     * @return тег или null, если тег не найден
+     * Returns the forst child tag with the specified name
+     * @param name tag's name (p, body, div)
+     * @return tag or null, if tag with that name is not found
      */
     public Tag getChildByName(String name) {
         for (Tag child : getChildren()) {

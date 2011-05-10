@@ -23,14 +23,15 @@ public class StyleParser {
     private static final Pattern SELECTOR_PATTERN = Pattern.compile("(.*?)\\{(.*?)\\}", Pattern.DOTALL+Pattern.MULTILINE);
 
     private static Log logger = LogFactory.getLog(StyleParser.class);
+
     /**
-     * Разбивает строку css стилей на блоки. Каждый блок соответствует 1 стилю.
+     * Splits the string of css styles into blocks. Each block corresponds to 1 style.
      * <pre>
      * .foo1 { nam1: val1} foo2 { nam2: val2 }
      * </pre>
-     * будет разбит на 2 блока
-     * @param css строка стилей
-     * @return список блоков стилей
+     * will be splitted into 2 blocks.
+     * @param css the string with styles
+     * @return collection of block of styles
      */
     public static List<String> extractCssBlocks(String css) {
         Matcher m = CSS_BLOCK_PATTERN.matcher(css);
@@ -43,9 +44,9 @@ public class StyleParser {
 
 
     /**
-     * Извлекает информацию о стилях из css блока.
-     * @param cssBlock строка css блока
-     * @return информация о css блоке или null, если не удалось извлечь информацию
+     * Extracts the information about styles from css block
+     * @param cssBlock the string containing css block
+     * @return information about css block or null, if it can't be extracted
      */
     public static CssBlock parseCssBlock(String cssBlock) {
         Matcher m = SELECTOR_PATTERN.matcher(cssBlock);
@@ -70,14 +71,14 @@ public class StyleParser {
 
 
     /**
-     * Разбивает строку
+     * Converts string
      * <pre>
      * attr1 : val1;
      * attr2 : val2;
      * </pre>
-     * на карту <Имя, Значение>
-     * @param style строка стиля
-     * @return карта
+     * into the map <Name, Value>
+     * @param style string with style
+     * @return map
      */
     public static Map<String, String> extractStyles(String style) {
 

@@ -14,8 +14,8 @@ import java.awt.*;
  * <ul>
  *
  * <li>
- * empty: Пустая рамка.<br/>
- * Параметров или нет, или 4 целых числа (отступа). (верх, лево, низ, право)
+ * empty: empry border.<br/>
+ * No params or 4 integers (margins). (top left bottom right)
  * <p>
  * empty;<br/>
  * empty 12 12 12 12;<br/>
@@ -23,19 +23,19 @@ import java.awt.*;
  * </li>
  *
  * <li>
- *    line: Рамка в виде линии<br/>
- *    Допустимые форматы:
+ *    line: line border<br/>
+ *    Supported formats:
  *    <ul>
  *       <li>line color</li>
  *       <li>line color thick</li>
  *    </ul>
- *    где
+ *    гwhere
  *    <ul>
- *       <li>color - цвет линии в формате ColorFactory.getColor(String)</li>
- *       <li>thick - толщина линии в пикселях</li>
+ *       <li>color - line color in the format of ColorFactory.getColor(String)</li>
+ *       <li>thick - line width</li>
  *    </ul>
  *    <p>
- *    Примеры:
+ *    Example:
  *    <ul>
  *       <li>line black</li>
  *       <li>line red 2</li>
@@ -44,22 +44,22 @@ import java.awt.*;
  * </li>
  *
  * <li>
- *    etched: рамка в виде выемки
- *    Допустимые форматы:
+ *    etched: etched border
+ *    Supported formats:
  *    <ul>
  *       <li>etched</li>
  *       <li>etched type</li>
  *       <li>etched highlight_color shadow_color</li>
  *       <li>etched type highlight_color shadow_color</li>
  *    </ul>
- *    где
+ *    where
  *    <ul>
- *       <li>type - тип рамки (lowered, raised)</li>
- *       <li>highlight_color - цвет светлой части в формате ColorFactory.getColor(String)</li>
- *       <li>shadow_color - цвет теневой части в формате ColorFactory.getColor(String)</li>
+ *       <li>type - etch type (lowered, raised)</li>
+ *       <li>highlight_color - color of the light part in the format of ColorFactory.getColor(String)</li>
+ *       <li>shadow_color - color of the dark part in the format of ColorFactory.getColor(String)</li>
  *    </ul>
  *    <p>
- *    Примеры:
+ *    Examples:
  *    <ul>
  *       <li>etched</li>
  *       <li>etched lowered</li>
@@ -70,19 +70,19 @@ import java.awt.*;
  * </li>
  *
  * <li>
- *    compound: Составная рамка. 2 параметра: внешняя рамка и внутренняя рамка.
+ *    compound: compound border. 2 params: outer border and innder border.
  *    <p>
  *    compound (outer) (inner)
  *    </p>
  *    <p>
- *    Пример:<br/>
+ *    Example:<br/>
  *    compound (empty 12 12 12 12) (compound (line black) (empty 12 12 12 12))
  *    </p>
  * </li>
  *
  * <li>
- *    titled: Рамка с заголовком.<br/>
- *    Допустимые форматы:
+ *    titled: border with a title.<br/>
+ *    Supported formats:
  *    <ul>
  *       <li>titled "caption"</li>
  *       <li>titled "caption" (inner)</li>
@@ -91,15 +91,15 @@ import java.awt.*;
  *    </ul>
  *    где
  *    <ul>
- *       <li>caption - заголовок</li>
- *       <li>inner - формат рамки</li>
- *       <li>justification - выравнивание по горизонтали (left, right, center, leading, trailing)</li>
- *       <li>position - выравнивание по вертикали (top, above-top, below-top, bottom, above-bottom, below-bottom)</li>
- *       <li>font - шрифт заголовка в формате Font.decode(String)</li>
- *       <li>color - цвет заголовка в формате ColorFactory.getColor(String)</li>
+ *       <li>caption - title</li>
+ *       <li>inner - border format</li>
+ *       <li>justification - horizontal alignment (left, right, center, leading, trailing)</li>
+ *       <li>position - vertical alignment (top, above-top, below-top, bottom, above-bottom, below-bottom)</li>
+ *       <li>font - title font in the format of Font.decode(String)</li>
+ *       <li>color - title color in the format of ColorFactory.getColor(String)</li>
  *    </ul>
  *    <p>
- *    Примеры:
+ *    Examples:
  *    <ul>
  *       <li>titled "Foo"</li>
  *       <li>titled "Foo" (empty 12 12 12 12)</li>
@@ -120,9 +120,9 @@ public class BorderFactory {
     private static Log logger = LogFactory.getLog(BorderFactory.class);
 
     /**
-     * Создает рамку для компонента тега. Строка, описывающая рамку, берется из атрибута border.
-     * @param tag тег
-     * @return рамка
+     * Creates border for the tag. The string for border is taken from "border" attribute.
+     * @param tag tag
+     * @return border
      */
     public static Border createBorder(Tag tag) {
         String borderString = ELUtils.parseStringValue(tag.getAttribute(Tag.BORDER_ATTRIBUTE), tag.getModelElements());
@@ -130,9 +130,9 @@ public class BorderFactory {
     }
 
     /**
-     * Преобразует строку, описывающую рамку, в рамку.
-     * @param borderString строка, описывающая рамку
-     * @return рамка
+     * Converts string with border description into border.
+     * @param borderString the string with border description
+     * @return border
      */
     public static Border parseBorderString(String borderString) {
         borderString = Utils.mergeSpaces(borderString);
@@ -205,8 +205,8 @@ public class BorderFactory {
         }
         else if ("compound".equals(borderType)) {
 
-            //формат: compound (border1) (border2)
-            int outerStart = borderString.indexOf("(", spacePos+1)+1;//открывающий тег первой рамки
+            //format: compound (border1) (border2)
+            int outerStart = borderString.indexOf("(", spacePos+1)+1;//opening symbol for the 1st border
             int outerEnd = -1;
             outerEnd = Utils.fingMatchingClosingBracket(borderString, outerStart-1);
             int innerStart = borderString.indexOf("(", outerEnd+1)+1;
@@ -250,12 +250,12 @@ public class BorderFactory {
                 String title = borderString.substring(titleStart+1, titleEnd);
 
                 int innerStart = borderString.indexOf('(');
-                if (innerStart >=0) {//если в строке указана внутренняя рамка
+                if (innerStart >=0) {//if inner border is supplied
                     int innerEnd = Utils.fingMatchingClosingBracket(borderString, innerStart);
                     Border inner = parseBorderString(borderString.substring(innerStart+1, innerEnd));
                     if (StringUtils.isNotBlank(borderString.substring(innerEnd+1))) {
                         String[] params = Utils.extractParams(borderString.substring(innerEnd+1));
-                        if (params.length==2) {//указан только titleJustification
+                        if (params.length==2) {//if only titleJustification is supplied
                             int titleJustification = convertTitleJustification(params[0]);
                             int titlePosition = convertTitlePosition(params[1]);
                             border = javax.swing.BorderFactory.createTitledBorder(inner, title,titleJustification, titlePosition);
@@ -310,9 +310,9 @@ public class BorderFactory {
     }
 
     /**
-     * Переводит строку с значением параметра justification рамки TitledBorder в параметр, подходящий для TitledBorder.
-     * @param justif строка
-     * @return параметр
+     * Converts the string for justification param of TitledBorder into the value for javax.swing.border.TitledBorder
+     * @param justif string
+     * @return param
      */
     private static int convertTitleJustification(String justif) {
         int titleJustification = TitledBorder.DEFAULT_JUSTIFICATION;
@@ -338,9 +338,9 @@ public class BorderFactory {
     }
 
     /**
-     * Переводит строку с значением параметра position рамки TitledBorder в параметр, подходящий для TitledBorder.
-     * @param pos строка
-     * @return параметр
+     * Converts the string for position param of TitledBorder into the value for javax.swing.border.TitledBorder
+     * @param pos string
+     * @return param
      */
     private static int convertTitlePosition(String pos) {
 

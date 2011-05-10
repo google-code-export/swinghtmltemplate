@@ -1,7 +1,7 @@
 package ru.swing.html.css;
 
 /**
- * Тип связи от текущего токена к следующему.
+ * The relation type of previous token to next
  */
 public enum SelectorTokenRelation {
     ANY(""), PARENT(">"), SUBLING("+");

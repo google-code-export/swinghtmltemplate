@@ -12,10 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 13.04.11
- * Time: 13:45
+ * Binding support for FormTable tag
  */
 public class TableCellBinding extends AutoBinding {
 

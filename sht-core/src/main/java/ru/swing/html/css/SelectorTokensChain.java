@@ -5,13 +5,18 @@ import ru.swing.html.tags.Tag;
 import java.util.*;
 
 /**
- * Представляет последовательность элементов селектора и связи между элементами.
- *
- * Заполнять последовательность надо с конца. То есть, для цепочки токенов в селекторе
+ * <p>
+ *     Represents the chain of the selector elements and relations among them.
+ * </p>
+ * <p>
+ *     You must fill the chain from the end. This means that for the chain of the tokens in selector
+ * </p>
  * <pre>
  * body div ul li&gt;p
  * </pre>
- * заполнять надо так:
+ * <p>
+ *     you must fill this way:
+ * </p>
  * <pre>
  * chain.append(new SelectorToken("p"), SelectorTokenRelation.PARENT);
  * chain.append(new SelectorToken("li"), SelectorTokenRelation.ANY);
@@ -44,7 +49,7 @@ public class SelectorTokensChain {
         if (tokens.isEmpty()) {
             return false;
         }
-        //1ый элемент должен совпадать с тегом
+        //1st elements must match the tag
         SelectorToken currentToken = tokens.get(0);
         boolean res = currentToken.matches(tag);
 
@@ -57,11 +62,11 @@ public class SelectorTokensChain {
 
                 currentToken = tokens.get(i);
 
-                //получаем связь между предыдущим тегом и текущим
+                //get the relation among previous tag an current
                 SelectorTokenRelation relationWithPrevious = relationWithNext.get(tokens.get(i-1));
 
                 if (SelectorTokenRelation.PARENT.equals(relationWithPrevious)) {
-                    //родительский тег должен удовлетворять текущему токену
+                    //parent tag must match current token
                     Tag parentTag = currentTag.getParent();
                     if (!currentToken.matches(parentTag)) {
                         return false;
@@ -72,16 +77,15 @@ public class SelectorTokensChain {
                 }
 
                 else if (SelectorTokenRelation.ANY.equals(relationWithPrevious)) {
-                    //ищем первый совпадающий родительский тег, начиная с родительского
-                    //алгоритм поиска:
-                    //ищем совпадающий родительский тег у текущего тега. как только нашли совпадение,
-                    //берем оставшуюся часть токенов, включая текущий и рекурсивно вызываем проверку на совпадение
-                    //для части токенов и найденного родительского тега.
-                    //если проверка не успешна - значит продолжаем искать следующий совпадающий родительский тег.
-                    //рекурсия сделана для того, чтобы избежать ситуации когда мы нашли совпадающий родительский тег,
-                    //но для этого тега не будут совпадать дальнейшие токены (например, может не совпасть условие
-                    //span+div.foo p, для такого документа:
-                    // <html>
+                    //search for the first matching parent tag, starting with direct parent.
+                    //algorithm:
+                    //search matching parent tag in the current tag. When the matching is found, take the rest
+                    //tokens, including current and recursivelly invoke checking for match them on found parent's tag.
+                    //if cheking fails , continue searching next matching tag.
+                    //the role of the recursion is to avoid situations where we find matching parent tag, but
+                    //rest tokens are not suitable for this tag, e.g. the condition "span+div.foo p" will not match
+                    //this document:
+                    //<html>
                     //<body>" +
                     //  <span/>"+
                     //  <div id='div1' class='foo'>" +
@@ -91,8 +95,8 @@ public class SelectorTokensChain {
                     //  </div>" +
                     //</body>
                     //</html>
-                    //так как нерекурсивный поиск найдет div2, но дальнейшая проверка покажет что данный тег
-                    //не имеет братского тега span.
+                    //as non-recursive search will find div2, but rest checking will show that tag does not have
+                    //span subling
                     currentTag = currentTag.getParent();
                     boolean found = false;
                     List<SelectorToken> leftTokens = tokens.subList(i, tokens.size());
@@ -109,14 +113,14 @@ public class SelectorTokensChain {
 
                 else if (SelectorTokenRelation.SUBLING.equals(relationWithPrevious)) {
 
-                    //получаем родителя текущего тега
+                    //get the parent for the current tag
                     Tag parentTag = currentTag.getParent();
                     if (parentTag==null) {
                         return false;
                     }
 
-                    //получаем соседний для текущего тег
-                    //<div><p/><li/></div>, для тега li мы должны получить тег p
+                    //get subling for the current
+                    //<div><p/><li/></div>, for the "li" we must get "p"
                     int index = parentTag.getChildren().indexOf(currentTag);
                     if (index<=0) {
                         return false;

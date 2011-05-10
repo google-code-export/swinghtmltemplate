@@ -13,18 +13,17 @@ import java.util.Map;
 
 /**
  * <p>
- * Тег преобразуется в панель JTabbedPane.
+ * Tag is converted into JTabbedPane.
  * </p>
  * <p>
- * Для каждого дочернего тега создается вкладка, в качестве названия
- * подставляется значение атрибута title дочернего тега.
+ *     For each child tag the tab is created. The tab's title is taken from the title attribute of the child.
  * </p>
  * <p>
- * Тег поддерживает атрибуты:
+ * Tag supports attributes:
  * </p>
  * <ul>
  *   <li>
- *   <b>tab-position</b> - определяет позицию вкладок. Допустимые значения: top, bottom, left, right.
+ *   <b>tab-position</b> - sets the position of tabs. Possible values: top, bottom, left, right.
  *   </li>
  * </ul>
  */

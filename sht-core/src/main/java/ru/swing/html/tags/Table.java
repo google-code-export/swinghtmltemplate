@@ -14,11 +14,7 @@ import javax.swing.*;
 import java.util.*;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 19.11.2010
- * Time: 13:27:04
- * </pre>
+ * Tag will convert into JPanel with TableLayout layout manager. It will position it's children in html table manner.
  */
 public class Table extends Tag {
 
@@ -47,7 +43,7 @@ public class Table extends Tag {
     public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
 
         tags.clear();
-        //вычисляем позиции всех дочерних элементов
+        //get the positions for every child element
         positionChildren(this);
 
         tableLayoutSupport = new TableLayoutSupport();
@@ -76,11 +72,11 @@ public class Table extends Tag {
         getComponent().setLayout(tableLayoutSupport.createLayout(this));
 
 
-        //размещаем элементы
+        //place childs
         for (TagPosition pos : tags) {
             Tag tagAtPosition = pos.tag;
 
-            //родительский тэг - это td
+            //parent tag is <td>
             Tag td = tagAtPosition.getParent();
             String horizAlign = "f";
             String verticalAlign = "f";
@@ -113,7 +109,7 @@ public class Table extends Tag {
 
             CellSpan sp = spanMap.getSpanAtLocation(pos.row, pos.col);
 
-            //зная позицию, создаем constraint для TableLayout
+            //create constraint for TableLayout from position
             String align = pos.col + " " + pos.row;
             if (sp!=null) {
                 align+=" "+(pos.col+sp.getColumnSpan()-1)+" "+(pos.row+sp.getRowSpan()-1);
@@ -139,7 +135,7 @@ public class Table extends Tag {
             }
             else if ("td".equals(child.getName())) {
 
-                //так как мы обрабатываем тег td вручную, то необходимо вручную применить все глобальные стили
+                //as we process <td> manually, we must manually apply global styles
                 Map<String, String> old = new HashMap<String, String>();
 
                 List<CssBlock> css = child.getModel().getGlobalStyles();
@@ -172,43 +168,42 @@ public class Table extends Tag {
                 }
 
 
-                //если ячейка не тянется на несколько колонок, то обрабатываем ее ширину
+                //if the cell is spanned into several columns, process its width
                 if (colspan<=1) {
-                    if (StringUtils.isEmpty(child.getWidth())) {//если не указана ширина ячейки, выставляем preferred
+                    if (StringUtils.isEmpty(child.getWidth())) {//use 'preferred' if no width is specified
                         if (currentCol>widths.size()-1) {
                             widths.add(currentCol, "preferred");
                         }
                     }
-                    else {//если указана ширина ячейки
-                        if (currentCol>widths.size()-1) {//если для данного ряда еще не было указаний по ширине
-                            widths.add(currentCol, child.getWidth());//то просто сохраняем значение ширины
+                    else {//if width is specified
+                        if (currentCol>widths.size()-1) {//if there was no widths stored for this column
+                            widths.add(currentCol, child.getWidth());//then just store the width
                         }
-                        else {//иначе надо сравнить с уже сохраненным, и заменить только если указана большая высота
+                        else {//else compare with already stored and use maximum
                             if ("fill".equals(child.getWidth()) || "fill".equals(widths.get(currentCol))) {
-                                //если хоть для какой-то ячейки указан fill, то принудительно выставляем его
-                                heights.set(currentCol, "fill");
+                                //if fill is used for some cell, always use it
+                                widths.set(currentCol, "fill");
                             }
                             else if ("preferred".equals(child.getWidth())) {
-                                //preferred - самый низкий приоритет, он и так выставляется, ничего не делаем
+                                //preferred - is the lowest priority, it is used by default, so do nothing here
                             }
                             else {
-                                //парсим высоту ячейки
+                                //parse cell's width
                                 Double h;
                                 try {
                                     h = new Double(child.getWidth());
                                 } catch (NumberFormatException e) {
                                     h = 0d;
                                 }
-                                //парсим максимальную высоту
+                                //parse maximum width
                                 Double max;
                                 try {
                                     max = new Double(widths.get(currentCol));
                                 } catch (NumberFormatException e) {
-                                    max = 0d;//не получится парсить когда max==preferred
+                                    max = 0d;//parsing will fail when max==preferred
                                 }
                                 if (h>max) {
-                                    //если для ячейки указана больная высота, чем было сохранено ранее, то
-                                    //сохраняем высоту ячейки
+                                    //if new value is bigger then stored, store new value
                                     widths.set(currentCol, h.toString());
                                 }
                             }
@@ -217,43 +212,42 @@ public class Table extends Tag {
                     }
                 }
 
-                //если ячейка не тянется на несколько рядов, то обрабатываем ее высоту
+                //if the cell is spanned into several rows, process its height
                 if (rowspan<=1) {
-                    if (StringUtils.isEmpty(child.getHeight())) {//если не указана высота ячейки, выставляем preferred
+                    if (StringUtils.isEmpty(child.getHeight())) {//use 'preferred' if no height is specified
                         if (currentRow>heights.size()-1) {
                             heights.add(currentRow, "preferred");
                         }
                     }
-                    else {//если указана высота ячейки
-                        if (currentRow>heights.size()-1) {//если для данного ряда еще не было указаний по высоте
-                            heights.add(currentRow, child.getHeight().trim());//то просто сохраняем значение высоты
+                    else {//if height is specified
+                        if (currentRow>heights.size()-1) {//if there was no widths stored for this row
+                            heights.add(currentRow, child.getHeight().trim());//then just store the height
                         }
-                        else {//иначе надо сравнить с уже сохраненным, и заменить только если указана большая высота
+                        else {//else compare with already stored and use maximum
                             if ("fill".equals(child.getHeight()) || "fill".equals(heights.get(currentRow))) {
-                                //если хоть для какой-то ячейки указан fill, то принудительно выставляем его
+                                //if fill is used for some cell, always use it
                                 heights.set(currentRow, "fill");
                             }
                             else if ("preferred".equals(child.getHeight())) {
-                                //preferred - самый низкий приоритет, он и так выставляется, ничего не делаем
+                                //preferred - is the lowest priority, it is used by default, so do nothing here
                             }
                             else {
-                                //парсим высоту ячейки
+                                //parse cell's height
                                 Double h;
                                 try {
                                     h = new Double(child.getHeight());
                                 } catch (NumberFormatException e) {
                                     h = 0d;
                                 }
-                                //парсим максимальную высоту
+                                //parse maximum height
                                 Double max;
                                 try {
                                     max = new Double(heights.get(currentRow));
                                 } catch (NumberFormatException e) {
-                                    max = 0d;//не получится парсить когда max==preferred
+                                    max = 0d;//parsing will fail when max==preferred
                                 }
                                 if (h>max) {
-                                    //если для ячейки указана больная высота, чем было сохранено ранее, то
-                                    //сохраняем высоту ячейки
+                                    //if new value is bigger then stored, store new value
                                     heights.set(currentRow, h.toString());
                                 }
                             }

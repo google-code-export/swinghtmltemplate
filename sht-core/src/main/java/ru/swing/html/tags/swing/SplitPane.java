@@ -14,29 +14,28 @@ import java.util.Map;
 
 /**
  * <p>
- * Обработчик тега &lt;split>.
+ * Tag is converted into JSplitPane.
  * </p>
  * <p>
- * Допустимые параметры тега:
+ * Supported attributes:
  * </p>
  * <ul>
- * <li>orientation - ориентация, допустимые значения: horizontal, vertical</li>
- * <li>divider-size - ширина разделительной линии</li>
- * <li>divider-position - положение разделительной линии. в пикселях (100) или процентах (50%)</li>
+ * <li>orientation - orientation of JSplitPane, possible values: horizontal, vertical</li>
+ * <li>divider-size - the size of the divider</li>
+ * <li>divider-position - the position of the divider. must be set in pizels (100) or in persents (50%)</li>
  * </ul>
  *
  * <p>
- * У тега может быть ровно 2 дочерних элемента. Расположение элементов зависит от значения
- * атрибута align дочернего тега:
+ *     Tag can contain 2 child tags. Their position is based on "align" attribute of each child.
  * </p>
  * <ul>
- * <li>left - компонент пойдет в левую панель</li>
- * <li>top - компонент пойдет в верхнюю панель</li>
- * <li>right - компонент пойдет в правую панель</li>
- * <li>bottom - компонент пойдет в нижнюю панель</li>
+ * <li>left - component goes to left panel</li>
+ * <li>top - component goes to top panel</li>
+ * <li>right - component goes to right panel</li>
+ * <li>bottom - component goes to bottom panel</li>
  * </ul>
  * <p>
- * Если align не указан у первого тега, то первый компонент пойдет в левую панель, 2ой - в правую.
+ * If no "align" is set in the first tag, then first tag goes to left, 2nd - to right.
  * </p>
  * <pre>
  * User: Penkov Vladimir
@@ -87,7 +86,7 @@ public class SplitPane extends Tag {
                 if (childComponent1!=null) {
                     placeChild(childComponent1, childrenWithComponents.get(0).getAlign(), "left");
                     if (childComponent2!=null) {
-                        //2го помещаем в свободную ячейку. то есть если первый лег в правую часть, то 2го кладем в левую.
+                        //2nd is placed into free cell. So if the 1st tag went to the right panel, 2nd will go to the left
                         if (pane.getLeftComponent()!=null) {
                             placeChild(childComponent2, childrenWithComponents.get(1).getAlign(), "right");
                         }

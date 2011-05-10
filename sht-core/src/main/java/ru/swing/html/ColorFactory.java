@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Вспомогательный класс для работы с цветами.
- * <a href="http://www.w3.org/TR/CSS21/syndata.html#color-units">Здесь</a> располагается карта предопределенных
- * цветов, к которым можно образаться по имени. Также цвет можно получить по его hex-представлению: #ffffff.
+ * Additional class for the work with colors.
+ * <a href="http://www.w3.org/TR/CSS21/syndata.html#color-units">Here</a> you can see predefined colors
+ * which you can use by name. You can also get the color by it's hex value: #ffffff.
  *
  * @see #getColor(String)
  */
@@ -37,13 +37,13 @@ public class ColorFactory {
     }
 
     /**
-     * Возвращает цвет по его имени.
-     * Если название цвета содержится в предустановленной палитре, используется соответствующее hex представление.
-     * Если цвет начинается с символа '#', то имя цвета используется как hex представление.
-     * В противном случае ищется в системных свойствах свойство с указанным именем, и его значение используется как
-     * числовое представление цвета.
-     * @param name название цвета
-     * @return цвет
+     * Gets the color by name.
+     * If the name is contained in predefined colors, the corresponding hex value is used.
+     * If name starts with "#", then the name is used as hex value.
+     * Otherwise the name is searched within system properties and it's value is used as the integer for
+     * the color value.
+     * @param name the name of the color
+     * @return color
      * @see #parseHexColor(String)
      * @see Color#getColor(String)
      */
@@ -61,9 +61,9 @@ public class ColorFactory {
 
 
     /**
-     * Разбирает hex представление цвета и возвращает объект этого цвета.
-     * @param hex представление цвета в формате web, например, #112233
-     * @return цвет или null, если произошла ошибка определения цвета
+     * Parses hex value of the color and returns the color for it.
+     * @param hex hex-value in web format, e.g., #112233
+     * @return color or null, if color can't be parsed
      */
     public static Color parseHexColor(String hex) {
         if (hex.startsWith("#")) {

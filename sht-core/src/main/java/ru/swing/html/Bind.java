@@ -6,16 +6,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Аннотация указывает что поле, помеченное данной аннотацией, будет проинициализировано
- * компонентом, тег которого имеет идентификатор, указанный в значении value().
+ * Annotation tells that the field, marked with it, will be initialized with the component,
+ * whose tag has id sprcified in "value()"
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Bind {
 
     /**
-     * Идентификатор тега, с которым будет произведена привязка поля.
-     * @return идентификатор тега
+     * The tag id, with which the linking will be done
+     * @return id
      */
     public String value();
 

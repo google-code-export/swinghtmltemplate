@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 
 /**
- * Тег преобразуется в панель JPanel. По умолчанию подставляется FlowLayout.
+ * Tag is converted into JPanel with FlowLayout as layout by default.
  */
 public class Span extends Tag {
 

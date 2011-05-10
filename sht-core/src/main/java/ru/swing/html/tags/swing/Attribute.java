@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Тег предназначен для присвоения значений компоненту родительского тега.
+ * Tag is used to set an property value to the component of the parent tag.
  */
 public class Attribute extends Tag {
 
