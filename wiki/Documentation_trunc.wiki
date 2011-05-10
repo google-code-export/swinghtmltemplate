@@ -71,6 +71,7 @@ In "parsing-head" phase all `<head>` elements are parsed and stored in dom model
  * `title`
  * `meta`
  * `link`
+ * `locale`
  * `style`
 
 E.g. all `meta` tags are stored in dom model in the `metas` property as `java.util.Map`.
@@ -388,6 +389,9 @@ css styles. Below are common properties (for all tags):
   * `vertial-align` - layout specific. Used to align on top/bottom side (but can be ignored, if layout manager doesn't supports aligning)
   * `width` - component's width, layout specific. This sets preffered width of the component by default (layout manager can override this)
 
+All attributes support resolving placeholders (except for those attributes, who hold el expression, e.g. `value` in `<tree>`).
+Placeholder is the same as EL, but is evaled only when attribute is applied to component (during conversion phase or
+when manually invoking the `applyAttrinute()`) and is not binded to the specified value.
 
 == default namespace ==
 
@@ -1019,6 +1023,12 @@ model won't update JList selection).
 
 You can set renderer for the list with `renderer` attribute. This must be EL, pointing to the `javax.swing.ListCellRenderer`
 instance.
+
+You can set the number of rows per column with `rowsPerColumn` attribute. It is used when list must be with several columns.
+Use the `type` attribute to set rendering type. Possible values for `type` are:
+ * `vertical`
+ * `horizontal-wrap`
+ * `vertical-wrap`
 
 
 {{{
