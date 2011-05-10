@@ -7,9 +7,11 @@ import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -88,6 +90,52 @@ public class ForEachTest extends TestCase {
     }
 
 
+    public void testNested() throws Exception {
+
+        String html =
+                "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"\n" +
+                "        \"http://www.w3.org/TR/html4/loose.dtd\">\n" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n" +
+                "      xmlns:j=\"http://www.oracle.com/swing\"\n" +
+                "      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>\n" +
+                "<head>\n" +
+                "</head>\n" +
+                "<body style=\"display:border\">\n" +
+                "\n" +
+                "    <j:scroll>\n" +
+                "        <j:formTable id='table'>\n" +
+                "            <ui:forEach items=\"${datas}\" var=\"row\">\n" +
+                "                <tr>\n" +
+                "                    <ui:forEach items=\"${row}\" var=\"cell\">\n" +
+                "                        <td value=\"${cell.name}\" width=\"15\"/>\n" +
+                "                    </ui:forEach>\n" +
+                "                </tr>\n" +
+                "            </ui:forEach>\n" +
+                "        </j:formTable>\n" +
+                "    </j:scroll>\n" +
+                "\n" +
+                "\n" +
+                "    <input align=\"bottom\" type='button' onclick=\"dump\" text='dump'/>\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>";
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        List<List<Person>> datas = new ArrayList<List<Person>>();
+        model.addModelElement("datas", datas);
+        datas.add(ObservableCollections.observableList(Arrays.asList(new Person("1"), new Person("2"))));
+        datas.add(ObservableCollections.observableList(Arrays.asList(new Person("3"), new Person("4"))));
+
+        DomConverter.toSwing(model);
+        JTable table = (JTable) model.query("#table").get(0).getComponent();
+        TableModel tableModel = table.getModel();
+        assertEquals(2, tableModel.getRowCount());
+        assertEquals(2, tableModel.getColumnCount());
+        assertEquals("1", tableModel.getValueAt(0, 0));
+        assertEquals("2", tableModel.getValueAt(0, 1));
+        assertEquals("3", tableModel.getValueAt(1, 0));
+        assertEquals("4", tableModel.getValueAt(1, 1));
+    }
 
     public class Person {
 
