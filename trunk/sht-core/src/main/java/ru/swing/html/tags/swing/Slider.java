@@ -42,7 +42,7 @@ public class Slider extends Tag {
 
     public static final String MAXIMUM_ATTRIBUTE = "max";
     public static final String MINIMUM_ATTRIBUTE = "min";
-    public static final String VALUE = "value";
+    public static final String VALUE_ATTRIBUTE = "value";
     public static final String SNAP_TO_TICKS_ATTRIBUTE = "snap";
     public static final String MAJOR_SPACE_ATTRIBUTE = "majorspace";
     public static final String MINOR_SPACE_ATTRIBUTE = "minorspace";
@@ -119,7 +119,7 @@ public class Slider extends Tag {
                 slider.setMinorTickSpacing(v);
             }
         }
-        else if (VALUE.equals(name)) {
+        else if (VALUE_ATTRIBUTE.equals(name)) {
             //bind value
             if (StringUtils.isNotEmpty(getValue())) {
                 BeanProperty prop = BeanProperty.create("value");
@@ -164,7 +164,7 @@ public class Slider extends Tag {
         else if (MINIMUM_ATTRIBUTE.equals(name)) {
             setMin(value);
         }
-        else if (VALUE.equals(name)) {
+        else if (VALUE_ATTRIBUTE.equals(name)) {
             setValue(value);
         }
         else if (ONCHANGE_ATTRIBUTE.equals(name)) {

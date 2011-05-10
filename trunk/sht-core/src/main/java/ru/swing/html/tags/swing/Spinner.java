@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.BeanProperty;
+import ru.swing.html.ELUtils;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -15,6 +16,7 @@ import javax.swing.text.JTextComponent;
 public class Spinner extends Tag {
 
 
+    public static final String VALUE_ATTRIBUTE = "value";
     private Log logger = LogFactory.getLog(getClass());
     @Override
     public JComponent createComponent() {
@@ -28,29 +30,27 @@ public class Spinner extends Tag {
         JSpinner c = (JSpinner) getComponent();
 
         if (TAG_CONTENT.equals(name)) {
-            if (StringUtils.isNotEmpty(getContent())) {
+            String content = ELUtils.parseStringValue(getContent(), getModelElements());
+            if (StringUtils.isNotEmpty(content)) {
                 try {
-                    Integer value = new Integer(getContent());
+                    Integer value = new Integer(content);
                     c.setValue(value);
                 } catch (NumberFormatException e) {
-                    logger.warn(getContent()+" cannot be parsed as integer");
+                    logger.warn(content +" cannot be parsed as integer");
                 }
             }
         }
-        else if ("value".equals(name)) {
+        else if (VALUE_ATTRIBUTE.equals(name)) {
             //perform binding
-            if (StringUtils.isNotEmpty(getAttribute("value"))) {
-                BeanProperty componentProperty = BeanProperty.create("value");
-                getModel().bind(getAttribute("value"), getComponent(), componentProperty);
+            if (StringUtils.isNotEmpty(getAttribute(VALUE_ATTRIBUTE))) {
+                BeanProperty componentProperty = BeanProperty.create(VALUE_ATTRIBUTE);
+                getModel().bind(getAttribute(VALUE_ATTRIBUTE), getComponent(), componentProperty);
             }
         }
         else {
             super.applyAttribute(component, name);
         }
 
-
-
     }
-
 
 }

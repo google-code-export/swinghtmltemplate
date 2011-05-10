@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.QueryResult;
 import ru.swing.html.tags.Tag;
 
 import java.io.IOException;
@@ -82,13 +83,13 @@ public class Include extends Tag {
 
         //find target's body tag
         Tag body;
-        Tag[] res = target.query("body");
-        if (res==null || res.length!=1) {
+        QueryResult res = target.query("body");
+        if (res.size()!=1) {
             logger.error(toString() + ": Can't find body of included document: " + getSource());
             return;
         }
 
-        body = res[0];
+        body = res.get(0);
 
         //append all body's children
         getModel().mergeTag(this, body);

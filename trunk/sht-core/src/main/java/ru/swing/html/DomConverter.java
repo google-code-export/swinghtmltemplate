@@ -86,11 +86,11 @@ public class DomConverter {
 
 
         //apply metas
+        QueryResult title = model.query("html > head > title");
         if (res instanceof JDialog) {
             JDialog dlg = (JDialog) res;
-            Tag[] titles = model.query("title");
-            if (titles.length>0) {
-                dlg.setTitle(titles[0].getContent());
+            if (title.size()>0) {
+                dlg.setTitle(title.get(0).getContent());
             }
 
             String onclose = model.getMetaItems().get("onclose");
@@ -106,15 +106,14 @@ public class DomConverter {
                 }
             }
 
-            dlg.setModal((Boolean) Utils.convertStringToObject(model.getMetaItems().get("modal"), Boolean.class));
+            dlg.setModal(Utils.convertStringToObject(model.getMetaItems().get("modal"), Boolean.class));
 
 
         }
         else if (res instanceof JFrame) {
             JFrame frame = (JFrame) res;
-            Tag[] titles = model.query("title");
-            if (titles.length>0) {
-                frame.setTitle(titles[0].getContent());
+            if (title.size()>0) {
+                frame.setTitle(title.get(0).getContent());
             }
 
             String onclose = model.getMetaItems().get("onclose");
@@ -137,7 +136,7 @@ public class DomConverter {
 
 
         if (StringUtils.isNotEmpty(model.getMetaItems().get("size"))) {
-            Dimension d = (Dimension) Utils.convertStringToObject(model.getMetaItems().get("size"), Dimension.class);
+            Dimension d = Utils.convertStringToObject(model.getMetaItems().get("size"), Dimension.class);
             res.setSize(d);
         }
 

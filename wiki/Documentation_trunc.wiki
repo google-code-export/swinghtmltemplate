@@ -4,10 +4,10 @@
 <wiki:toc max_depth="2" />
 = What is all about =
 
-swinghtmltemplate let's you construct gui forms by declaring theirs tamplate using html-like syntax.
+swinghtmltemplate lets you construct gui forms by declaring theirs template using html-like syntax.
 
-Templates are stored in external file with ".html" extension, they are loaded in runtime and are coverted to
-swing-components. You can assign these components to some class fields using {{{@Bind}}} annotaion during
+Templates are stored in external file with ".html" extension, they are loaded in runtime and are converted to
+swing components. You can assign these components to some class fields using `@Bind` annotaion during
 conversion process.
 
 Also you can bind methods calls to component events (e.g. button click) and sync model properties with
@@ -38,10 +38,11 @@ Add the following too your pom.xml:
 
 = How does this work =
 
-Loading of html-document is handled by [http://www.jdom.org/ jdom] library, so html must be valid xml.
+Loading of html-document is handled by [http://www.jdom.org/ jdom] library, so html must be valid xml. This means
+that all tags must be closed.
 
 Next, dom-model is converted to the tree of tags, ready to produce swing components. After that
-tree of swing component is being built.
+tree of swing components is being built.
 
 = Usage =
 Loading of dom-model is done with

@@ -125,7 +125,7 @@ public class BorderFactory {
      * @return рамка
      */
     public static Border createBorder(Tag tag) {
-        String borderString = tag.getAttribute(Tag.BORDER_ATTRIBUTE);
+        String borderString = ELUtils.parseStringValue(tag.getAttribute(Tag.BORDER_ATTRIBUTE), tag.getModelElements());
         return parseBorderString(borderString);
     }
 

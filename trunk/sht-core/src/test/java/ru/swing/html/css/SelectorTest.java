@@ -26,8 +26,7 @@ public class SelectorTest extends TestCase {
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
 
-        Tag[] res = model.query("html div.red p+*");
-        assertEquals(1, res.length);
+        assertEquals(1, model.query("html div.red p+*").size());
 
     }
 
@@ -43,8 +42,7 @@ public class SelectorTest extends TestCase {
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
 
-        Tag[] res = model.query("a[rel|=en]");
-        assertEquals(2, res.length);
+        assertEquals(2, model.query("a[rel|=en]").size());
 
     }
 
@@ -60,11 +58,11 @@ public class SelectorTest extends TestCase {
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
 
-        assertEquals(3, model.query(".red").length);
-        assertEquals(3, model.query(".top").length);
-        assertEquals(2, model.query(".red.top").length);
-        assertEquals(1, model.query(".red.top.foo").length);
-        assertEquals(2, model.query("*[class~='red top']").length);
+        assertEquals(3, model.query(".red").size());
+        assertEquals(3, model.query(".top").size());
+        assertEquals(2, model.query(".red.top").size());
+        assertEquals(1, model.query(".red.top.foo").size());
+        assertEquals(2, model.query("*[class~='red top']").size());
 
     }
 
@@ -78,8 +76,8 @@ public class SelectorTest extends TestCase {
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
 
-        assertEquals(1, model.query("#a1").length);
-        assertEquals(1, model.query("#a2").length);
+        assertEquals(1, model.query("#a1").size());
+        assertEquals(1, model.query("#a2").size());
 
     }
 
@@ -97,7 +95,7 @@ public class SelectorTest extends TestCase {
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
 
-        assertEquals(1, model.query("span+div.foo p").length);
+        assertEquals(1, model.query("span+div.foo p").size());
 
     }
 }

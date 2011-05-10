@@ -47,9 +47,7 @@ public class LoginForm extends JFrame {
     }
 
     public void onOkClick() {
-        for (JComponent c : model.select(".button")) {
-            c.setEnabled(false);
-        }
+        model.query(".button").enabled("false");
         result.setText("Logging in user "+account.getName());
     }
 
