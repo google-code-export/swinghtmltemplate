@@ -39,7 +39,7 @@ Example:
 </html>
 }}}
 
-In this example we load ResourceBundle from `ru/swing/html/example/tabsform.properties`. All bundle's items are
+In this example we load `ResourceBundle` from `ru/swing/html/example/tabsform.properties`. All bundle's items are
 added to the `java.util.Map` and this map is added to the dom model under the name, specified with `var` attribute
 ("msg" in this example). Now you can access items using placeholder: `${msg.tab1_title}`.
 
@@ -50,7 +50,7 @@ By default system locale is used. You can override it with 2 ways:
  * use `locale='en_EN'` attribute in the `ui:loadBundle`
  * add `<meta name='locale' content='en_EN'/>` to the head of you document
 
-Both will set the locale to `en_EN`.
+Both will set the locale to `en_EN` in these examples.
 
 The supported formats of locale string are
  # language
