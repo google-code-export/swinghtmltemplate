@@ -8,22 +8,22 @@ import java.util.Map;
 
 /**
  * <p>
- * Child component for DataTable tag. It describes a data to display in this column.
+ *     Child component for DataTable tag. It describes a data to display in this column.
  * </p>
  * <p>
  *     Binding for el is done using jsr-295.
  * </p>
  * <p>
- * Possible attributes:
+ *     Possible attributes:
  * </p>
  * <ul>
- * <li>value - el to dataTable's row bean property.
- * <li>title - column title
- * <li>readonly - is this column is editable. By default column is readonly.
- * <li>editor - el to dom-model-element, holding table editor for this column. If specified, fas more priority than 'editorClass'.
- * <li>editorClass - classname for table editor for this column. Must have default constructor.
- * <li>renderer - el to dom-model-element, holding table renderer for this column. If specified, fas more priority than 'rendererClass'.
- * <li>rendererClass - classname for table renderer for this column. Must have default constructor.
+ *  <li>value - el to dataTable's row bean property.
+ *  <li>title - column title
+ *  <li>readonly - is this column is editable. By default column is readonly.
+ *  <li>editor - el to dom-model-element, holding table editor for this column. If specified, fas more priority than 'editorClass'.
+ *  <li>editorClass - classname for table editor for this column. Must have default constructor.
+ *  <li>renderer - el to dom-model-element, holding table renderer for this column. If specified, fas more priority than 'rendererClass'.
+ *  <li>rendererClass - classname for table renderer for this column. Must have default constructor.
  * </ul>
  * @see DataTable
  */
