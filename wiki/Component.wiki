@@ -211,4 +211,10 @@ Now let's create main html:
 
 We insert person panel with `<ui:component>`. The `src` attribute points to our `PersonsPanel.html` and all other
 attributes are passed as model elements to the target document. That is why we use `person` in `PersonsPanel.html`.
+We also insert strut between panels but not after the last panel. We use `varStatus` variable to check that.
 
+Take an attention that we set `max-height` to the PersonsPanel table. This fixes the swing bug when panels placed
+in box layout fill all the space even if glue is presented.
+
+In the bottom of our form we place button to track the binding. Change values in the form and hit the button. Model
+values will be printed to the log.

@@ -14,7 +14,7 @@
 <j:scroll>
     <div style="display:box;x-boxlayout-direction: vertical;">
         <ui:forEach items='${model.persons}' var='person' varStatus='i'>
-            <ui:component src='/ru/swing/html/example/component/PersonPanel.html' person="${person}"/>
+            <ui:component src='PersonPanel.html' person="${person}"/>
             <ui:if test='${not i.last}'>
                 <j:strut height='30'/>
             </ui:if>
