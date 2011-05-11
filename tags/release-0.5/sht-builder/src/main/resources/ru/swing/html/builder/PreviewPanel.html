@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <title></title>
+    <style type="text/css">
+        split {
+            divider-size: 5;
+        }
+
+        #contentWrapper {
+            border: compound (compound (empty 12 12 12 12) (line black 5)) (empty 12 12 12 12)
+        }
+    </style>
+</head>
+<body style="display:border;">
+
+    <c:split orientation='horizontal' style="divider-position: 200;">
+
+        <c:split orientation='vertical' style="divider-position: 200;">
+            <div style='border: titled "Components" (etched);'>
+                <c:scroll>
+                    <c:tree value="#{tags}" onchange="onTagChange" id="tagsTree" renderer="${tagRenderer}"/>
+                </c:scroll>
+            </div>
+
+            <div style='border: titled "Attributes" (etched);'>
+                <table align="top">
+                    <tr>
+                        <td>
+                            <input type="button" text="add" onclick="add"/>
+                        </td>
+                        <td>
+                            <input type="button" text="apply" onclick="apply"/>
+                        </td>
+                    </tr>
+                </table>
+
+
+                <c:scroll>
+                    <c:dataTable value="${attributes}" autoresize="all">
+                        <c:column title="Name" value="${name}" readonly="false"/>
+                        <c:column title="Value" value="${value}" readonly="false" />
+                    </c:dataTable>
+                </c:scroll>
+            </div>
+
+        </c:split>
+
+        <div id='contentWrapper'></div>
+
+    </c:split>
+
+</body>
+</html>

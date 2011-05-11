@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <link type="text/css" rel="stylesheet" href="loginform.css"/>
+</head>
+<body id="rootPanel" style="display: border;width: 400; height:300; border: empty 12 12 12 12">
+
+<c:scroll align="center">
+    <c:formTable autoresize='last' showHeader='false'>
+
+        <tr>
+            <td width="150" readonly="true">Name</td>
+            <td width="50" value='${person.name}'></td>
+
+            <td width="150" readonly="true">Last name</td>
+            <td width="50" value='${person.lastName}'></td>
+        </tr>
+        <tr>
+            <td readonly="true">Age</td>
+            <td value="${person.age}" editor="${spinnerEditor}"></td>
+
+            <td readonly="true">Active</td>
+            <td value="${person.active}" editor="${booleanEditor}" renderer="${booleanRenderer}"></td>
+        </tr>
+        <tr>
+            <td readonly="true">Color</td>
+            <td height="50" value="${person.color}" renderer='${colorRenderer}' editor="${colorEditor}"></td>
+
+            <td readonly='true'>Комментарий</td>
+            <td editor="${textAreaEditor}"></td>
+        </tr>
+
+    </c:formTable>
+</c:scroll>
+
+
+<div align='bottom' style="display:box;x-boxlayout-direction: vertical;">
+
+    <div style="display:box;text-align:left;">
+        <input type="button" onclick="onClick" text="Modify"/>
+    </div>
+</div>
+
+</body>
+</html>

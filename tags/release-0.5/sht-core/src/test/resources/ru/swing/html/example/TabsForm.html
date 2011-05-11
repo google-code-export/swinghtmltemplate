@@ -1,0 +1,30 @@
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+
+<head>
+    <ui:loadBundle baseName="ru.swing.html.example.tabsform" var='msg'/>
+</head>
+
+<body display="border">
+
+<div id="rootPanel" style="display:border">
+
+<j:tabs>
+    <div title="${msg.tab1_title}">
+        <p>${msg.tab1_text}</p>
+    </div>
+
+    <div title="${msg.tab2_title}">
+        <j:scroll style='border: titled "${msg.tab2_jeditorpane}"'>
+            <object classid="javax.swing.JEditorPane"></object>
+        </j:scroll>
+
+    </div>
+
+
+</j:tabs>
+</div>
+
+</body>
+
+</html>
