@@ -45,6 +45,10 @@ Next, dom-model is converted to the tree of tags, ready to produce swing compone
 tree of swing components is being built.
 
 = Usage =
+The usual scenario is to first load model and then convert it to swing. Between this 2 steps model elements
+need to be added to the dom model, loaded in the first step. So every tag will have access to the dom model elements
+during every phase in the conversion procedure.
+
 Loading of dom-model is done with
 {{{
 InputStream in = ...;
@@ -54,7 +58,8 @@ DomModel model = DomLoader.loadModel(in);
 
 During the loading procedure a `Tag` object is created for every element in xml tree and attrubutes are set with
 `setAttribute` method. Notice, no real component is created at this time, so `setAttribute` must simply
-store attributes value. Applying value to the component will be done further during convertion process.
+store attribute value. Applying value to the component will be done further during convertion process.
+
 
 To built swing-components tree use
 {{{
@@ -66,6 +71,7 @@ The conversion consists of several phases:
  # before-component-conversion
  # component-conversion
  # after-conversion phase
+
 
 In "parsing-head" phase all `<head>` elements are parsed and stored in dom model. These elements include
  * `title`
@@ -82,13 +88,10 @@ loads resource bundle in this phase, so every tag can use values from resource b
 
 In the "component-conversion" phase the recursive conversion procedure is started. This procedure converts every
 component (started with root) to swing in following steps:
- # set all global attributes (those, specified with `<style>` and `<link>` tags) to the tag, but not overriding
-  local attributes
- # create component for the tag: use component from substitution map (if provided, see below) or call `createComponent()`
-  method on tag
+ # set all global attributes (those, specified with `<style>` and `<link>` tags) to the tag, but not overriding local attributes
+ # create component for the tag: use component from substitution map (if provided, see below) or call `createComponent()` method on tag
  # install component into tag (using `setComponent()` method)
- # apply all tag attributes to the component. The default implementation calls `applyAttribute()` method for every
-  attribute. Placeholder resolving can be done in this step.
+ # apply all tag attributes to the component. The default implementation calls `applyAttribute()` method for every attribute. Placeholder resolving can be done in this step.
  # create layout for the component (if it is supported by the tag)
  # handle all tag children. The default implementation simply calls convertion procedure for every child.
 
@@ -150,7 +153,7 @@ model.getTagById("someId");
 
 
 You can customize the default behavior of convertion process or some of it parts. Some procedures are done with the
-help of the default services, which are contained in DefaultConfiguration. This configuration is assigned to the
+help of the default services, which are contained in `DefaultConfiguration`. This configuration is assigned to the
 model by default. To use custom configuration use:
 {{{
 Configuration conf = ...;
@@ -159,10 +162,8 @@ DomModel model = DomLoader.loadModel(in, configuration);
 }}}
 
 Currently configuration holds services for
- * library loader. This service loads different tag libraries for the model. The default implementation searches
-  classpath for `META-INF/services/ru.swing.html.TagFactory` file and loads tag factories from it.
- * resource loader. This service loads resources by provided url for different tag (`link`, `img` etc). The default
-  implementation loades resources from classpath with the help of classloader.
+ * library loader. This service loads different tag libraries for the model. The default implementation searches classpath for `META-INF/services/ru.swing.html.TagFactory` file and loads tag factories from it.
+ * resource loader. This service loads resources by provided url for different tag (`link`, `img` etc). The default implementation loades resources from classpath with the help of classloader.
  * attribute parser. This service parses and applies common attributes for every tag. 
 
 == Auto binding of components ==
@@ -392,6 +393,9 @@ css styles. Below are common properties (for all tags):
 All attributes support resolving placeholders (except for those attributes, who hold el expression, e.g. `value` in `<tree>`).
 Placeholder is the same as EL, but is evaled only when attribute is applied to component (during conversion phase or
 when manually invoking the `applyAttrinute()`) and is not binded to the specified value.
+
+The default attributes are parsed and applied to the component with the `attributeParser` service from configuration.
+The default implementation is `ru.swing.html.configuration.DefaultAttributeParser`.
 
 == default namespace ==
 
