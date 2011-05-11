@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.googlecode.swinghtmltemplate</groupId>
+  <artifactId>sht-core</artifactId>
+  <version>0.5</version>
+  <versioning>
+    <versions>
+      <version>0.5</version>
+    </versions>
+    <lastUpdated>20110511093537</lastUpdated>
+  </versioning>
+</metadata>
