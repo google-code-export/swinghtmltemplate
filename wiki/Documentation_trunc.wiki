@@ -445,6 +445,16 @@ value attribute:
 text inputs can be binded to `java.lang.String`type properties.
 checkboxes can be binded to `boolean` (not `java.lang.Boolean`) type properties.
 
+=== label ===
+Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
+
+The JLabel's `for` property can be set with `for` attribyte, whose value is an id of target tag.
+
+Example:
+{{{
+<label for='login'>Login:</p>
+<input id='login' type='text' value='${model.login}'/>
+}}}
 
 === meta ===
 This tag can be only located inside `<head>` tag to be parsed.
@@ -497,7 +507,7 @@ Example:
 
 === p ===
 Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
-If `content` equals to `html`, then the content of the tag is surrounded with {{{<html>}}} before and {{{</html>}}} after,
+If `content` equals to `html`, then the content of the tag is surrounded with `<html>` before and `</html>` after,
 so `JLabel` will produce html. If `content` equals to `text` or is empty,
 then the tag content is just assigned as a component's text.
 
@@ -638,6 +648,8 @@ Examples:
 Tag is converted to `JTextArea`. Tag's content is used as component's text.
 
 Tag supports properties:
+  * columns - sets the number of columns for this TextArea.
+  * rows - sets the number of rows for this TextArea.
   * value - en EL expression, describing a property of a model element, the text of the component is binded to.
 
 Example:
@@ -752,6 +764,12 @@ public class MyCustomTableCellEditor implements TableCellEditor {
    public MyCustomTableCellEditor() {} //default constructor
 }
 }}}
+
+
+
+
+
+
 === combobox ===
 Tag is converted to the `javax.swing.JComboBox`.
 
@@ -1070,22 +1088,9 @@ public class CustomRenderer extends DefaultListCellRenderer implements ListCellR
 }}}
 
 {{{
-<c:editorPane selectedElement="${model.selected}" renderer="${customRenderer}">
+<c:list selectedElement="${model.selected}" renderer="${customRenderer}">
    <c:selectItems value="${model.items}"/>
-</c:editorPane>
-<input type='button' onclick='foo'/>
-}}}
-
-
-
-=== selectItems ===
-Special tag to specify model items for `combobox`, `list`, `dataTable` etc tags. It supports one attribute:
-`value`. It is EL pointing to propper model property, which type must be `java.util.List`.
-
-{{{
-<c:combobox selectedElement="${model.runtime}">
-    <c:selectItems value="${runtimeValues}"/>
-</c:combobox>
+</c:list>
 }}}
 
 
@@ -1101,6 +1106,43 @@ Example:
 }}}
 
 
+
+=== selectItems ===
+Special tag to specify model items for `combobox`, `list`, `dataTable` etc tags. It supports one attribute:
+`value`. It is EL pointing to propper model property, which type must be `java.util.List`.
+
+{{{
+<c:combobox selectedElement="${model.runtime}">
+    <c:selectItems value="${runtimeValues}"/>
+</c:combobox>
+}}}
+
+
+
+=== slider ===
+Tag is converted to `javax.swing.JSlider`
+
+Tag supports attributes:
+  * `max` - a maximum value for slider. Supports placeholders.
+  * `min` - a minimum value for slider. Supports placeholders.
+  * `majorSpace` - Same as `JSlider.setMajorTickSpacing`. Supports placeholders.
+  * `minorSpace` - Same as `JSlider.setMinorTickSpacing`. Supports placeholders.
+  * `snap` - `true` or `false`. Sets if slider will snap to ticks. Supports placeholders.
+  * `value` - en EL expression, describing a property of a model element, the value of the component is binded to.
+
+Tag supports events:
+  * `onchange` - invoked when slider value changes. This is the name of controller's method. Method must take no arguments or one argument of type `java.awt.ChangeEvent`
+
+Example:
+{{{
+<c:slider value='${model.value}' max='1000' min='10' onchange='onSliderChange' />
+}}}
+
+
+
+
+
+
 === spinner ===
 Tag is converted to `javax.swing.JSpinner`
 Tag supports attributes:
@@ -1110,6 +1152,8 @@ Example:
 {{{
 <c:spinner />
 }}}
+
+
 
 
 === split ===
@@ -1144,24 +1188,9 @@ Example:
 </c:split>
 }}}
 
-=== slider ===
-Tag is converted to `javax.swing.JSlider`
 
-Tag supports attributes:
-  * `max` - a maximum value for slider. Supports placeholders.
-  * `min` - a minimum value for slider. Supports placeholders.
-  * `majorSpace` - Same as `JSlider.setMajorTickSpacing`. Supports placeholders.
-  * `minorSpace` - Same as `JSlider.setMinorTickSpacing`. Supports placeholders.
-  * `snap` - `true` or `false`. Sets if slider will snap to ticks. Supports placeholders.
-  * `value` - en EL expression, describing a property of a model element, the value of the component is binded to.
 
-Tag supports events:
-  * `onchange` - invoked when slider value changes. This is the name of controller's method. Method must take no arguments or one argument of type `java.awt.ChangeEvent`
 
-Example:
-{{{
-<c:slider value='${model.value}' max='1000' min='10' onchange='onSliderChange' />
-}}}
 
 
 === strut ===
@@ -1169,21 +1198,26 @@ Tag is converted to the component, that is returned from
 {{{
 javax.swing.Box.createHorizontalStrut(w)
 }}}
-for {{{type="horizontal"}}}, or
+for `type="horizontal"`, or
 {{{
 javax.swing.Box.createVerticalStrut(h)
 }}}
-for {{{type="vertical"}}}. `type` has default value `vertical`.
+for `type="vertical"`. `type` has default value `vertical`.
 
-Used within tags with {{{BoxLayout}}} layout
+Used within tags with `BoxLayout` layout
 
-{{{w}}} and {{{h}}} - are values of attributes `width` и `height` accordingly.
+`w` and `h` - are values of attributes `width` и `height` accordingly.
 
 Example:
 {{{
 <c:strut type="horizontal" style="width: 12"/>
 <c:strut type="vertical" height="12"/>
 }}}
+
+
+
+
+
 
 === tabs ===
 Tag is converted to `JTabbedPane`.
@@ -1210,6 +1244,10 @@ Example:
     </div>
 </c:tabs>
 }}}
+
+
+
+
 
 
 
@@ -1273,6 +1311,12 @@ Example
 </body>
 </html>
 }}}
+
+
+
+
+
+
 
 === component ===
 This tag allows to define components composition in external file. When used this tag parses this external file and adds external body's content to the original document in place of itself.
@@ -1373,10 +1417,16 @@ Example:
 }}}
 
 
+
+
+
 === define ===
 This tag defines an snippet to be inserted into template using `<composition>` tag.
 The required attribute is `name` which defines a name of the snippet. This name is used in `<insert>`
 tag when template is built.
+
+
+
 
 
 === forEach ===
@@ -1399,6 +1449,10 @@ Example:
 }}}
 
 
+
+
+
+
 === if ===
 This tag allows children handling based on some condition.
 
@@ -1418,6 +1472,11 @@ Example:
     <j:glue/>
 </div>
 }}}
+
+
+
+
+
 
 === include ===
 This tag allows you to include another document (target) content into your document (source).
@@ -1463,9 +1522,18 @@ The value of the `src` attribute is the address of the target html file in `getC
 
 
 
+
+
+
+
 === insert ===
 This tag inserts named snippet (defined with `<define>` tag) into a template. The name of the snippet
 is set with `name` attrubute.
+
+
+
+
+
 
 
 === loadBundle ===

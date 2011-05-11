@@ -12,10 +12,35 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 20.11.2010
- * Time: 23:58:42
+According to `type` value converts to
+ <ul>
+  <li>type="text" - `JTextField`</li>
+  <li>type="password" - `JPasswordField`</li>
+  <li>type="button" - `JButton`</li>
+  <li>type="checkbox" - `JCheckBox`</li>
+  <li>type="radio" - `JRadioButton`</li>
+ </ul>
+ <p>Converts to `JTextField` by default. If `type` equals to unknown string, `type` will be resolved to
+`text`, warning will be printed to log.</p>
+
+ <pre>
+ &lt;input type="button" text="OK"/>
+ </pre>
+
+ <p>
+ If resulting component is subclass of `javax.swing.text.JTextComponent`, then the contents of the tag will be component's text.
+ </p>
+ <pre>
+ &lt;input type="text">Initial text&lt;/input>
+ </pre>
+
+ <p>&lt;input>` with type `text`, `password` and `checkbox` can be binded to the model element property using
+value attribute:</p>
+ <pre>
+ &lt;input type='text' value='${account.login}'/>
+ </pre>
+ <p>text inputs can be binded to `java.lang.String` type properties.
+ checkboxes can be binded to `boolean` (not `java.lang.Boolean`) type properties.</p>
  */
 public class Input extends Tag {
 

@@ -2,19 +2,30 @@ package ru.swing.html.tags.swing;
 
 import org.apache.commons.lang.StringUtils;
 import org.jdesktop.beansbinding.BeanProperty;
+import ru.swing.html.ELUtils;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 
+/**
+ * <p>Tag is converted to the `javax.swing.JEditorPane`. The content type for the document is set with `type` attribute:</p>
+ * <pre>
+ * &lt;c:editorPane value="${model.selectedProject.description}" type='text/html' readonly='true' >
+ *     &lt;c:attribute name="preferredSize" value="0 80" type='java.awt.Dimension'/>
+ * &lt;/c:editorPane>
+ * </pre>
+ *
+ * <p>The `value` attibute, if presents, sets the binding for the component. If it is absent, then usual text component
+ * attributes are applied: the content of the tag is set as component text.</p>
+ *
+ */
 public class EditorPane extends Tag {
 
     private String value;
 
     @Override
     public JComponent createComponent() {
-        JEditorPane c = new JTextPane();
-        setComponent(c);
-        return c;
+        return new JTextPane();
     }
 
     @Override
@@ -24,11 +35,11 @@ public class EditorPane extends Tag {
 
         if (TYPE_ATTRIBUTE.equals(name)) {
             if (StringUtils.isNotEmpty(getType())) {
-                c.setContentType(getType());
+                c.setContentType(ELUtils.parseStringValue(getType(), getModelElements()));
             }
         }
-        else if ("content".equals(name)) {
-            c.setText(getContent());
+        else if (TAG_CONTENT.equals(name)) {
+            c.setText(ELUtils.parseStringValue(getContent(), getModelElements()));
         }
         else if ("value".equals(name)) {
             //perform binding
