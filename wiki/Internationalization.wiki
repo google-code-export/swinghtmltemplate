@@ -1,0 +1,60 @@
+#summary Details on how use <ui:loadBundle> tag
+#labels usage
+
+
+As of release 0.5 a new tag `loadBundle` was added. The purpose of this tag is to load `java.util.ResourceBundle`
+and add it as `java.util.Map` so every tag can use items from bundle as placeholders.
+
+You can add this tag anywhere, because it loads bundle during 'before-conversion phase', but I suggest you to place
+it in the head section.
+
+Example:
+
+{{{
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+
+<head>
+    <ui:loadBundle baseName="ru.swing.html.example.tabsform" var='msg' locale='en_EN'/>
+</head>
+
+<body display="border">
+
+<div id="rootPanel" style="display:border">
+
+<j:tabs>
+    <div title="${msg.tab1_title}">
+        <p>${msg.tab1_text}</p>
+    </div>
+
+    <div title="${msg.tab2_title}">
+        <j:scroll style='border: titled "${msg.tab2_jeditorpane}"'>
+            <object classid="javax.swing.JEditorPane"></object>
+        </j:scroll>
+
+    </div>
+</j:tabs>
+</div>
+</body>
+</html>
+}}}
+
+In this example we load ResourceBundle from `ru/swing/html/example/tabsform.properties`. All bundle's items are
+added to the `java.util.Map` and this map is added to the dom model under the name, specified with `var` attribute
+("msg" in this example). Now you can access items using placeholder: `${msg.tab1_title}`.
+
+Notice, we use `_` as separator in item names and not `.` because `.` will break beans binding (it actually resolves
+placeholder value).
+
+By default system locale is used. You can override it with 2 ways:
+ * use `locale='en_EN'` attribute in the `ui:loadBundle`
+ * add `<meta name='locale' content='en_EN'/>` to the head of you document
+
+Both will set the locale to `en_EN`.
+
+The supported formats of locale string are
+ # language
+ # language_COUNTRY
+
+The difference is that Locale("language") will be used in 1st case and Locale("language", "COUNTRY") in the 2nd.
+
