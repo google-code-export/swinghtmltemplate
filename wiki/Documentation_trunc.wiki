@@ -1261,6 +1261,8 @@ Supported attributes:
 
 The tag supports events:
  * `onchange` - the name of the controller's method to invoke on selection change. The method must take no arguments or take 1 argument of type `javax.swing.event.TreeSelectionEvent`
+ * `onclick` - the name of the controller's method to invoke tree click. The method must take no arguments or take 1 argument of type `javax.swing.event.MouseEvent`
+ * `ondblclick` - the name of the controller's method to invoke on tree double click. The method must take no arguments or take 1 argument of type `javax.swing.event.MouseEvent`
 
 Example:
 {{{

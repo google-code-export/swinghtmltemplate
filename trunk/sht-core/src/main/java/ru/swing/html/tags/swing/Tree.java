@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.ELProperty;
+import ru.swing.html.ELUtils;
 import ru.swing.html.Utils;
 import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.event.MouseListenerClickDelegator;
@@ -17,13 +18,40 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
 
 /**
- * JTree
+ * <p>The tag is converted to `javax.swing.JTree` component.</p>
+ *
+ * <p>Supported attributes:</p>
+ * <ul>
+ *     <li>value - EL, pointing to `javax.swing.tree.TreeModel` instance which will be used as tree model
+ *     <li>showRoot - show tree root or not. Values: `true` or `false`
+ *     <li>showRootHandles - show tree root handles or not. Values: `true` or `false`
+ * </ul>
+ *
+ * <p>The tag supports events:</p>
+ * <ul>
+ *     <li><strong>onchange</strong> - the name of the controller's method to invoke on selection change.
+ *     The method must take no arguments or take 1 argument of type `javax.swing.event.TreeSelectionEvent`
+ *
+ *     <li><strong>onclick</strong> - the name of the controller's method to invoke tree click.
+ *     The method must take no arguments or take 1 argument of type `javax.swing.event.MouseEvent`
+ *
+ *     <li><strong>ondblclick</strong> - the name of the controller's method to invoke on tree double click.
+ *     The method must take no arguments or take 1 argument of type `javax.swing.event.MouseEvent`
+ * </ul>
+ *
+ * <h2>Example:</h2>
+ * <pre>
+ * &lt;c:scroll>
+ *     &lt;c:tree value="${categoriesTreeModel}" showRoot="false" onchange="onCategoryChange" showRootHandles="true"/>
+ * &lt;/c:scroll>
+ * </pre>
+ *
  */
 public class Tree extends Tag {
 
     private Log logger = LogFactory.getLog(getClass());
-    private boolean showRoot = true;
-    private boolean showRootHandles = false;
+    private String showRoot;
+    private String showRootHandles;
     private String renderer;
     private TreeSelectionDelegator treeModelDelegator;
     private MouseListenerClickDelegator mouseListenerClickDelegator;
@@ -31,10 +59,7 @@ public class Tree extends Tag {
 
     @Override
     public JComponent createComponent() {
-
-        JTree tree = new JTree();
-        setComponent(tree);
-        return tree;
+        return new JTree();
     }
 
     @Override
@@ -59,10 +84,12 @@ public class Tree extends Tag {
             }
         }
         else if ("showroot".equals(name)) {
-            tree.setRootVisible(isShowRoot());
+            Boolean v = Boolean.parseBoolean(ELUtils.parseStringValue(getShowRoot(), getModelElements()));
+            tree.setRootVisible(v);
         }
         else if ("showroothandles".equals(name)) {
-            tree.setShowsRootHandles(isShowRootHandles());
+            Boolean v = Boolean.parseBoolean(ELUtils.parseStringValue(getShowRootHandles(), getModelElements()));
+            tree.setShowsRootHandles(v);
         }
         else if ("renderer".equals(name)) {
             //install renderer
@@ -163,10 +190,10 @@ public class Tree extends Tag {
         super.setAttribute(name, value);
 
         if ("showroot".equals(name)) {
-            setShowRoot(Boolean.valueOf(value));
+            setShowRoot(value);
         }
         else if ("showroothandles".equals(name)) {
-            setShowRootHandles(Boolean.valueOf(value));
+            setShowRootHandles(value);
         }
         else if ("renderer".equals(name)) {
             setRenderer(value);
@@ -174,19 +201,19 @@ public class Tree extends Tag {
 
     }
 
-    public boolean isShowRoot() {
+    public String getShowRoot() {
         return showRoot;
     }
 
-    public void setShowRoot(boolean showRoot) {
+    public void setShowRoot(String showRoot) {
         this.showRoot = showRoot;
     }
 
-    public boolean isShowRootHandles() {
+    public String getShowRootHandles() {
         return showRootHandles;
     }
 
-    public void setShowRootHandles(boolean showRootHandles) {
+    public void setShowRootHandles(String showRootHandles) {
         this.showRootHandles = showRootHandles;
     }
 
