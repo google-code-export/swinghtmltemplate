@@ -11,7 +11,15 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
 /**
- * Corresponds to JSpinner.
+ * <p>Tag is converted to javax.swing.JSpinner</p>
+ * <p>Tag supports attributes:</p>
+ * <ul>
+ *     <li>value - en EL expression, describing a property of a model element, the value of the component is binded to.
+ *  </ul>
+ *  <h2>Example:</h2>
+ *  <pre>
+ *   &lt;c:spinner /&gt;
+ *  </pre>
  */
 public class Spinner extends Tag {
 

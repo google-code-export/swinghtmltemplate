@@ -930,7 +930,7 @@ with model fill `value` attribute of `td` with propper EL:
   <tr>
     <td>Name</td>
     <td value='${model.person.name}'></td>
-  </td>
+  </tr>
 </c:formTable>
 }}}
 

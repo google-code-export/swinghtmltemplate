@@ -6,21 +6,84 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.ELProperty;
-import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
-import ru.swing.html.tags.swing.SelectItems;
 
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import java.lang.*;
-import java.lang.Object;
 import java.util.Map;
 
 /**
- * JList
+ *  <p>Tag is converted to the `javax.swing.JList`.</p>
+ *
+ *  <p>Currently it supports only one child tag: an `selectItems` tag, which holds the EL for list model. If it doesn't present,
+ *  no model is installed.</p>
+ *
+ *  <p>List's model is evaluated with jsr-255 binding. Source bean property must be of type `java.util.List`. Use
+ *  `org.jdesktop.observablecollections.ObservableCollections.observableList()` to create observable list, so adding/removing
+ *  elements to/from collection will add/remove elements from JList model.</p>
+ *
+ *  <p>You can bind selected list element with `selectedElement` attribute. `selectedElements` can be used to bind
+ *  many selected elements. Currently, due to limitations of better beans binding, these are readonly bindings (changing
+ *  model won't update JList selection).</p>
+ *
+ *  <p>You can set renderer for the list with `renderer` attribute. This must be EL, pointing to the `javax.swing.ListCellRenderer`
+ *  instance.</p>
+ *
+ *  <p>You can set the number of rows per column with `rowsPerColumn` attribute. It is used when list must be with several columns.
+ *  Use the `type` attribute to set rendering type. Possible values for `type` are:</p>
+ *  <ul>
+ *   <li>vertical
+ *   <li>horizontal-wrap
+ *   <li>vertical-wrap
+ *  </ul>
+ *
+ *  <pre>
+ *  //controller
+ *  public class MyPanel {
+ *
+ *      &#64;ModelElement("model")
+ *      private MyPanelModel model;
+ *
+ *      &#64;ModelElement("customRenderer")
+ *      private CustomRenderer projectTypeRenderer = new CustomRenderer();
+ *
+ *     ...
+ *
+ *     public void foo() {
+ *        items.add("Line 1");
+ *        items.add("Line 2");
+ *     }
+ *
+ *
+ *  }
+ *
+ *
+ *  //model
+ *  public class MyPanelModel {
+ *     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+ *     private List items = ObservableCollections.observableList(new ArrayList());
+ *     private String selected;
+ *     //getters and setters with PropertyChangeSupport firing
+ *
+ *     ...
+ *
+ *  }
+ *
+ *  //renderer
+ *  public class CustomRenderer extends DefaultListCellRenderer implements ListCellRenderer {
+ *     ...
+ *  }
+ *  </pre>
+ *
+ *  <pre>
+ *  &lt;c:list selectedElement="${model.selected}" renderer="${customRenderer}">
+ *     &lt;c:selectItems value="${model.items}"/>
+ *  &lt;/c:list>
+ *  </pre?
+ *
+ *
  */
 public class List extends Tag {
 

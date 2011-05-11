@@ -18,39 +18,38 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>Tag is converted to the `javax.swing.JComboBox`</p>
-
-<p>Currently it supports only one child tag: an `selectItems` tag, which holds the EL for list model. If it doesn't present,
-no model is installed.</p>
-
-<p>JComboBox's model is evaluated with jsr-255 binding. Source bean property must be of type `java.util.List`. Use
-`org.jdesktop.observablecollections.ObservableCollections.observableList()` to create observable list, so adding/removing
-elements to/from collection will add/remove elements from JComboBox model.</p>
-
-<p>You can bind selected combobox element with `selectedElement` attribute. Currently, due to limitations of better beans
-binding, this is readonly bindings (changing model won't update JList selection).</p>
-
- <pre>
-&lt;c:combobox align='center' selectedElement="${model.runtime}">
-    &lt;c:selectItems value="${runtimeValues}"/>
-&lt;/c:combobox>
- </pre>
-
-<pre>
-public class CreateProjectForm extends JPanel {
-
-    ...
-
-    &#64;ModelElement("runtimeValues")
-    private List<String> runtimeValues = Arrays.asList("Apache Tomcat v5.5", "Apache Tomcat v6.0");
-
-    &#64;ModelElement("model")
-    private Model model = new Model();
-
-    ...
-}
-</pre>
-
+ * <p>Tag is converted to the javax.swing.JComboBox</p>
+ *
+ * <p>Currently it supports only one child tag: an "selectItems" tag, which holds the EL for list model. If it doesn't present,
+ * no model is installed.</p>
+ *
+ * <p>JComboBox's model is evaluated with jsr-255 binding. Source bean property must be of type `java.util.List`. Use
+ * `org.jdesktop.observablecollections.ObservableCollections.observableList()` to create observable list, so adding/removing
+ * elements to/from collection will add/remove elements from JComboBox model.</p>
+ *
+ * <p>You can bind selected combobox element with `selectedElement` attribute. Currently, due to limitations of better beans
+ * binding, this is readonly bindings (changing model won't update JList selection).</p>
+ *
+ * <pre>
+ * &lt;c:combobox align='center' selectedElement="${model.runtime}">
+ *    &lt;c:selectItems value="${runtimeValues}"/>
+ * &lt;/c:combobox>
+ * </pre>
+ *
+ * <pre>
+ * public class CreateProjectForm extends JPanel {
+ *
+ *    ...
+ *
+ *    &#64;ModelElement("runtimeValues")
+ *    private List<String> runtimeValues = Arrays.asList("Apache Tomcat v5.5", "Apache Tomcat v6.0");
+ *
+ *    &#64;ModelElement("model")
+ *    private Model model = new Model();
+ *
+ *    ...
+ * }
+ * </pre>
  */
 public class Combobox extends Tag {
 
