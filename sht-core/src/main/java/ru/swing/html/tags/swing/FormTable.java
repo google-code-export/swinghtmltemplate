@@ -22,6 +22,107 @@ import java.lang.Object;
 import java.util.*;
 
 /**
+ * <p>This tag allows you to bind specific cells to model properties. It is converted to `javax.swing.JTable`.</p>
+ *
+ * <p>Supported attributes:</p>
+ * <ul>
+ *     <li>autoresize - see below<li>
+ *     </li>showHeader - show/hide table's header</li>
+ * </ul>
+ *
+ * <p>Use `autoresize` attribute to specify table's column resizing strategy (JTable.setAutoResizeMode()).
+ * Possible values are:</p>
+ * <ul>
+ *     <li>off - the same as JTable.AUTO_RESIZE_OFF
+ *     <li>all - the same as JTable.AUTO_RESIZE_ALL_COLUMNS
+ *     <li>last - the same as JTable.AUTO_RESIZE_LAST_COLUMN
+ *     <li>next - the same as JTable.AUTO_RESIZE_NEXT_COLUMN
+ *     <li>auto - the same as JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS
+ * </ul>
+ * 
+ * <p>Tag supports child elements the same way, the usual `&lt;table>` tag does. No cellspan/rowspan is supported (since JTable
+ * doesn't support it). `th` is not supported.</p>
+ * 
+ * <p>The cell content must be specified with `&lt;td>` tag. To output text, just place it inside `td`. To provide binding
+ * with model fill `value` attribute of `td` with propper EL:</p>
+ * <pre>
+ * &lt;c:formTable>
+ *   &lt;tr>
+ *     &lt;td>Name</td>
+ *     &lt;td value='${model.person.name}'>&lt;/td>
+ *   &lt;/tr>
+ * &lt;/c:formTable>
+ * </pre>
+ * 
+ * <p>The `td` child tag supports attributes:</p>
+ * <ul>
+ *     <li>width - sets column width
+ *     <li>height - sets row height
+ *     <li>readonly - disables cell editing (false by default)
+ *     <li>renderer - sets column renderer. This is EL pointing to propper `TableCellRenderer` instance
+ *     <li>editor - sets column editor. This is EL pointing to propper `TableCellEditor` instance
+ * </ul>
+ * 
+ * <h2>Example:</h2>
+ * <pre>
+ *  &lt;c:formTable autoresize='last' showHeader='false'>
+ *
+ *    &lt;tr>
+ *        &lt;td width="150" readonly="true">Name&lt;/td>
+ *        &lt;td width="50" value='${person.name}'>&lt;/td>
+ *
+ *        &lt;td width="150" readonly="true">Last name&lt;/td>
+ *        &lt;td width="50" value='${person.lastName}'>&lt;/td>
+ *    &lt;/tr>
+ *    &lt;tr>
+ *        &lt;td readonly="true">Age&lt;/td>
+ *        &lt;td value="${person.age}" editor="${spinnerEditor}">&lt;/td>
+ *
+ *        &lt;td readonly="true">Active&lt;/td>
+ *        &lt;td value="${person.active}" editor="${booleanEditor}" renderer="${booleanRenderer}">&lt;/td>
+ *    &lt;/tr>
+ *    &lt;tr>
+ *        &lt;td readonly="true">Color&lt;/td>
+ *        &lt;td height="50" value="${person.color}" renderer='${colorRenderer}' editor="${colorEditor}">&lt;/td>
+ *
+ *        &lt;td readonly='true'>Comment&lt;/td>
+ *        &lt;td editor="${textAreaEditor}">&lt;/td>
+ *    &lt;/tr>
+ *
+ *  &lt;/c:formTable>
+ *
+ * </pre>
+ *
+ * controller:
+ *  <pre>
+ *  public class FormTableForm extends JPanel {
+ *
+ *      private DomModel domModel;
+ *
+ *      &#64;ModelElement("person")
+ *      private Person person;
+ *
+ *      &#64;ModelElement("colorEditor")
+ *      private ColorTableCellEditor colorEditor = new ColorTableCellEditor();
+ *
+ *      &#64;ModelElement("spinnerEditor")
+ *      private SpinnerEditor spinnerEditor = new SpinnerEditor();
+ *
+ *      &#64;ModelElement("booleanEditor")
+ *      private BooleanEditor checkboxEditor = new BooleanEditor();
+ *
+ *      &#64;ModelElement("colorRenderer")
+ *      private ColorTableCellRenderer colorRenderer = new ColorTableCellRenderer();
+ *
+ *      &#64;ModelElement("booleanRenderer")
+ *      private BooleanRenderer checkboxCellRenderer = new BooleanRenderer();
+ *
+ *      &#64;ModelElement("textAreaEditor")
+ *      private TextAreaEditor textAreaEditor = new TextAreaEditor();
+ *
+ *      ...
+ *  }
+ *  </pre>
  *
  */
 public class FormTable extends Tag {

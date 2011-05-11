@@ -22,6 +22,7 @@ import ru.swing.html.tags.Tag;
  * </p>
  * @see LayoutManagerSupport
  */
+//todo move this static factory to configuration as service
 public class LayoutManagerSupportFactory {
     public static LayoutManagerSupport createLayout(Tag tag) {
         String layoutName = tag.getDisplay();
