@@ -394,7 +394,7 @@ All attributes support resolving placeholders (except for those attributes, who 
 Placeholder is the same as EL, but is evaled only when attribute is applied to component (during conversion phase or
 when manually invoking the `applyAttrinute()`) and is not binded to the specified value.
 
-The default attributes are parsed and applied to the component with the `attributeParser` service from configuration.
+The common attributes are parsed and applied to the component with the `attributeParser` service from configuration.
 The default implementation is `ru.swing.html.configuration.DefaultAttributeParser`.
 
 == default namespace ==
