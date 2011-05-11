@@ -10,10 +10,20 @@ import ru.swing.html.ELUtils;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 20.11.2010
- * Time: 23:37:43
+ * <p>
+ *     Tag is converted to `javax.swing.JLabel. The content of the tag is assigned as a component's text.
+ * </p>
+ * <p>
+ *     If "content" equals to "html", then the content of the tag is surrounded with &lt;html> before and &lt;/html> after,
+ *     so "JLabel" will produce html. If `content` equals to "text" or is empty,
+ *     then the tag content is just assigned as a component's text.
+ * </p>
+ * <h2>Example:</h2>
+ * <pre>
+ * &lt;p>Login:&lt;/p>
+ * &lt;p content="html">&lt;![CDATA[&lt;u>Login:&lt;/u>]]>&lt;/p>
+ * &lt;p content="text">&lt;![CDATA[&lt;html>&lt;u>Login:&lt;/u>&lt;/html>]]>&lt;/p>
+ * </pre>
  */
 public class P extends Tag {
 

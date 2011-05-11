@@ -5,24 +5,42 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.BeanProperty;
 import ru.swing.html.DomModel;
+import ru.swing.html.ELUtils;
 import ru.swing.html.Utils;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 
+/**
+ * <p>
+ *     Tag is converted to javax.swing.JTextArea. Tag's content is used as component's text.
+ * </p>
+ * <p>
+ *     Tag supports properties:
+ *     <ul>
+ *         <li>columns - sets the number of columns for this TextArea.</li>
+ *         <li>rows - sets the number of rows for this TextArea.</li>
+ *         <li>value - en EL expression, describing a property of a model element, the text of the component is binded to.</li>
+ *     </ul>
+ * </p>
+ * <h2>Example</h2>
+ * <pre>
+ *     &lt;scroll>
+ *      &lt;textarea>Some text&lt;/textarea>
+ *     &lt;/scroll>
+ * </pre>
+ */
 public class TextArea extends Tag {
 
     public static final String VALUE_ATTRIBUTE = "value";
     private Log logger = LogFactory.getLog(getClass());
-    private int rows = -1;
-    private int columns = -1;
+    private String rows;
+    private String columns;
     private String value;
 
     @Override
     public JComponent createComponent() {
-        JTextArea c = new JTextArea();
-        setComponent(c);
-        return c;
+        return new JTextArea();
     }
 
     @Override
@@ -44,13 +62,15 @@ public class TextArea extends Tag {
             }
         }
         else if ("rows".equals(name)) {
-            if (getRows()>=0) {
-                textArea.setRows(getRows());
+            if (StringUtils.isNotEmpty(getRows())) {
+                String rows = ELUtils.parseStringValue(getRows(), getModelElements());
+                textArea.setRows(Utils.convertStringToObject(rows, Integer.class));
             }
         }
         else if ("columns".equals(name)) {
-            if (getColumns()>=0) {
-                textArea.setColumns(getColumns());
+            if (StringUtils.isNotEmpty(getColumns())) {
+                String columns = ELUtils.parseStringValue(getColumns(), getModelElements());
+                textArea.setRows(Utils.convertStringToObject(columns, Integer.class));
             }
         }
         else {
@@ -65,29 +85,29 @@ public class TextArea extends Tag {
         super.setAttribute(name, value);
 
         if ("rows".equals(name)) {
-            setRows(Utils.convertStringToObject(value, Integer.class));
+            setRows(value);
         }
         else if ("columns".equals(name)) {
-            setColumns(Utils.convertStringToObject(value, Integer.class));
+            setColumns(value);
         }
         else if (VALUE_ATTRIBUTE.equals(name)) {
             setValue(value);
         }
     }
 
-    public int getRows() {
+    public String getRows() {
         return rows;
     }
 
-    public void setRows(int rows) {
+    public void setRows(String rows) {
         this.rows = rows;
     }
 
-    public int getColumns() {
+    public String getColumns() {
         return columns;
     }
 
-    public void setColumns(int columns) {
+    public void setColumns(String columns) {
         this.columns = columns;
     }
 

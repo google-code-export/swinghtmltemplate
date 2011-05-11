@@ -5,11 +5,25 @@ import ru.swing.html.tags.Tag;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 21.11.2010
- * Time: 0:56:11
- * To change this template use File | Settings | File Templates.
+ Tag is converted to the component, that is returned from
+ <pre>
+ javax.swing.Box.createHorizontalStrut(w)
+ </pre>
+ for `type="horizontal"`, or
+ <pre>
+ javax.swing.Box.createVerticalStrut(h)
+ </pre>
+ for `type="vertical"`. `type` has default value `vertical`.
+
+ <p>Used within tags with `BoxLayout` layout</p>
+
+ <p>`w` and `h` - are values of attributes `width` и `height` accordingly.</p>
+
+ <h2>Example:</h2>
+ <pre>
+ &lt;c:strut type="horizontal" style="width: 12"/>
+ &lt;c:strut type="vertical" height="12"/>
+ </pre>
  */
 public class Strut extends Tag {
 

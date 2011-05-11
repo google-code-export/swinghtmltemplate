@@ -3,10 +3,11 @@ package ru.swing.html.tags;
 import javax.swing.*;
 
 /**
- * Created by IntelliJ IDEA.
- * User: deady
- * Date: 20.11.2010
- * Time: 23:57:11
+ * Tag is converted to the component which classname is specified with `classid` attribute.
+ * Example:
+ * <pre>
+ * &lt;object classid="javax.swing.JButton" text="OK"/>
+ * </pre>
  */
 public class Object extends Tag {
 
