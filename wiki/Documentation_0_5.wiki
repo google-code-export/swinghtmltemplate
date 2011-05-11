@@ -1,13 +1,13 @@
-#summary documentation for version 0.4
+#summary documentation for version 0.5
 #labels documentation
 
 <wiki:toc max_depth="2" />
 = What is all about =
 
-swinghtmltemplate let's you construct gui forms by declaring theirs tamplate using html-like syntax.
+swinghtmltemplate lets you construct gui forms by declaring theirs template using html-like syntax.
 
-Templates are stored in external file with ".html" extension, they are loaded in runtime and are coverted to
-swing-components. You can assign these components to some class fields using {{{@Bind}}} annotaion during
+Templates are stored in external file with ".html" extension, they are loaded in runtime and are converted to
+swing components. You can assign these components to some class fields using `@Bind` annotaion during
 conversion process.
 
 Also you can bind methods calls to component events (e.g. button click) and sync model properties with
@@ -20,7 +20,7 @@ Add the following too your pom.xml:
         <dependency>
             <groupId>com.googlecode.swinghtmltemplate</groupId>
             <artifactId>swinghtmltemplate</artifactId>
-            <version>0.4</version>
+            <version>0.5</version>
         </dependency>
     </dependencies>
 
@@ -30,13 +30,6 @@ Add the following too your pom.xml:
             <id>swinghtmltemplate</id>
             <name>Swing html template repo</name>
             <url>http://swinghtmltemplate.googlecode.com/svn/maven-repository</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </repository>
     </repositories>
 
@@ -45,22 +38,68 @@ Add the following too your pom.xml:
 
 = How does this work =
 
-Loading of html-document is handled by [http://www.jdom.org/ jdom] library, so html must be valid xml.
+Loading of html-document is handled by [http://www.jdom.org/ jdom] library, so html must be valid xml. This means
+that all tags must be closed.
 
 Next, dom-model is converted to the tree of tags, ready to produce swing components. After that
-tree of swing component is being built.
+tree of swing components is being built.
 
 = Usage =
+The usual scenario is to first load model and then convert it to swing. Between this 2 steps model elements
+need to be added to the dom model, loaded in the first step. So every tag will have access to the dom model elements
+during every phase in the conversion procedure.
+
 Loading of dom-model is done with
 {{{
 InputStream in = ...;
 DomModel model = DomLoader.loadModel(in);
 }}}
 
+
+During the loading procedure a `Tag` object is created for every element in xml tree and attrubutes are set with
+`setAttribute` method. Notice, no real component is created at this time, so `setAttribute` must simply
+store attribute value. Applying value to the component will be done further during convertion process.
+
+
 To built swing-components tree use
 {{{
 DomConverter.toSwing(model);
 }}}
+
+The conversion consists of several phases:
+ # parsing-head
+ # before-component-conversion
+ # component-conversion
+ # after-conversion phase
+
+
+In "parsing-head" phase all `<head>` elements are parsed and stored in dom model. These elements include
+ * `title`
+ * `meta`
+ * `link`
+ * `locale`
+ * `style`
+
+E.g. all `meta` tags are stored in dom model in the `metas` property as `java.util.Map`.
+
+In the "before-component-conversion" phase the `beforeComponentsConvertion()` callback is called for each tag in the
+model. Here tag can do some work needed to be done before actual convertion is started. For example, `ui:loadBundle`
+loads resource bundle in this phase, so every tag can use values from resource bundle in conversion phase.
+
+In the "component-conversion" phase the recursive conversion procedure is started. This procedure converts every
+component (started with root) to swing in following steps:
+ # set all global attributes (those, specified with `<style>` and `<link>` tags) to the tag, but not overriding local attributes
+ # create component for the tag: use component from substitution map (if provided, see below) or call `createComponent()` method on tag
+ # install component into tag (using `setComponent()` method)
+ # apply all tag attributes to the component. The default implementation calls `applyAttribute()` method for every attribute. Placeholder resolving can be done in this step.
+ # create layout for the component (if it is supported by the tag)
+ # handle all tag children. The default implementation simply calls convertion procedure for every child.
+
+In the "after-component-conversion" phase the `afterComponentsConvertion()` callback is called for each tag in the
+model. Here tag can do some work needed to be done after actual convertion was finished. For example, `j:dataTable`
+restores all columns widths here (model can be changed in conversion phase and this breaks column widths).
+
+
 
 You can self-create some components and pass them to converter, so these components will be used
 as corresponding tag components, rather than creating new ones:
@@ -111,6 +150,21 @@ Also you can get any tag by it's id:
 {{{
 model.getTagById("someId");
 }}}
+
+
+You can customize the default behavior of convertion process or some of it parts. Some procedures are done with the
+help of the default services, which are contained in `DefaultConfiguration`. This configuration is assigned to the
+model by default. To use custom configuration use:
+{{{
+Configuration conf = ...;
+InputStream in = ...;
+DomModel model = DomLoader.loadModel(in, configuration);
+}}}
+
+Currently configuration holds services for
+ * library loader. This service loads different tag libraries for the model. The default implementation searches classpath for `META-INF/services/ru.swing.html.TagFactory` file and loads tag factories from it.
+ * resource loader. This service loads resources by provided url for different tag (`link`, `img` etc). The default implementation loades resources from classpath with the help of classloader.
+ * attribute parser. This service parses and applies common attributes for every tag. 
 
 == Auto binding of components ==
 You can automatically load dom-model for some object (which is a controller for some form) and assign
@@ -166,6 +220,43 @@ public class LoginForm extends JPanel {
 
    }
 
+}
+}}}
+
+
+Your controller can extend `java.awt.Window` class. In this case the root component will be added to the
+content pane of the controller. To use this feature you must add special `<meta>` tag with `display-as` name
+to the head section of html document:
+
+{{{
+<html>
+   <head>
+      <title>Test</title>
+      <meta name='display-as' content='frame'/>
+      <meta name='onclose' content='exit'/>
+   </head>
+</html>
+}}}
+
+The value `frame` of `display-as` meta tells `DomConverter` to create `javax.swing.JFrame` for your form and to add the root
+component to the contentPane of the frame. You can also create `javax.swing.JDialog` by passing `dialog` value.
+
+As we pass our controller as instance of `javax.swing.JFrame` and tell `DomConverter` to use it as root component,
+when no actual window creating is performed, our controller is used instead:
+
+{{{
+public class TestFrame extends JFrame {
+   public LoginForm() {
+        try {
+            //pass 'true' to use TestFrame as root compponent
+            Binder.bind(this, true);
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+   }
 }
 }}}
 
@@ -242,6 +333,13 @@ for (JComponent c : model.select(".button")) {
 }
 }}}
 
+
+There is also special method for querying in JQuery style:
+{{{
+DomModel model = ...;
+model.query("div.loginArea .button").attr('enabled', 'false');
+}}}
+
 = Components =
 
 All tags are splitted into libraries, each one identified by namespace.
@@ -267,27 +365,37 @@ All html tags are located at default library with empty namespace. They are also
 For any component you can assign it's properties by providing attributes in associated tag or by specifying
 css styles. Below are common properties (for all tags):
 
-  * `id` - component identifier
-  * `display` - identifier of the layout manager for the component, associated with tag. Defaults to `flow (java.awt.BorderLayout)`), `div` defaults to `border (java.awt.BorderLayout)`).
   * `align` - this is constraint for this component in parent's layout manager. Each layout manager has corresponding support-class, which role is to convert text values of this attribute to suitable values of layout manager. For example, support class for `java.awt.BorderLayout` converts strings `top`, `bottom`, `left`, `right`, `center` into `BorderLayout.NORTH`, `BorderLayout.SOUTH` etc accordingly
-  * `text-align` - layout specific. Used to align on left/right side (but can be ignored, if layout manager doesn't supports aligning)
-  * `vertial-align` - layout specific. Used to align on top/bottom side (but can be ignored, if layout manager doesn't supports aligning)
-  * `type` - depends on tag. Used to specify the type of component to produce. Examples: `<input type="text" /> -> JTextField`, `<input type="button" /> -> JButton`
-  * `width` - component's width, layout specific
-  * `height` - component's height, layout specific
+  * `background-color` - component's background color. Method `JComponent.setBackground(Color)` is called for this property
+  * `border` - component's border. Value - border description (see border section for details)
+  * `color` - component's color. Method `JComponent.setForeground(Color)` is called for this property
+  * `display` - identifier of the layout manager for the component, associated with tag. Defaults to `flow (java.awt.BorderLayout)`), `div` defaults to `border (java.awt.BorderLayout)`).
+  * `enabled` - enables or disables component
+  * `font-family` - component's font family.
+  * `font-size` - component's font size in pixels.
+  * `font-style` - component's font style. If value is `italic`, font will be italic.
+  * `font-weight` - component's font weight. Default's to default component style (JLabel prints text in bold, for example). Values: `normal`, `bold`, `bolder`, `lighter`.
+  * `height` - component's height, layout specific. This sets preffered height of the component by default (layout manager can override this)
+  * `icon` - component's icon. Method `setIcon(Icon)` is called for this property. If there's no such methos, warning is printed to log. Value - icons path (icon must be available for  `getClass().getResource("url"))`.
+  * `id` - component identifier
+  * `max-height` - sets maximum height of component. int
+  * `min-height` - sets minimum height of component. int
+  * `max-width` - sets maximum width of component. int
+  * `min-width` - sets minimum width of component. int
+  * `opaque` - opacity. Same as `JComponent.opaque`. Values: `true` or `false`
   * `style` - this is treated as properties list, but in form of css
   * `text` - text of the component. Method `setText(String)` is called for this property. If there's no such methos, warning is printed to log.
-  * `opaque` - opacity. Same as `JComponent.opaque`. Values: `true` or `false`
-  * `icon` - component's icon. Method `setIcon(Icon)` is called for this property. If there's no such methos, warning is printed to log. Value - icons path (icon must be available for  `getClass().getResource("url"))`.
-  * `border` - component's border. Value - border description (see border section for details)
-  * `enabled` - enables or disables component
-  * `color` - component's color. Method `JComponent.setForeground(Color)` is called for this property
-  * `background-color` - component's background color. Method `JComponent.setBackground(Color)` is called for this property
-  * `font-size` - component's font size in pixels.
-  * `font-weight` - component's font weight. Default's to default component style (JLabel prints text in bold, for example). Values: `normal`, `bold`, `bolder`, `lighter`.
-  * `font-style` - component's font style. If value is `italic`, font will be italic.
-  * `font-family` - component's font family.
+  * `text-align` - layout specific. Used to align on left/right side (but can be ignored, if layout manager doesn't supports aligning)
+  * `type` - depends on tag. Used to specify the type of component to produce. Examples: `<input type="text" /> -> JTextField`, `<input type="button" /> -> JButton`
+  * `vertial-align` - layout specific. Used to align on top/bottom side (but can be ignored, if layout manager doesn't supports aligning)
+  * `width` - component's width, layout specific. This sets preffered width of the component by default (layout manager can override this)
 
+All attributes support resolving placeholders (except for those attributes, who hold el expression, e.g. `value` in `<tree>`).
+Placeholder is the same as EL, but is evaled only when attribute is applied to component (during conversion phase or
+when manually invoking the `applyAttrinute()`) and is not binded to the specified value.
+
+The common attributes are parsed and applied to the component with the `attributeParser` service from configuration.
+The default implementation is `ru.swing.html.configuration.DefaultAttributeParser`.
 
 == default namespace ==
 
@@ -341,6 +449,58 @@ value attribute:
 text inputs can be binded to `java.lang.String`type properties.
 checkboxes can be binded to `boolean` (not `java.lang.Boolean`) type properties.
 
+=== label ===
+Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
+
+The JLabel's `for` property can be set with `for` attribyte, whose value is an id of target tag.
+
+Example:
+{{{
+<label for='login'>Login:</p>
+<input id='login' type='text' value='${model.login}'/>
+}}}
+
+=== meta ===
+This tag can be only located inside `<head>` tag to be parsed.
+This tag is used to pass meta info to the dom model. You can later get them with `getMetaItems()`:
+{{{
+<html>
+    <head>
+        <meta name="foo" value="fooValue"/>
+    </head>
+    <body>
+    ...
+    </body>
+</html>
+}}}
+
+{{{
+DomModel domModel = ...;
+assertEquals("fooValue", domModel.getMetaItems().get("foo"));
+}}}
+
+There are special metas that are used in convetion process:
+ * `display-as` - tells `DomConverter` to create window for the form.
+   The window can be later accessed with `domModel.getWindow()` method. You can pass you own window instance with
+   `domModel.setWindow(window)` method, in this case no window is created, your instance is used instead.
+
+ Possible values are:
+   # `frame` for `javax.swing.JFrame`
+   # `dialog` for `javax.swing.JDialog`.
+
+ * `modal` sets the modality of the `JDialog`. It is used only when `display-as` meta is used and is equal to `dialog`.
+   Possible values: `true` or `false`
+
+ * `onclose` - this is used to set default close operation for the window (`JFrame.setDefaultCloseOperation()`).
+   It is only used if `display-as` meta is used. Possible values:
+   # `exit` - `JFrame.EXIT_ON_CLOSE` (only for JFrame)
+   # `hide` - `JFrame.HIDE_ON_CLOSE`
+   # `dispose` - `JFrame.DISPOSE_ON_CLOSE`
+   # `nothing` - `JFrame.DO_NOTHING_ON_CLOSE`
+
+ * `size` - sets the size of the window. It is used only if `display-as` meta is used. Format of the size: `width height`.
+   Example: `<meta name='size' content='1024 768'/>`
+
 
 === object ===
 Tag is converted to the component which classname is specified with `classid` attribute.
@@ -351,7 +511,7 @@ Example:
 
 === p ===
 Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
-If `content` equals to `html`, then the content of the tag is surrounded with {{{<html>}}} before and {{{</html>}}} after,
+If `content` equals to `html`, then the content of the tag is surrounded with `<html>` before and `</html>` after,
 so `JLabel` will produce html. If `content` equals to `text` or is empty,
 then the tag content is just assigned as a component's text.
 
@@ -492,6 +652,8 @@ Examples:
 Tag is converted to `JTextArea`. Tag's content is used as component's text.
 
 Tag supports properties:
+  * columns - sets the number of columns for this TextArea.
+  * rows - sets the number of rows for this TextArea.
   * value - en EL expression, describing a property of a model element, the text of the component is binded to.
 
 Example:
@@ -501,7 +663,23 @@ Example:
 </scroll>
 }}}
 
+=== title ===
+This tag can be only located inside `<head>` tag to be parsed.
 
+This tag allows to set window title. It is used only if `display-as` meta tag is used.
+
+Example:
+{{{
+<html>
+    <head>
+        <title>Test Frame</title>
+        <meta name="display-as" value="frame"/>
+    </head>
+    <body>
+    ...
+    </body>
+</html>
+}}}
 
 == `http://www.oracle.com/swing` namespace ==
 
@@ -521,7 +699,7 @@ Supported `value` formats according to `type` value:
   * `type='float'` : float, example: `<attribute name='width' value='5.0' type='float'/>`
   * `type='double'` : double, example: `<attribute name='width' value='5.0' type='double'/>`
   * `type='short'` : short, example: `<attribute name='width' value='5' type='short'/>`
-  * `type='byte'` : bute, example: `<attribute name='width' value='5' type='byte'/>`
+  * `type='byte'` : byte, example: `<attribute name='width' value='5' type='byte'/>`
   * `type='char'` : charachter, example: `<attribute name='mnemonic' value='f' type='char'/>`
   * `type='java.lang.Boolean'` : `true` or `false`, example: `<attribute name='autoscrolls' value='false' type='java.lang.Boolean'/>`
   * `type='java.lang.Integer'` : integer, example: `<attribute name='width' value='500' type='java.lang.Integer'/>`
@@ -590,6 +768,12 @@ public class MyCustomTableCellEditor implements TableCellEditor {
    public MyCustomTableCellEditor() {} //default constructor
 }
 }}}
+
+
+
+
+
+
 === combobox ===
 Tag is converted to the `javax.swing.JComboBox`.
 
@@ -750,7 +934,7 @@ with model fill `value` attribute of `td` with propper EL:
   <tr>
     <td>Name</td>
     <td value='${model.person.name}'></td>
-  </td>
+  </tr>
 </c:formTable>
 }}}
 
@@ -862,6 +1046,12 @@ model won't update JList selection).
 You can set renderer for the list with `renderer` attribute. This must be EL, pointing to the `javax.swing.ListCellRenderer`
 instance.
 
+You can set the number of rows per column with `rowsPerColumn` attribute. It is used when list must be with several columns.
+Use the `type` attribute to set rendering type. Possible values for `type` are:
+ * `vertical`
+ * `horizontal-wrap`
+ * `vertical-wrap`
+
 
 {{{
 //controller
@@ -902,22 +1092,9 @@ public class CustomRenderer extends DefaultListCellRenderer implements ListCellR
 }}}
 
 {{{
-<c:editorPane selectedElement="${model.selected}" renderer="${customRenderer}">
+<c:list selectedElement="${model.selected}" renderer="${customRenderer}">
    <c:selectItems value="${model.items}"/>
-</c:editorPane>
-<input type='button' onclick='foo'/>
-}}}
-
-
-
-=== selectItems ===
-Special tag to specify model items for `combobox`, `list`, `dataTable` etc tags. It supports one attribute:
-`value`. It is EL pointing to propper model property, which type must be `java.util.List`.
-
-{{{
-<c:combobox selectedElement="${model.runtime}">
-    <c:selectItems value="${runtimeValues}"/>
-</c:combobox>
+</c:list>
 }}}
 
 
@@ -933,6 +1110,43 @@ Example:
 }}}
 
 
+
+=== selectItems ===
+Special tag to specify model items for `combobox`, `list`, `dataTable` etc tags. It supports one attribute:
+`value`. It is EL pointing to propper model property, which type must be `java.util.List`.
+
+{{{
+<c:combobox selectedElement="${model.runtime}">
+    <c:selectItems value="${runtimeValues}"/>
+</c:combobox>
+}}}
+
+
+
+=== slider ===
+Tag is converted to `javax.swing.JSlider`
+
+Tag supports attributes:
+  * `max` - a maximum value for slider. Supports placeholders.
+  * `min` - a minimum value for slider. Supports placeholders.
+  * `majorSpace` - Same as `JSlider.setMajorTickSpacing`. Supports placeholders.
+  * `minorSpace` - Same as `JSlider.setMinorTickSpacing`. Supports placeholders.
+  * `snap` - `true` or `false`. Sets if slider will snap to ticks. Supports placeholders.
+  * `value` - en EL expression, describing a property of a model element, the value of the component is binded to.
+
+Tag supports events:
+  * `onchange` - invoked when slider value changes. This is the name of controller's method. Method must take no arguments or one argument of type `java.awt.ChangeEvent`
+
+Example:
+{{{
+<c:slider value='${model.value}' max='1000' min='10' onchange='onSliderChange' />
+}}}
+
+
+
+
+
+
 === spinner ===
 Tag is converted to `javax.swing.JSpinner`
 Tag supports attributes:
@@ -942,6 +1156,8 @@ Example:
 {{{
 <c:spinner />
 }}}
+
+
 
 
 === split ===
@@ -977,26 +1193,35 @@ Example:
 }}}
 
 
+
+
+
+
 === strut ===
 Tag is converted to the component, that is returned from
 {{{
 javax.swing.Box.createHorizontalStrut(w)
 }}}
-for {{{type="horizontal"}}}, or
+for `type="horizontal"`, or
 {{{
 javax.swing.Box.createVerticalStrut(h)
 }}}
-for {{{type="vertical"}}}. `type` has default value `vertical`.
+for `type="vertical"`. `type` has default value `vertical`.
 
-Used within tags with {{{BoxLayout}}} layout
+Used within tags with `BoxLayout` layout
 
-{{{w}}} and {{{h}}} - are values of attributes `width` и `height` accordingly.
+`w` and `h` - are values of attributes `width` и `height` accordingly.
 
 Example:
 {{{
 <c:strut type="horizontal" style="width: 12"/>
 <c:strut type="vertical" height="12"/>
 }}}
+
+
+
+
+
 
 === tabs ===
 Tag is converted to `JTabbedPane`.
@@ -1026,6 +1251,10 @@ Example:
 
 
 
+
+
+
+
 === tree ===
 The tag is converted to `javax.swing.JTree` component.
 
@@ -1036,6 +1265,8 @@ Supported attributes:
 
 The tag supports events:
  * `onchange` - the name of the controller's method to invoke on selection change. The method must take no arguments or take 1 argument of type `javax.swing.event.TreeSelectionEvent`
+ * `onclick` - the name of the controller's method to invoke tree click. The method must take no arguments or take 1 argument of type `javax.swing.event.MouseEvent`
+ * `ondblclick` - the name of the controller's method to invoke on tree double click. The method must take no arguments or take 1 argument of type `javax.swing.event.MouseEvent`
 
 Example:
 {{{
@@ -1054,6 +1285,96 @@ Example:
 
 
 == `http://swinghtmltemplate.googlecode.com/ui` namespace ==
+
+=== choose ===
+Allows to choose child content depending on condition. This tag allows only `<when>` and `<otherwise>` children.
+
+To provide condition use `when` tags. `otherwise` child tag will be used if no of `when` tags matches.
+
+Conditions are evaluated during `before-components-convertion` phase. Only one child tag can match, if several tags
+match their conditions, the first one will be used.
+
+If some tag matches condition (`when` or `otherwise`) it's content will be merged to 'choose' parent tag,
+otherise `choose` tag will be simply removed from it's parent.
+
+Example
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+             xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head></head>
+<body id='body'>
+   <ui:choose>
+        <ui:when test="${type eq 'full'}">
+            <p>Full</p>
+        </ui:when>
+        <ui:when test="${type eq 'brief'}">
+            <p>Brief</p>
+        </ui:when>
+        <ui:otherwise>
+            <p>Unknown</p>
+        </ui:otherwise>
+   </ui:choose>
+</body>
+</html>
+}}}
+
+
+
+
+
+
+
+=== component ===
+This tag allows to define components composition in external file. When used this tag parses this external file and adds external body's content to the original document in place of itself.
+Use 'src' attribute to locate target document.
+Example
+/src/foo/original.html
+{{{
+<html>
+   <body style='display:box;'>
+       <ui:forEach items='${model.persons}' var="person">
+           <ui:component src='foo/personPanel.html' person="${person}">
+       </ui:forEach>
+   </body>
+</html>
+}}}
+/src/foo/personPanel.html
+{{{
+<html>
+   <body style='display:box;'>
+       <table>
+           <tr>
+               <td><p>Name:</p></td>
+               <td><input type='text' value='${person.name}'></td>
+           </tr>
+       </table>
+   </body>
+</html>
+}}}
+This results in the following html (assume we have 2 persons in our ${model.persons}, Mary and Bill)
+{{{
+<html>
+   <body style='display:box;'>
+       <table>
+           <tr>
+               <td><p>Name:</p></td>
+               <td><input type='text' value='Mary'></td>
+           </tr>
+       </table>
+       <table>
+           <tr>
+               <td><p>Name:</p></td>
+               <td><input type='text' value='Bill'></td>
+           </tr>
+       </table>
+   </body>
+       </html>
+}}}
+As you can see, we exposed var, 'person' to our component. Every attribute (besides src) is treates as EL to expose to component.
+
+
+
+
 
 === composition ===
 This tag allows you to compose dom model with template, almost the same way as in facelets.
@@ -1102,10 +1423,64 @@ Example:
 }}}
 
 
+
+
+
 === define ===
 This tag defines an snippet to be inserted into template using `<composition>` tag.
 The required attribute is `name` which defines a name of the snippet. This name is used in `<insert>`
 tag when template is built.
+
+
+
+
+
+=== forEach ===
+This tag allows to iterate over some iteratable collection. The child tags will be duplicated for each item in collection.
+Supported attributes:
+ * `var` - the name of exposed variable, which will be available in child tags, containing current collection item
+ * `items` - the EL, pointing to the iteratable collection
+ * `varStatus` - the name of exposed variable, which will be available inside child tags. It will contain current iteration status
+
+Example:
+{{{
+<ui:forEach items='${model.persons}' var="person" varStatus="i">
+    <table>
+        <tr>
+            <td><p>Name:</p></td>
+            <td><input type='text' value='${person.name}'/></td>
+        </tr>
+    </table>
+</ui:forEach>
+}}}
+
+
+
+
+
+
+=== if ===
+This tag allows children handling based on some condition.
+
+Condition is set with 'test' attribute. If it resolves to 'true', when children tag are handled in usual way. If it is resolved to 'false', children are skipped.
+
+Condition is evaluated once during 'component conversion' phase
+
+Example:
+{{{
+<div style="display:box;x-boxlayout-direction: vertical;">
+    <ui:forEach items='${model.persons}' var='person' varStatus='i'>
+        <ui:component src='ru/swing/html/example/component/PersonPanel.html' person="${person}"/>
+        <ui:if test='${not i.last}'>
+            <j:strut height='30'/>
+        </ui:if>
+    </ui:forEach>
+    <j:glue/>
+</div>
+}}}
+
+
+
 
 
 
@@ -1153,10 +1528,75 @@ The value of the `src` attribute is the address of the target html file in `getC
 
 
 
+
+
+
+
 === insert ===
 This tag inserts named snippet (defined with `<define>` tag) into a template. The name of the snippet
 is set with `name` attrubute.
 
+
+
+
+
+
+
+=== loadBundle ===
+This tag loads resource bundle and adds it to the dom model as map, so you can use placeholders to
+set attributes with this bundle.
+Attributes:
+ * `var` - name of the new model element under which bundle properties can be accessed
+ * `baseName` - the full path to the resource bundle
+ * `locale` - the locale for the resource bundle (can be skipped)
+
+Locale can be specified via `locale` attribute or via the meta tag with the name `locale` in the head section.
+
+Do not use dots in propetrties names, as they will be resolved as field separators.
+
+Example
+{{{
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+
+<head>
+    <ui:loadBundle baseName="ru.swing.html.example.tabsform" var='msg' locale='en_EN'/>
+</head>
+
+<body display="border">
+
+<div id="rootPanel" style="display:border">
+
+<j:tabs>
+    <div title="${msg.tab1_title}">
+        <p>${msg.tab1_text}</p>
+    </div>
+
+    <div title="${msg.tab2_title}">
+        <j:scroll style='border: titled "${msg.tab2_jeditorpane}"'>
+            <object classid="javax.swing.JEditorPane"></object>
+        </j:scroll>
+
+    </div>
+</j:tabs>
+</div>
+</body>
+</html>
+}}}
+
+
+
+
+=== set ===
+This tag adds new model element to the dom model and creates binding between source and target values.
+Attributes:
+ * `var` - name of the new model element (target)
+ * `value` - EL pointing to source value.
+
+Example:
+{{{
+<ui:set var='title' value='${model.num} elements in ${model.currentRow} row'/>
+}}}
 
 
 
