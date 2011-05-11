@@ -210,5 +210,5 @@ Now let's create main html:
 
 
 We insert person panel with `<ui:component>`. The `src` attribute points to our `PersonsPanel.html` and all other
-attributes are passed as model elements to the target document. That is why we use `person` in "PersonsPanel.html".
+attributes are passed as model elements to the target document. That is why we use `person` in `PersonsPanel.html`.
 
