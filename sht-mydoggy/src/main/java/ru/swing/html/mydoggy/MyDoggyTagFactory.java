@@ -1,6 +1,6 @@
 package ru.swing.html.mydoggy;
 
-import org.jdom.Element;
+import ru.swing.html.DomModel;
 import ru.swing.html.TagFactory;
 import ru.swing.html.tags.Tag;
 
@@ -18,5 +18,9 @@ public class MyDoggyTagFactory implements TagFactory {
             return new ContentWindow();
         }
         return null;
+    }
+
+    public void libraryLoaded(DomModel model) {
+        model.getConfiguration().getLayoutService().addLayoutManagerSupport("mydoggy", MydoggyLayoutManagerSupport.class);
     }
 }

@@ -67,4 +67,7 @@ public class SwingTagFactory implements TagFactory {
             return null;
         }
     }
+
+    public void libraryLoaded(DomModel model) {
+    }
 }

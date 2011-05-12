@@ -29,4 +29,10 @@ public interface Configuration {
      * @return atribute parser
      */
     public AttributeParser getAttributeParser();
+
+    /**
+     * Returns the service, responsible for creating layout manager for the tag.
+     * @return layout service
+     */
+    public LayoutService getLayoutService();
 }

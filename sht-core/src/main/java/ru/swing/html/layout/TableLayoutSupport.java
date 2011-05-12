@@ -21,7 +21,7 @@ public class TableLayoutSupport implements LayoutManagerSupport{
     public static final String ROW_SIZES_ATTRIBUTE = "x-tablelayout-row-sizes";
     public static final String COLUMN_SIZES_ATTRIBUTE = "x-tablelayout-column-sizes";
 
-    public void addComponent(JComponent parent, JComponent child, String constraint) {
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
         parent.add(child, constraint);
     }
 

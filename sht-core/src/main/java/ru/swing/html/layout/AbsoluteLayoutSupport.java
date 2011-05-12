@@ -16,7 +16,7 @@ import java.awt.*;
  */
 public class AbsoluteLayoutSupport implements LayoutManagerSupport {
 
-    public void addComponent(JComponent parent, JComponent child, String constraint) {
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
         if (!StringUtils.isEmpty(constraint)) {
             Rectangle bounds = (Rectangle) Utils.convertStringToObject(constraint, Rectangle.class);
             child.setBounds(bounds);

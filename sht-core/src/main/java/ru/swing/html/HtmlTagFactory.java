@@ -3,6 +3,8 @@ package ru.swing.html;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
+import ru.swing.html.configuration.LayoutService;
+import ru.swing.html.layout.*;
 import ru.swing.html.tags.*;
 import ru.swing.html.tags.Object;
 import ru.swing.html.tags.swing.*;
@@ -80,5 +82,8 @@ public class HtmlTagFactory implements TagFactory {
         else {
             return new Tag();
         }
+    }
+
+    public void libraryLoaded(DomModel model) {
     }
 }

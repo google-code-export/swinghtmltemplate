@@ -26,4 +26,14 @@ public class LibraryRegistry {
     public TagFactory getTagFactory(String namespace) {
         return factories.get(StringUtils.isNotEmpty(namespace) ? namespace : EMPTY_NAMESPACE);
     }
+
+    /**
+     * Notifies all libraries that they are loaded into the model
+     * @param model model, holding libraries
+     */
+    public void libraryLoaded(DomModel model) {
+        for (TagFactory factory : factories.values()) {
+            factory.libraryLoaded(model);
+        }
+    }
 }

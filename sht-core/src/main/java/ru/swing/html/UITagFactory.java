@@ -55,4 +55,7 @@ public class UITagFactory implements TagFactory {
             return null;
         }
     }
+
+    public void libraryLoaded(DomModel model) {
+    }
 }

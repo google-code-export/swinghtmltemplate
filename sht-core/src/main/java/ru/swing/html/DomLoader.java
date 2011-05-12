@@ -46,6 +46,9 @@ public class DomLoader {
         LibraryRegistry libraryRegistry = model.getConfiguration().getLibraryLoader().getLibraryRegistry();
         libraryRegistry.registerLibrary("", new HtmlTagFactory());
 
+        //notify libraries
+        libraryRegistry.libraryLoaded(model);
+
         SAXBuilder builder = new SAXBuilder();
         //disable validation and loading of external dtd
         //http://www.jdom.org/docs/faq.html#a0350

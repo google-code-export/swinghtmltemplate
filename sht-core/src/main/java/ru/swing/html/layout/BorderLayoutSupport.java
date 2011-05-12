@@ -19,7 +19,7 @@ public class BorderLayoutSupport implements LayoutManagerSupport {
 
     private Log logger = LogFactory.getLog(getClass());
 
-    public void addComponent(JComponent parent, JComponent child, String constraint) {
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
 
 
         if ("left".equals(constraint)) {
