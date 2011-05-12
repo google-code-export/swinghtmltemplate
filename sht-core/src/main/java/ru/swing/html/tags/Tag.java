@@ -49,6 +49,7 @@ public class Tag implements Cloneable {
     private String namespace;
     private Tag parent;
     private List<Tag> children = new ArrayList<Tag>();
+    private List<Object> contents = new ArrayList<Object>();
     private String content;
     private String display;
     private String color;
@@ -280,11 +281,35 @@ public class Tag implements Cloneable {
      * @param index index of the child elements array, into which the tag is inserted.
      */
     public void addChild(Tag tag, int index) {
-        tag.setParent(this);
-        tag.setModel(getModel());
-        tag.createContextModel();
         children.add(index, tag);
     }
+
+
+    public void addContentChild(Object content) {
+        contents.add(content);
+        if (content instanceof Tag) {
+            Tag tag = (Tag) content;
+            tag.setParent(this);
+            tag.setModel(getModel());
+            tag.createContextModel();
+            children.add(tag);
+        }
+    }
+
+    public void addContentChild(Object content, int index) {
+        contents.add(index, content);
+        if (content instanceof Tag) {
+            Tag tag = (Tag) content;
+            tag.setParent(this);
+            tag.setModel(getModel());
+            tag.createContextModel();
+        }
+    }
+
+    public List<Object> getContentChildren() {
+        return Collections.unmodifiableList(contents);
+    }
+
 
     /**
      * Removes child tag.
@@ -294,6 +319,7 @@ public class Tag implements Cloneable {
     public void removeChild(Tag tag) {
         tag.setParent(null);
         children.remove(tag);
+        contents.remove(tag);
     }
 
     public List<Tag> getChildren() {
@@ -620,9 +646,14 @@ public class Tag implements Cloneable {
         }
         clone.setAttribute(TAG_CONTENT, content);
 
-        for (Tag child : getChildren()) {
-            Tag childClone = child.clone();
-            clone.addChild(childClone);
+        for (Object child : getContentChildren()) {
+            if (child instanceof Tag) {
+                Tag childClone = ((Tag) child).clone();
+                clone.addContentChild(childClone);
+            }
+            else {
+                clone.addContentChild(child);
+            }
         }
 
         return clone;
