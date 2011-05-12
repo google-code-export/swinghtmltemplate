@@ -23,7 +23,7 @@
         <module>sht-core</module>
         <module>sht-mydoggy</module>
         <module>sht-builder</module>
-        <module>../sht-xhtmlrenderer</module>
+        <module>sht-xhtmlrenderer</module>
     </modules>
 
     <scm>
