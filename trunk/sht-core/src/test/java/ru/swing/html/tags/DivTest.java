@@ -3,6 +3,7 @@ package ru.swing.html.tags;
 import junit.framework.TestCase;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomModel;
+import ru.swing.html.layout.BorderLayoutSupport;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +30,7 @@ public class DivTest extends TestCase {
 
     public void testDefaultLayout() throws Exception {
         DomModel model = new DomModel();
+        model.getConfiguration().getLayoutService().addLayoutManagerSupport("border", BorderLayoutSupport.class);
 
         Div tag = new Div();
         tag.setModel(model);

@@ -8,6 +8,7 @@ public class DefaultConfiguration implements Configuration {
     private LibraryLoader libraryLoader = new ServiceLibraryLoader();
     private ResourceLoader resourceLoader = new ClasspathResourceLoader();
     private AttributeParser attributeParser = new DefaultAttributeParser();
+    private LayoutService layoutService = new DefaultLayoutService();
 
     public LibraryLoader getLibraryLoader() {
         return libraryLoader;
@@ -19,5 +20,9 @@ public class DefaultConfiguration implements Configuration {
 
     public AttributeParser getAttributeParser() {
         return attributeParser;
+    }
+
+    public LayoutService getLayoutService() {
+        return layoutService;
     }
 }

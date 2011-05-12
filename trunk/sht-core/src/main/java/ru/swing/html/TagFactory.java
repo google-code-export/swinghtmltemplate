@@ -15,4 +15,9 @@ public interface TagFactory {
      */
     public Tag createTag(String name);
 
+    /**
+     * This callback method is called in DomLoader after all libraries are loaded.
+     * @param model dom model, holding libraries
+     */
+    void libraryLoaded(DomModel model);
 }

@@ -21,9 +21,10 @@ public interface LayoutManagerSupport {
      * </p>
      * @param parent parent component
      * @param child child component to be added to parent
+     * @param childTag tag, containing child
      * @param constraint string constraint
      */
-    public void addComponent(JComponent parent, JComponent child, String constraint);
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint);
 
     /**
      * LayoutManager must be created for the tag's component in this method.

@@ -10,13 +10,13 @@ import org.jdesktop.observablecollections.ObservableMapListener;
 import ru.swing.html.*;
 import ru.swing.html.configuration.AttributeParser;
 import ru.swing.html.configuration.DefaultAttributeParser;
+import ru.swing.html.configuration.DefaultLayoutService;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
 
 import javax.swing.*;
-import java.awt.*;
 import java.lang.Cloneable;
 import java.lang.Object;
 import java.lang.Override;
@@ -191,7 +191,14 @@ public class Tag implements Cloneable {
         final String layoutName = getDisplay();
         LayoutManagerSupport layoutManagerSupport = null;
         if (layoutName != null && component!=null) {
-            layoutManagerSupport = LayoutManagerSupportFactory.createLayout(this);
+            if (getModel()==null) {
+                //this could only happen when we convert tags without dom model (e.g. in tests)
+                layoutManagerSupport = new DefaultLayoutService().createLayout(this);
+            }
+            else {
+                layoutManagerSupport = getModel().getConfiguration().getLayoutService().createLayout(this);
+            }
+            //layoutManagerSupport = LayoutManagerSupportFactory.createLayout(this);
             component.setLayout(layoutManagerSupport.createLayout(this));
         }
 
@@ -212,7 +219,6 @@ public class Tag implements Cloneable {
      *         <li>if tag's component is null (this tag do not produce any component), when find first
      *         parent tag with non-null component, if noone is found, exit</li>
      *         <li>Create LayoutManagerSupport for founded tag using LayoutManagerSupportFactory</li>
-     *         TODO creating LayoutManagerSupport is done twice, first in handleLayout, 2nd - here
      *         <li>for every child: converts tag using DomConverter.convertComponent and add child's componentWrapper
      *         (if it is not null) to founded parent using LayoutManagerSupport</li>
      *      </ul>
@@ -233,12 +239,20 @@ public class Tag implements Cloneable {
         }
 
         if (parent!=null) {
-            LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
+            LayoutManagerSupport layoutManagerSupport;
+            if (getModel()==null) {
+                //this could only happen when we convert tags without dom model (e.g. in tests)
+                layoutManagerSupport = new DefaultLayoutService().createLayout(parent);
+            }
+            else {
+                layoutManagerSupport = getModel().getConfiguration().getLayoutService().createLayout(parent);
+            }
+            //LayoutManagerSupport layoutManagerSupport = LayoutManagerSupportFactory.createLayout(parent);
             for (Tag childTag : getChildren()) {
                 JComponent child = DomConverter.convertComponent(childTag, substitutions);
                 if (child!=null) {
                     JComponent cw = childTag.getComponentWrapper();
-                    layoutManagerSupport.addComponent(c, cw, childTag.getAlign());
+                    layoutManagerSupport.addComponent(c, cw, childTag, childTag.getAlign());
     //                layoutManagerSupport.addComponent(c, child, childTag.getAlign());
                 }
             }

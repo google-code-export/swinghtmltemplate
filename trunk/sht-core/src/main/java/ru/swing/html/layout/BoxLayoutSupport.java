@@ -12,7 +12,7 @@ public class BoxLayoutSupport implements LayoutManagerSupport {
 
     private Log logger = LogFactory.getLog(getClass());
 
-    public void addComponent(JComponent parent, JComponent child, String constraint) {
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
         parent.add(child);
     }
 

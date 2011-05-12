@@ -19,7 +19,7 @@ public class MigLayoutSupport implements LayoutManagerSupport {
     public static final String X_MIGLAYOUT_ROW_CONSTRAINTS_ATTRIBUTE = "x-miglayout-row-constraints";
     public static final String X_MIGLAYOUT_COLUMN_CONSTRAINTS_ATTRIBUTE = "x-miglayout-column-constraints";
 
-    public void addComponent(JComponent parent, JComponent child, String constraint) {
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
         parent.add(child, constraint);
     }
 

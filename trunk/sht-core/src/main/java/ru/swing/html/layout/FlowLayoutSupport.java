@@ -16,7 +16,7 @@ import java.awt.*;
 public class FlowLayoutSupport implements LayoutManagerSupport{
 
 
-    public void addComponent(JComponent parent, JComponent child, String constraint) {
+    public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
         parent.add(child);
     }
 
