@@ -1,0 +1,112 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:j="http://www.oracle.com/swing"
+      xmlns:x="http://xhtmlrenderer.java.net"
+      xmlns:ui="http://swinghtmltemplate.googlecode.com/ui">
+<head>
+    <title>Xhtml renderer form</title>
+    <meta name="display-as" content="frame"/>
+    <meta name="onclose" content="exit"/>
+    <meta name="size" content="640 480"/>
+
+    <style type="text/css">
+        .textPanel {
+            float:right;
+            margin-right:10px;
+        }
+        .body {
+            display: border;
+            border: empty 12 12 12 12;
+        }
+    </style>
+</head>
+<body id="rootPanel" class="body">
+
+    <j:scroll>
+        <x:xhtmlpanel>
+
+            <div style="float:left;margin-right:10px;">
+                <j:scroll renderer='swing' id='scroll1' width='150' height='250'>
+                    <j:tree/>
+                </j:scroll>
+            </div>
+
+            <div class='textPanel'>
+                <div renderer='swing' id='b1' width='200' height='50' opaque='false' style='display:border;'>
+                    <table opaque='false'>
+                        <tr>
+                            <td><label for="text">Model text:</label></td>
+                            <td width="fill"><input id='text' type="text" value="${model.text}"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div style="display:flow;opaque:false;text-align:left;">
+                                    <input type='button' align="bottom" text='foo' onclick="dump"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+
+            <h1>And Thou Art Dead, As Young and Fair</h1>
+            <h2>Lord Byron, first published in 1812</h2>
+
+            <p>And thou art dead, as young and fair
+                As aught of mortal birth;
+                And form so soft, and charms so rare,
+                Too soon return'd to Earth!
+                Though Earth receiv'd them in her bed,
+                And o'er the spot the crowd may tread
+                In carelessness or mirth,
+                There is an eye which could not brook
+                A moment on that grave to look.</p>
+
+            <p>I will not ask where thou liest low,
+                Nor gaze upon the spot;
+                There flowers or weeds at will may grow,
+                So I behold them not:
+                It is enough for me to prove
+                That what I lov'd, and long must love,
+                Like common earth can rot;
+                To me there needs no stone to tell,
+                'T is Nothing that I lov'd so well.</p>
+
+            <p>Yet did I love thee to the last
+                As fervently as thou,
+                Who didst not change through all the past,
+                And canst not alter now.
+                The love where Death has set his seal,
+                Nor age can chill, nor rival steal,
+                Nor falsehood disavow:
+                And, what were worse, thou canst not see
+                Or wrong, or change, or fault in me.</p>
+
+            <p>The better days of life were ours;
+                The worst can be but mine:
+                The sun that cheers, the storm that lowers,
+                Shall never more be thine.
+                The silence of that dreamless sleep
+                I envy now too much to weep;
+                Nor need I to repine
+                That all those charms have pass'd away,
+                I might have watch'd through long decay.</p>
+
+            <p>The flower in ripen'd bloom unmatch'd
+                Must fall the earliest prey;
+                Though by no hand untimely snatch'd,
+                The leaves must drop away:
+                And yet it were a greater grief
+                To watch it withering, leaf by leaf,
+                Than see it pluck'd to-day;
+                Since earthly eye but ill can bear
+                To trace the change to foul from fair.</p>
+
+
+
+        </x:xhtmlpanel>
+    </j:scroll>
+
+
+</body>
+</html>

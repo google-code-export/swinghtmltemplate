@@ -57,7 +57,7 @@ public class DomLoader {
         Document doc = builder.build(in);
 
         Element root = doc.getRootElement();
-        Tag rootTag = createTag(libraryRegistry,
+        Tag rootTag = createTag(libraryRegistry, root.getNamespacePrefix(),
                 root.getNamespaceURI(), root.getName());
         rootTag.setNamespace(root.getNamespaceURI());
         rootTag.setModel(model);
@@ -101,7 +101,7 @@ public class DomLoader {
         //recursively convert children
         for (java.lang.Object o : element.getChildren()) {
             Element child = (Element) o;
-            Tag childTag = createTag(registry, child.getNamespaceURI(), child.getName());
+            Tag childTag = createTag(registry, child.getNamespace().getPrefix(), child.getNamespaceURI(), child.getName());
             tag.addChild(childTag);
             parseElement(registry, child, childTag);
             //child tag may substitute model
@@ -114,11 +114,12 @@ public class DomLoader {
 
 
 
-    public static Tag createTag(LibraryRegistry registry, String namespace, String name) {
+    public static Tag createTag(LibraryRegistry registry, String prefix, String namespace, String name) {
         Tag tag = registry.getTagFactory(namespace).createTag(name);
         if (tag!=null) {
             tag.setNamespace(namespace);
             tag.setName(name);
+            tag.setPrefix(prefix);
         }
         return tag;
     }

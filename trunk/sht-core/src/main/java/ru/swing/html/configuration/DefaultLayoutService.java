@@ -45,8 +45,9 @@ public class DefaultLayoutService implements LayoutService {
         if (layouts.containsKey(layoutName)) {
             res = layouts.get(layoutName);
         }
+
         else {
-            logger.warn("'"+ layoutName+"' layout is not supported, using default: "+defaultLayout.getName());
+            logger.warn(tag+": '"+ layoutName+"' layout is not supported, using default: "+defaultLayout.getName());
             res = defaultLayout;
         }
 

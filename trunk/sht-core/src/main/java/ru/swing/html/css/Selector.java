@@ -16,8 +16,10 @@ public class Selector {
 
     private Log logger = LogFactory.getLog(getClass());
     private SelectorTokensChain chain = new SelectorTokensChain();
+    private String originalSelector;
 
     public Selector(String selector) {
+        originalSelector = selector;
         Parser p = new Parser();
         SelectorList l = null;
         try {
@@ -179,6 +181,11 @@ public class Selector {
      */
     public boolean matches(Tag tag) {
         return chain.matches(tag);
+    }
+
+
+    public String toString() {
+        return originalSelector;
     }
 
 }

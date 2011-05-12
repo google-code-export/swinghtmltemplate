@@ -76,6 +76,10 @@ public class Input extends Tag {
     }
 
     @Override
+    public void handleLayout() {
+    }
+
+    @Override
     public void applyAttribute(JComponent component, String name) {
 
         //tag content is always equals to empty string, so when binding is uses,

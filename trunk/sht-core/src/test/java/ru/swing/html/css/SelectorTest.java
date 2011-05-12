@@ -16,6 +16,11 @@ import java.io.ByteArrayInputStream;
  */
 public class SelectorTest extends TestCase {
 
+    public void testNamespaceSelector() throws Exception {
+        Selector selector = new Selector("j:tree");
+        assertNotNull(selector);
+    }
+
     public void testMatches() throws Exception {
 
         String html = "<html>" +
