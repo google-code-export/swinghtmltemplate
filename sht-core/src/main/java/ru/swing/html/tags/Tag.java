@@ -75,6 +75,7 @@ public class Tag implements Cloneable {
     private Map<String, Object> modelElements;
     private ObservableMapListener parentMapListener;
     private ObservableMap parentMap;
+    private String prefix;
 
     /**
      * Returns the forst child tag with the specified name
@@ -612,7 +613,7 @@ public class Tag implements Cloneable {
     @Override
     public Tag clone()  {
         Tag clone = DomLoader.createTag(getModel().getConfiguration().getLibraryLoader().getLibraryRegistry(),
-                getNamespace(), getName());
+                getPrefix(), getNamespace(), getName());
         clone.setModel(model);
         for (String attrName : attributes.keySet()) {
             clone.setAttribute(attrName, attributes.get(attrName));
@@ -724,4 +725,11 @@ public class Tag implements Cloneable {
         return result;
     }
 
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
 }

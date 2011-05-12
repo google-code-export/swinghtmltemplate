@@ -1,5 +1,6 @@
 package ru.swing.html.css;
 
+import org.apache.commons.lang.StringUtils;
 import ru.swing.html.tags.Tag;
 
 import java.util.*;
@@ -56,5 +57,10 @@ public class SelectorGroup {
     @Override
     public int hashCode() {
         return selectors != null ? selectors.hashCode() : 0;
+    }
+
+
+    public String toString() {
+        return StringUtils.join(selectors.iterator(), ", ");
     }
 }

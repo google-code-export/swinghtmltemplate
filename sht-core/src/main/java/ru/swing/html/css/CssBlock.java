@@ -1,5 +1,6 @@
 package ru.swing.html.css;
 
+import org.apache.commons.lang.StringUtils;
 import ru.swing.html.tags.Tag;
 
 import java.util.HashMap;
@@ -7,11 +8,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <pre>
- * User: Penkov Vladimir
- * Date: 22.11.2010
- * Time: 11:59:17
- * </pre>
+ * The block with css styles.
+ *
+ * Example:
+ *
+ * .foo, .foo1 {
+ *     attr1: val1;
+ * }
+ *
+ * Here ".foo" and ".foo1" are two selectors, <attr1, val1> is the style map.
+ *
  */
 public class CssBlock {
 
@@ -37,4 +43,15 @@ public class CssBlock {
         return styles;
     }
 
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.join(selectors.iterator(), ","));
+        sb.append(" {");
+        for (String attrName : styles.keySet()) {
+            sb.append(attrName).append(": ").append(styles.get(attrName)).append("; ");
+        }
+        sb.append("}");
+        return sb.toString();
+    }
 }
