@@ -7,6 +7,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.jdom.Text;
 import ru.swing.html.configuration.Configuration;
 import ru.swing.html.configuration.DefaultConfiguration;
 import ru.swing.html.tags.Tag;
@@ -99,13 +100,20 @@ public class DomLoader {
         tag.setAttribute(Tag.TAG_CONTENT, element.getText());
 
         //recursively convert children
-        for (java.lang.Object o : element.getChildren()) {
-            Element child = (Element) o;
-            Tag childTag = createTag(registry, child.getNamespace().getPrefix(), child.getNamespaceURI(), child.getName());
-            tag.addChild(childTag);
-            parseElement(registry, child, childTag);
-            //child tag may substitute model
-            tag.setModel(childTag.getModel());
+        for (java.lang.Object o : element.getContent()) {
+//        for (java.lang.Object o : element.getChildren()) {
+            if (o instanceof Element) {
+                Element child = (Element) o;
+                Tag childTag = createTag(registry, child.getNamespace().getPrefix(), child.getNamespaceURI(), child.getName());
+                tag.addContentChild(childTag);
+                parseElement(registry, child, childTag);
+                //child tag may substitute model
+                tag.setModel(childTag.getModel());
+            }
+            else if (o instanceof Text) {
+                Text text = (Text) o;
+                tag.addContentChild(text.getText());
+            }
         }
 
         tag.afterChildElementsConverted();

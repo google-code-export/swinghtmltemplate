@@ -321,15 +321,19 @@ public class DomModel {
      * @param targetTag tag, whose children will be inserted
      */
     public void mergeTag(Tag sourceTag, Tag targetTag) {
-        List<Tag> targetChildren = targetTag.getChildren();
+        List<Object> targetChildren = targetTag.getContentChildren();
         Tag parent = sourceTag.getParent();
         if (targetChildren !=null && parent !=null) {
 
-            int index = parent.getChildren().indexOf(sourceTag);
+            int index = parent.getContentChildren().indexOf(sourceTag);
+            int childIndex = parent.getChildren().indexOf(sourceTag);
             parent.removeChild(sourceTag);
 
-            for (Tag bodyChild : targetChildren) {
-                parent.addChild(bodyChild, index++);
+            for (Object bodyChild : targetChildren) {
+                parent.addContentChild(bodyChild, index++);
+                if (bodyChild instanceof Tag) {
+                    parent.addChild((Tag) bodyChild, childIndex++);
+                }
             }
         }
 

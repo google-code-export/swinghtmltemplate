@@ -65,6 +65,7 @@ public class ForEach extends Tag {
 
             Tag parent = getParent();
             int tagIndex = getParent().getChildren().indexOf(this);
+            int contentIndex = getParent().getContentChildren().indexOf(this);
             getParent().removeChild(this);
 
             List<Tag> children = new ArrayList<Tag>();
@@ -90,6 +91,7 @@ public class ForEach extends Tag {
 
                 for (Tag child : children) {
                     final Tag childClone = child.clone();
+                    parent.addContentChild(childClone, contentIndex++);
                     parent.addChild(childClone, tagIndex++);
                     childClone.addModelElement(getVar(), item);
                     if (StringUtils.isNotEmpty(getVarStatus())) {
