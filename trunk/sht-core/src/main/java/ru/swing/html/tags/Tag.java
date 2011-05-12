@@ -587,7 +587,7 @@ public class Tag implements Cloneable {
         List<String> pathToRoot = new ArrayList<String>();
         Tag pos = this;
         while (pos!=null) {
-            StringBuilder sb = new StringBuilder(pos.getName());
+            StringBuilder sb = new StringBuilder(pos.getName()!=null ? pos.getName() : pos.getClass().getName());
             if (StringUtils.isNotEmpty(pos.getId())) {
                 sb.append("[#").append(pos.getId()).append("]");
             }
