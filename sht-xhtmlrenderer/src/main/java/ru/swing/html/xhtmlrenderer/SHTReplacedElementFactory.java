@@ -35,7 +35,7 @@ public class SHTReplacedElementFactory extends SwingReplacedElementFactory {
             return null;
         }
 
-        if ("swing".equals(e.getAttribute("renderer")) && StringUtils.isNotEmpty(e.getAttribute("id"))) {
+        if (needsReplacing(e)) {
             Tag child = owner.getModel().getTagById(e.getAttribute("id"));
 
             JComponent component;
@@ -55,5 +55,9 @@ public class SHTReplacedElementFactory extends SwingReplacedElementFactory {
         else {
             return super.createReplacedElement(context, box, uac, cssWidth, cssHeight);
         }
+    }
+
+    public boolean needsReplacing(Element e) {
+        return "swing".equals(e.getAttribute("renderer")) && StringUtils.isNotEmpty(e.getAttribute("id"));
     }
 }

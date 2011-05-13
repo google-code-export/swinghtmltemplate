@@ -83,7 +83,11 @@ public class Utils {
 
 
     /**
-     * Converts tag to jdom element.
+     * <p>Converts tag to jdom element. If tag containes 'renderer="swing"' attribute, then
+     * it is converted using DomConverter.toSwing() and it's style is updated to contain
+     * <code>'display:block'</code> attribute so xhtmlrenderer will check if this element needs to be replaced.</p>
+     *
+     * <p>This procedure does not handles tag's content chidlren</p>
      * @param tag original tag to convert
      * @return created element
      */
