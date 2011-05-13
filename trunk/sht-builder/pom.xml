@@ -65,6 +65,11 @@
             <version>0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>com.googlecode.swinghtmltemplate</groupId>
+            <artifactId>sht-xhtmlrenderer</artifactId>
+            <version>0.6-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
