@@ -1,0 +1,140 @@
+#summary Details on how use <x:xhtmlrenderer> tag
+#labels usage
+
+To use this tag you must add
+{{{
+<dependency>
+    <groupId>com.googlecode.swinghtmltemplate</groupId>
+    <artifactId>sht-xhtmlrenderer</artifactId>
+    <version>0.6-SNAPSHOT</version>
+</dependency>
+}}}
+to your pom.xml.
+
+After that add `http://xhtmlrenderer.java.net` namespace to your html document.
+
+This namespace add new tag `<xhtmlrenderer>`. This tag is converted to the XHtmlPanel of the
+[http://code.google.com/p/flying-saucer/ flying-saucer] project.
+
+xhtmlrenderer lets you render html document on top of the jpanel. We want to pass an `<xhtmlrenderer>` children
+tree as html document. This will allow us to build form in the css-layout manner, where all components
+are handled within xhtmlrenderer engine (i.e. `<div>` will be `div` and not `JPanel` as in normal swinghtmltemplate
+flow). We can also pass usual swing components, so they will be injected into html document.
+
+So let's start with small example. Suppose we have
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:j="http://www.oracle.com/swing"
+      xmlns:x="http://xhtmlrenderer.java.net"
+      xmlns:ui="http://swinghtmltemplate.googlecode.com/ui">
+<head>
+    <title>Xhtml renderer form</title>
+    <style>
+        p {
+            color: black;
+        }
+    </style>
+</head>
+<body style='display: border;'>
+    <j:scroll>
+        <x:xhtmlpanel>
+            <h1>Test xhtml template</h1>
+            <p>Hello world!</p>
+        </x:xhtmlpanel>
+    </j:scroll>
+</body>
+</html>
+}}}
+
+This results in:
+
+http://swinghtmltemplate.googlecode.com/files/Xhtml%20renderer%20form%201.png
+
+
+Here we can see that `XHtmlPanel` panel is added into main panel into center part (main panel has `BorderLayout`).
+All `<x:xhtmlpanel>` children are converted into the new w3c xml document (wrapped in `<html>` and `<body>`) and this
+document is passed to the `XHtmlPanel`.
+
+The resulting w3x xml doc schema is:
+
+{{{
+<html>
+    <head>
+        <style type='text/css'>
+             #all global styles from dom model are inserted here#
+        </style>
+    </head>
+    <body>
+        #all tags are converted to dom elements and inserted here#
+    </body>
+</html>
+}}}
+
+so the resulting document will look like
+{{{
+<html>
+    <head>
+        <style type='text/css'>
+            p {
+                color: black;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Test xhtml template</h1>
+        <p>Hello world!</p>
+    </body>
+</html>
+}}}
+
+Global styles from original dom model are also injected, as you can see.
+
+
+You can use `<a>` tags within document. The `href` attribute will be treated as controllers's method name to invoke.
+Method can take no arguments or can take one argument of `java.awt.events.MouseEvent` type.
+
+To inject swing components we use our custom `SwingReplacedElementFactory` which check's whether next element contains
+`renderer='swing'` attribute. If it does, then it searched corresponding tag in dom model by id and returns it's
+component. As a result the component will be usual swinghtmltemplate component with placeholders, binding etc.
+
+Let's take a look.
+
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:j="http://www.oracle.com/swing"
+      xmlns:x="http://xhtmlrenderer.java.net"
+      xmlns:ui="http://swinghtmltemplate.googlecode.com/ui">
+<head>
+    <style type='text/css'>
+        p {
+            color: black;
+        }
+    </style>
+</head>
+<body style='display: border;'>
+    <j:scroll>
+        <x:xhtmlpanel>
+            <h1>Test xhtml template</h1>
+            <p>Hello world!</p>
+            <div id='wrapper' style='maring: 10px 10px 10px 10px;'>
+                <div id='panel' style='display:block;'>
+                    <input type='button' text='Click me!'/>
+                </div>
+            </div>
+        </x:xhtmlpanel>
+    </j:scroll>
+</body>
+</html>
+}}}
+
+This results in:
+
+http://swinghtmltemplate.googlecode.com/files/Xhtml%20renderer%20form%202.png
+
+Notice that outer div (`#wrapper`) is passed into xhtmlrenderer as usual `div` and the css style for it is in the
+form of usual html css. And inner div (`#panel`) will be converted into the swinghtmltemplate tag and the css style
+is set with swinghtmltemplate manner to correctly setup tag. This style will be parsed with xhtmlrenderer also
+so to avoid conflicts we leave minimum style information in inner div and use outer div to create margins etc.
+
+It is important to understant that the children of inner div will be handled by swinghtmltemplate engine, so input
+inside inner div - is `Input` tag from swinghtmltemplate.
