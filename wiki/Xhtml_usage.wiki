@@ -6,10 +6,10 @@ To use this tag you must add
 <dependency>
     <groupId>com.googlecode.swinghtmltemplate</groupId>
     <artifactId>sht-xhtmlrenderer</artifactId>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.6</version>
 </dependency>
 }}}
-to your pom.xml.
+to your pom.xml (it is not yet released on the time of writing).
 
 After that add `http://xhtmlrenderer.java.net` namespace to your html document.
 
