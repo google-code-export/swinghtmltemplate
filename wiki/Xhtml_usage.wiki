@@ -125,8 +125,15 @@ Example:
 </body>
 </html>
 }}}
+
+
+http://swinghtmltemplate.googlecode.com/files/Xhtml%20renderer%20form%203.png
+
 as you can see styles are applied on `<a>`. If you move mouse over link, it will be underlined.
-Ig you click in the link, controller's "onClick" method will be invoked.
+If you click in the link, controller's "onClick" method will be invoked.
+
+
+
 
 To inject swing components we use our custom `SwingReplacedElementFactory` which check's whether next element contains
 `renderer='swing'` attribute. If it does, then it searched corresponding tag in dom model by id and returns it's
