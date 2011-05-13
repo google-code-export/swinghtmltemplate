@@ -357,21 +357,20 @@ public class DefaultAttributeParser implements AttributeParser {
     class OnclickAttributeParser implements AttributeParser {
 
         public void applyAttribute(Tag tag, JComponent component, String attrName) {
-            //если задан атрибут onclick и компонент - это кнопка (то есть ее можно нажать),
-            //то значение атрибута - название метода в контроллере, который необходимо
-            //вызвать при нажатии
+            //if 'onclick' attribute is set and component is buttom (i.e. it can be clicked)
+            //then attribute value is the name oth the controller's methos needed to invoke
             final String onclickMethod = tag.getAttribute("onclick");
             if (StringUtils.isNotEmpty(onclickMethod) && (component instanceof AbstractButton)) {
 
                 final Object controller = tag.getModel().getController();
                 if (controller!=null) {
 
-                    //находим требуемый метод
+                    //search specified method
                     Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
 
-                    //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                    //if one is found, add a listener to the component, who will invoke founded method
                     if (method!=null) {
-                        //добавляем слушатель, который вызывает метод
+                        //add listener
                         AbstractButton b = (AbstractButton) component;
                         if (clickDelegator !=null) {
                             b.removeActionListener(clickDelegator);
@@ -390,21 +389,20 @@ public class DefaultAttributeParser implements AttributeParser {
     class OnchangeAttributeParser implements AttributeParser {
 
         public void applyAttribute(Tag tag, JComponent component, String attrName) {
-            //если задан атрибут onchange и компонент - это текстовое поле (то есть у нее есть документ),
-            //то значение атрибута - название метода в контроллере, который необходимо
-            //вызвать при изменении документа
+            //if 'onchange' attribute is set and component is text field (i.e. it has document)
+            //then attribute value is the name oth the controller's methos needed to invoke on document change
             final String onchangeMethod = tag.getAttribute("onchange");
             if (StringUtils.isNotEmpty(onchangeMethod) && (component instanceof JTextComponent)) {
 
                 final Object controller = tag.getModel().getController();
                 if (controller!=null) {
 
-                    //находим требуемый метод
+                    //search specified method
                     Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, DocumentEvent.class);
 
-                    //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
+                    //if one is found, add a listener to the component, who will invoke founded method
                     if (method!=null) {
-                        //добавляем слушатель, который вызывает метод
+                        //add listener
                         JTextComponent b = (JTextComponent) component;
                         if (documentDelegator!=null) {
                             b.getDocument().removeDocumentListener(documentDelegator);
