@@ -21,9 +21,9 @@ import javax.swing.*;
  */
 public class SHTReplacedElementFactory extends SwingReplacedElementFactory {
 
-    private XhtmlRenderer owner;
+    private Tag owner;
 
-    public SHTReplacedElementFactory(XhtmlRenderer owner) {
+    public SHTReplacedElementFactory(Tag owner) {
         this.owner = owner;
     }
 

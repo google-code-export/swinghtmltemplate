@@ -17,16 +17,19 @@
             display: border;
             border: empty 12 12 12 12;
         }
+        a:hover {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body id="rootPanel" class="body">
 
     <j:scroll>
-        <x:xhtmlpanel>
+        <x:xhtmlpanel id='xhtml'>
 
             <div style="float:left;margin-right:10px;">
                 <j:scroll renderer='swing' id='scroll1' width='150' height='250'>
-                    <j:tree/>
+                    <j:tree value="${model.treeModel}"/>
                 </j:scroll>
             </div>
 
@@ -41,6 +44,7 @@
                             <td colspan="2">
                                 <div style="display:flow;opaque:false;text-align:left;">
                                     <input type='button' align="bottom" text='foo' onclick="dump"/>
+                                    <input type='button' align="bottom" text='foo' onclick="resize"/>
                                 </div>
                             </td>
                         </tr>
@@ -52,7 +56,10 @@
             <h1>And Thou Art Dead, As Young and Fair</h1>
             <h2>Lord Byron, first published in 1812</h2>
 
-            <ui:forEach items='${model.items}' var="item"><span>${item}</span></ui:forEach>
+            <img src="/img/byron.jpg" alt="key" width="38" height="50"/>
+
+            <ui:forEach items='${model.items}' var="item"><span>${item}</span></ui:forEach><br/>
+            <a href='dump'>dump</a>
 
             <p>And thou art dead, as young and fair<br/>
                 As aught of mortal birth;<br/>
