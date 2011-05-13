@@ -37,25 +37,31 @@ public class If extends Tag {
     }
 
     @Override
-    public void handleChildren(Map<SelectorGroup, JComponent> substitutions) {
+    public void beforeComponentsConvertion() {
+        super.beforeComponentsConvertion();
 
         if (StringUtils.isNotEmpty(getTest())) {
+
             ELProperty<Object, String> prop = ELProperty.create(getTest());
             Object res = prop.getValue(getModelElements());
+
+
             if (res instanceof Boolean) {
                 Boolean show = (Boolean) res;
                 if (show) {
-                    super.handleChildren(substitutions);
+                    getModel().mergeTag(this, this);
+                }
+                else {
+                    //remove <if> from parent. we will place <if> content children instead
+                    getParent().removeChild(this);
                 }
             }
             else {
                 logger.warn(toString()+": 'test' resolved to non Boolean value: "+res.getClass().getName());
-                super.handleChildren(substitutions);
             }
         }
         else {
             logger.warn(toString()+": 'test' parameter is not set");
-            super.handleChildren(substitutions);
         }
     }
 

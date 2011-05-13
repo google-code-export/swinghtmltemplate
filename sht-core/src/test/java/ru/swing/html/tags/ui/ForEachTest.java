@@ -5,6 +5,7 @@ import org.jdesktop.observablecollections.ObservableCollections;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -45,6 +46,47 @@ public class ForEachTest extends TestCase {
         assertEquals(JLabel.class, root.getComponent(2).getClass());
         assertEquals("3", ((JLabel)root.getComponent(2)).getText());
 
+    }
+
+    public void testIterationsWithTextContent() throws Exception {
+
+        String html =
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n" +
+                        "      xmlns:c=\"http://www.oracle.com/swing\"\n" +
+                        "      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>\n" +
+                "<head></head>\n" +
+                "<body>\n" +
+                "   <div id='wrapper'>Start<ui:forEach items='${items}' var='i'>" +
+                "MiddleStart<p>${i}</p>MiddleEnd" +
+                "</ui:forEach>End</div>" +
+                "</body>\n" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+
+        model.addModelElement("items", Arrays.asList("1", "2"));
+        DomConverter.toSwing(model);
+        Tag wrapperTag = model.getTagById("wrapper");
+        JComponent wrapper = wrapperTag.getComponent();
+        assertNotNull(wrapper);
+
+        assertEquals(8, wrapperTag.getContentChildren().size());
+        assertEquals(2, wrapper.getComponentCount());
+
+
+        assertEquals("Start", wrapperTag.getContentChildren().get(0));
+        assertEquals("MiddleStart", wrapperTag.getContentChildren().get(1));
+        assertEquals("p", ((Tag)wrapperTag.getContentChildren().get(2)).getName());
+        assertEquals("MiddleEnd", wrapperTag.getContentChildren().get(3));
+        assertEquals("MiddleStart", wrapperTag.getContentChildren().get(4));
+        assertEquals("p", ((Tag)wrapperTag.getContentChildren().get(5)).getName());
+        assertEquals("MiddleEnd", wrapperTag.getContentChildren().get(6));
+        assertEquals("End", wrapperTag.getContentChildren().get(7));
+
+        //this doesn't work because el means binding, so all labels will have text "3"
+        assertEquals(JLabel.class, wrapper.getComponent(0).getClass());
+        assertEquals("1", ((JLabel)wrapper.getComponent(0)).getText());
+        assertEquals(JLabel.class, wrapper.getComponent(1).getClass());
+        assertEquals("2", ((JLabel)wrapper.getComponent(1)).getText());
     }
 
     public void testIterationsBinding() throws Exception {

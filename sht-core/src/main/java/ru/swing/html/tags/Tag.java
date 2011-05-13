@@ -7,6 +7,7 @@ import org.jdesktop.beansbinding.*;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableMap;
 import org.jdesktop.observablecollections.ObservableMapListener;
+import org.jdom.Element;
 import ru.swing.html.*;
 import ru.swing.html.configuration.AttributeParser;
 import ru.swing.html.configuration.DefaultAttributeParser;
@@ -77,6 +78,7 @@ public class Tag implements Cloneable {
     private ObservableMapListener parentMapListener;
     private ObservableMap parentMap;
     private String prefix;
+    private Element jdomElement;
 
     /**
      * Returns the forst child tag with the specified name
@@ -320,6 +322,15 @@ public class Tag implements Cloneable {
         tag.setParent(null);
         children.remove(tag);
         contents.remove(tag);
+    }
+
+    public void removeContentChild(Object child) {
+        if (child instanceof Tag) {
+            removeChild((Tag) child);
+        }
+        else {
+            contents.remove(child);
+        }
     }
 
     public List<Tag> getChildren() {
@@ -641,6 +652,7 @@ public class Tag implements Cloneable {
         Tag clone = DomLoader.createTag(getModel().getConfiguration().getLibraryLoader().getLibraryRegistry(),
                 getPrefix(), getNamespace(), getName());
         clone.setModel(model);
+        clone.setJdomElement(getJdomElement()!=null ? (Element) getJdomElement().clone() : null);
         for (String attrName : attributes.keySet()) {
             clone.setAttribute(attrName, attributes.get(attrName));
         }
@@ -762,5 +774,13 @@ public class Tag implements Cloneable {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public Element getJdomElement() {
+        return jdomElement;
+    }
+
+    public void setJdomElement(Element jdomElement) {
+        this.jdomElement = jdomElement;
     }
 }

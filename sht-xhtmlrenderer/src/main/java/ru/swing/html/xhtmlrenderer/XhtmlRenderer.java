@@ -1,15 +1,13 @@
 package ru.swing.html.xhtmlrenderer;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
+import org.jdom.*;
 import org.jdom.output.DOMOutputter;
 import org.xhtmlrenderer.simple.XHTMLPanel;
 import org.xhtmlrenderer.simple.extend.XhtmlNamespaceHandler;
 import org.xhtmlrenderer.swing.SwingReplacedElementFactory;
 import ru.swing.html.DomConverter;
+import ru.swing.html.ELUtils;
 import ru.swing.html.TagVisitor;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
@@ -36,9 +34,21 @@ public class XhtmlRenderer extends Tag {
         XHTMLPanel panel = (XHTMLPanel) getComponent();
 
 
+        //replace ReplacedElementFactory so we can inject our components
         panel.getSharedContext().setReplacedElementFactory(new SHTReplacedElementFactory(this));
 
 
+        //here we create new Document for XHTMLPanel. It will contain
+        //<html>
+        // <head>
+        //   <style>
+        //     #all global styles from dom model are inserted here#
+        //   </style>
+        // </head>
+        // <body>
+        //   #all jdom elements from original document are inserted here#
+        // </body>
+        //</html>
         Element html = new Element("html", "http://www.w3.org/1999/xhtml");
         html.addNamespaceDeclaration(Namespace.getNamespace("j", "http://www.oracle.com/swing"));
         final Document doc = new Document(html);
@@ -52,13 +62,20 @@ public class XhtmlRenderer extends Tag {
         html.addContent(head);
 
 
+/*
+        Element body = (Element) getJdomElement().clone();
+        //forse 'display:block' for swing elements
+        checkElement(body);
+        html.addContent(body);
+*/
+
         Element body = new Element("body", "http://www.w3.org/1999/xhtml");
         body.setText(getContent());
         html.addContent(body);
 
-        for (Tag c : getChildren()) {
-            convert(body, c);
-        }
+
+
+        convert(body, this);
 
         DOMOutputter outputter = new DOMOutputter();
         try {
@@ -69,21 +86,54 @@ public class XhtmlRenderer extends Tag {
         }
     }
 
-    private void convert(Element root, Tag child) {
-        Element el = tagToElement(root, child);
-        for (Tag c : child.getChildren()) {
-            convert(el, c);
+    /**
+     * Converts <code>tag</code> into jdom element and appends it to <code>root</code>.
+     * Recursivelly invokes itself for every <code>tag</code> child passing created element as new <code>root</code>.
+     * @param root root jdom elements.
+     * @param tag tag to convert
+     */
+    private void convert(Element root, Tag tag) {
+        for (Object c : tag.getContentChildren()) {
+            if (c instanceof Tag) {
+                Element el = tagToElement((Tag) c);
+                root.addContent(el);
+                convert(el, (Tag) c);
+            }
+            else {
+                String textContent = c.toString();
+                textContent = ELUtils.parseStringValue(textContent, tag.getModelElements());
+                root.addContent(new Text(textContent));
+            }
+        }
+    }
+
+
+    /**
+     * Checks jdom element and its children (recursivelly) if it contain "renderer='swing'" attribute value. If it does,
+     * when method forces 'style' attribute to have css attr 'display:block'.
+     * @param element jdom element
+     */
+    private void checkElement(Element element) {
+        if (element.getAttribute("renderer")!=null && "swing".equals(element.getAttribute("renderer").getValue())) {
+            String original = element.getAttribute("style")!=null ? element.getAttribute("style").getValue() : "";
+            String modifiedStyle = Utils.replaceDisplay(original, "display", "block");
+            element.setAttribute("style", modifiedStyle);
+        }
+
+        for (Object c : element.getChildren()) {
+            if (c instanceof Element) {
+                checkElement((Element) c);
+            }
         }
     }
 
 
     /**
      * Converts tag to jdom element.
-     * @param parent parent element, new element will be added to this
      * @param tag original tag to convert
      * @return created element
      */
-    private Element tagToElement(Element parent, Tag tag) {
+    private Element tagToElement(Tag tag) {
 
         Element el = new Element(tag.getName(), tag.getPrefix(), tag.getNamespace());
 
@@ -93,36 +143,23 @@ public class XhtmlRenderer extends Tag {
                 el.setAttribute(attrName, attribute);
             }
         }
-        el.setText(tag.getContent());
+        //el.setText(tag.getContent());
 
         //force 'display:block' so SHTReplacedElementFactory
         //could replace this element
         if ("swing".equals(tag.getAttribute("renderer"))) {
+            if (tag.getComponent()==null) {
+                DomConverter.convertComponent(tag);
+                JComponent component = tag.getComponentWrapper();
+                component.setSize(component.getPreferredSize());
+            }
             String original = tag.getAttribute("style");
-            String modifiedStyle = replaceDisplay(original, "display", "block");
+            String modifiedStyle = Utils.replaceDisplay(original, "display", "block");
             el.setAttribute("style", modifiedStyle);
         }
 
-        parent.addContent(el);
         return el;
     }
 
 
-    /**
-     * Modifies css style string so 'attrName' attribute is set to 'attrValue'. If there is no
-     * such attribute, it is added.
-     * @param originalStyle original string with css style
-     * @param attrName name of the attribute to add/modify
-     * @param attrName value of the attribute
-     * @return modified css style with added or replaced attribute
-     */
-    public String replaceDisplay(String originalStyle, String attrName, String attrValue) {
-        Map<String, String> styles = StyleParser.extractStyles(originalStyle);
-        styles.put(attrName, attrValue);
-        StringBuilder modifiedStyle = new StringBuilder();
-        for (String key : styles.keySet()) {
-            modifiedStyle.append(key).append(":").append(styles.get(key)).append(";");
-        }
-        return modifiedStyle.toString();
-    }
 }

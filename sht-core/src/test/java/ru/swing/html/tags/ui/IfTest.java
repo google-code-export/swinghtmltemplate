@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 import ru.swing.html.DomConverter;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import java.io.ByteArrayInputStream;
@@ -16,11 +17,11 @@ public class IfTest extends TestCase {
                         "      xmlns:c=\"http://www.oracle.com/swing\"\n" +
                         "      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>\n" +
                 "<head></head>\n" +
-                "<body>\n" +
-                "   <ui:if test='${show}'>" +
-                "      <label id='lbl'>Label</label>" +
-                "   </ui:if>" +
-                "</body>\n" +
+                "<body id='body'>Start" +
+                 "<ui:if test='${show}'>" +
+                   "StartCondition<label id='lbl'>Label</label>EndCondition" +
+                 "</ui:if>" +
+                "End</body>\n" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         model.addModelElement("show", true);
@@ -28,6 +29,15 @@ public class IfTest extends TestCase {
         assertNotNull(root);
 
         assertEquals(1, root.getComponentCount());
+
+        Tag body = model.getTagById("body");
+        assertEquals(5, body.getContentChildren().size());
+        assertEquals("Start", body.getContentChildren().get(0));
+        assertEquals("StartCondition", body.getContentChildren().get(1));
+        assertEquals("label", ((Tag) body.getContentChildren().get(2)).getName());
+        assertEquals("EndCondition", body.getContentChildren().get(3));
+        assertEquals("End", body.getContentChildren().get(4));
+
     }
 
     public void testIfFalse() throws Exception {
@@ -36,11 +46,11 @@ public class IfTest extends TestCase {
                         "      xmlns:c=\"http://www.oracle.com/swing\"\n" +
                         "      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>\n" +
                 "<head></head>\n" +
-                "<body>\n" +
-                "   <ui:if test='${show}'>" +
+                "<body id='body'>Start" +
+                "<ui:if test='${show}'>" +
                 "      <label id='lbl'>Label</label>" +
                 "   </ui:if>" +
-                "</body>\n" +
+                "End</body>\n" +
                 "</html>";
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         model.addModelElement("show", false);
@@ -48,6 +58,13 @@ public class IfTest extends TestCase {
         assertNotNull(root);
 
         assertEquals(0, root.getComponentCount());
+
+        Tag body = model.getTagById("body");
+        assertEquals(2, body.getContentChildren().size());
+        assertEquals("Start", body.getContentChildren().get(0));
+        assertEquals("End", body.getContentChildren().get(1));
+
+
     }
 
     public void testIfFalseCompoundEl() throws Exception {
