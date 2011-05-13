@@ -93,6 +93,41 @@ Global styles from original dom model are also injected, as you can see.
 You can use `<a>` tags within document. The `href` attribute will be treated as controllers's method name to invoke.
 Method can take no arguments or can take one argument of `java.awt.events.MouseEvent` type.
 
+Example:
+
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:j="http://www.oracle.com/swing"
+      xmlns:x="http://xhtmlrenderer.java.net"
+      xmlns:ui="http://swinghtmltemplate.googlecode.com/ui">
+<head>
+    <title>Xhtml renderer form</title>
+    <meta name="display-as" content="frame"/>
+    <meta name="onclose" content="exit"/>
+    <meta name="size" content="640 480"/>
+    <style type='text/css'>
+        a {
+            text-decoration:none;
+        }
+        a:hover {
+            text-decoration:underline;
+        }
+    </style>
+</head>
+<body style='display: border;'>
+    <j:scroll>
+        <x:xhtmlpanel>
+            <h1>Test xhtml template</h1>
+            <p>Hello world!</p>
+            <a href='onClick'>Click me</a>
+        </x:xhtmlpanel>
+    </j:scroll>
+</body>
+</html>
+}}}
+as you can see styles are applied on `<a>`. If you move mouse over link, it will be underlined.
+Ig you click in the link, controller's "onClick" method will be invoked.
+
 To inject swing components we use our custom `SwingReplacedElementFactory` which check's whether next element contains
 `renderer='swing'` attribute. If it does, then it searched corresponding tag in dom model by id and returns it's
 component. As a result the component will be usual swinghtmltemplate component with placeholders, binding etc.
