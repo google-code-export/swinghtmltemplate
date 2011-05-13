@@ -9,7 +9,7 @@ To use this tag you must add
     <version>0.6</version>
 </dependency>
 }}}
-to your pom.xml (it is not yet released on the time of writing).
+to your pom.xml (it is not yet released on the time of writing this).
 
 After that add `http://xhtmlrenderer.java.net` namespace to your html document.
 
