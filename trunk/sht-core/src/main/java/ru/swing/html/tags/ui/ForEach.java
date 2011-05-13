@@ -68,16 +68,18 @@ public class ForEach extends Tag {
             int contentIndex = getParent().getContentChildren().indexOf(this);
             getParent().removeChild(this);
 
-            List<Tag> children = new ArrayList<Tag>();
-            children.addAll(getChildren());
+            //remove all children tag from forEach, but store them before for future use
+            List<Object> children = new ArrayList<Object>();
+            children.addAll(getContentChildren());
 
-            for (Tag child : children) {
-                removeChild(child);
+            for (Object child : children) {
+                removeContentChild(child);
             }
 
             Iterable items =  (Iterable) raw;
 
 
+            //now iterate binded collection
             Iterator it = items.iterator();
             int index = 0;
             boolean first = true;
@@ -89,21 +91,27 @@ public class ForEach extends Tag {
                 status.setLast(!it.hasNext());
                 status.setIndex(index);
 
-                for (Tag child : children) {
-                    final Tag childClone = child.clone();
-                    parent.addContentChild(childClone, contentIndex++);
-                    parent.addChild(childClone, tagIndex++);
-                    childClone.addModelElement(getVar(), item);
-                    if (StringUtils.isNotEmpty(getVarStatus())) {
-                        childClone.addModelElement(getVarStatus(), status);
-                    }
-                    DomConverter.recursivellyVisitTags(childClone, new TagVisitor() {
-                        public void visit(Tag tag) {
-                            if (!childClone.equals(tag)) {
-                                tag.createContextModel();
-                            }
+                for (Object contentChild : children) {
+                    if (contentChild instanceof Tag) {
+                        Tag child = (Tag) contentChild;
+                        final Tag childClone = child.clone();
+                        parent.addContentChild(childClone, contentIndex++);
+                        parent.addChild(childClone, tagIndex++);
+                        childClone.addModelElement(getVar(), item);
+                        if (StringUtils.isNotEmpty(getVarStatus())) {
+                            childClone.addModelElement(getVarStatus(), status);
                         }
-                    });
+                        DomConverter.recursivellyVisitTags(childClone, new TagVisitor() {
+                            public void visit(Tag tag) {
+                                if (!childClone.equals(tag)) {
+                                    tag.createContextModel();
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        parent.addContentChild(contentChild, contentIndex++);
+                    }
                 }
 
                 first = false;

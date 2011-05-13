@@ -6,8 +6,8 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.jdom.Text;
+import org.jdom.input.SAXBuilder;
 import ru.swing.html.configuration.Configuration;
 import ru.swing.html.configuration.DefaultConfiguration;
 import ru.swing.html.tags.Tag;
@@ -60,6 +60,7 @@ public class DomLoader {
         Element root = doc.getRootElement();
         Tag rootTag = createTag(libraryRegistry, root.getNamespacePrefix(),
                 root.getNamespaceURI(), root.getName());
+        rootTag.setJdomElement(root);
         rootTag.setNamespace(root.getNamespaceURI());
         rootTag.setModel(model);
         model.setRootTag(rootTag);
@@ -105,6 +106,7 @@ public class DomLoader {
             if (o instanceof Element) {
                 Element child = (Element) o;
                 Tag childTag = createTag(registry, child.getNamespace().getPrefix(), child.getNamespaceURI(), child.getName());
+                childTag.setJdomElement(child);
                 tag.addContentChild(childTag);
                 parseElement(registry, child, childTag);
                 //child tag may substitute model
