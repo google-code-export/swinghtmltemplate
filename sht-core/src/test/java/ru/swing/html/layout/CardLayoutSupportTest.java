@@ -48,6 +48,13 @@ public class CardLayoutSupportTest extends TestCase {
         assertFalse(childComponent1.isVisible());
         assertTrue(childComponent2.isVisible());
 
+        layout.show(parentComponent, "panel1");
+        assertTrue(childComponent1.isVisible());
+        assertFalse(childComponent2.isVisible());
+
+        layout.show(parentComponent, "panel2");
+        assertFalse(childComponent1.isVisible());
+        assertTrue(childComponent2.isVisible());
 
     }
 }

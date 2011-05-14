@@ -6,7 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Support for CardLayout.
+ * Support for CardLayout. Every child if parent component with CardLayout as LayoutManager
+ * will be added to the parent with "id" attribute value as id of this component within CardLayout
  */
 public class CardLayoutSupport implements LayoutManagerSupport {
 
