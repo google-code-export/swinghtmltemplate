@@ -21,6 +21,7 @@ public class DefaultLayoutService implements LayoutService {
     public DefaultLayoutService() {
         addLayoutManagerSupport("absolute", AbsoluteLayoutSupport.class);
         addLayoutManagerSupport("border", BorderLayoutSupport.class);
+        addLayoutManagerSupport("card", CardLayoutSupport.class);
         addLayoutManagerSupport("flow", FlowLayoutSupport.class);
         addLayoutManagerSupport("table", TableLayoutSupport.class);
         addLayoutManagerSupport("mig", MigLayoutSupport.class);
