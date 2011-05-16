@@ -37,7 +37,7 @@
 <div id="pages" style="display:card;border: empty 12 12 12 12;">
     <ui:forEach var='page' items='${pages}'>
         <div id='${page.id}'>
-            <ui:component src='${page.pageUrl}' page='${page}' pages="${pages}" person="${person}"/>
+            <ui:component src='${page.pageUrl}' page='${page}'  />
         </div>
     </ui:forEach>
 </div>

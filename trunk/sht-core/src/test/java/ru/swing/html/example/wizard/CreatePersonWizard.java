@@ -1,7 +1,6 @@
 package ru.swing.html.example.wizard;
 
 import org.jdom.JDOMException;
-import ru.swing.html.ModelElement;
 
 import java.io.IOException;
 
