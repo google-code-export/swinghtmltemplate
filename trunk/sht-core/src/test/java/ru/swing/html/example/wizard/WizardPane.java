@@ -101,13 +101,14 @@ public class WizardPane extends JDialog {
             return;
         }
         onWizardFinish();
+        dispose();
     }
 
     public void onWizardFinish() {
     }
 
     public final void onCancel() {
-        System.exit(0);
+        dispose();
     }
 
     public List<Page> getPages() {
