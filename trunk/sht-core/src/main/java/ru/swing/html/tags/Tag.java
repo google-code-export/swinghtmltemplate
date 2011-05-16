@@ -83,6 +83,7 @@ public class Tag implements Cloneable {
     private Element jdomElement;
     private ClickDelegator clickDelegator;
     private DocumentDelegator documentDelegator;
+    private String styleClass;
 
 
     /**
@@ -175,6 +176,9 @@ public class Tag implements Cloneable {
         }
         else if ("height".equals(name)) {
             setHeight(value);
+        }
+        else if ("class".equals(name)) {
+            setStyleClass(value);
         }
         else if ("style".equals(name)) {
             Map<String, String> styles = StyleParser.extractStyles(value);
@@ -811,5 +815,13 @@ public class Tag implements Cloneable {
 
     public void setDocumentDelegator(DocumentDelegator documentDelegator) {
         this.documentDelegator = documentDelegator;
+    }
+
+    public String getStyleClass() {
+        return styleClass;
+    }
+
+    public void setStyleClass(String styleClass) {
+        this.styleClass = styleClass;
     }
 }

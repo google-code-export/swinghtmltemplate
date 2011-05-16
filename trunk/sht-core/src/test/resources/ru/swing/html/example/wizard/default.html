@@ -22,6 +22,14 @@
             border: compound (etched) (empty 6 6 6 6) 
         }
 
+        label {
+            color: black;
+        }
+        label.error {
+            color: red;
+        }
+
+
     </style>
 </head>
 <body style="display:border">
@@ -52,7 +60,7 @@
                     <input id='finish' type='button' text="Finish" onclick="onFinish"/>
                 </td>
                 <td>
-                    <input type='button' text="Cancel" onclick="onCancel"/>
+                    <input id='cancel' type='button' text="Cancel" onclick="onCancel"/>
                 </td>
             </tr>
         </table>

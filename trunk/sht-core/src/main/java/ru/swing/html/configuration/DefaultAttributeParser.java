@@ -5,19 +5,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.jxlayer.JXLayer;
 import ru.swing.html.ColorFactory;
+import ru.swing.html.DomModel;
 import ru.swing.html.ELUtils;
 import ru.swing.html.Utils;
 import ru.swing.html.components.BackgroundImageLayerUI;
+import ru.swing.html.css.CssBlock;
 import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.event.ClickDelegator;
 import ru.swing.html.tags.event.DocumentDelegator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.font.TextAttribute;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,6 +40,7 @@ public class DefaultAttributeParser implements AttributeParser {
         setParserForAttribute("background-color", new BackgroundColorAttributeParser());
         setParserForAttribute("background-image", new BackgroundImageAttributeParser());
         setParserForAttribute("border", new BorderAttributeParser());
+        setParserForAttribute("class", new ClassAttributeParser());
         setParserForAttribute("color", new ColorAttributeParser());
         setParserForAttribute("enabled", new EnabledAttributeParser());
         setParserForAttribute("font-family", new FontAttributeParser());
@@ -300,6 +301,25 @@ public class DefaultAttributeParser implements AttributeParser {
                     font = font.deriveFont(font.getStyle()+Font.ITALIC);
                 }
                 component.setFont(font);
+            }
+        }
+    }
+
+    class ClassAttributeParser implements AttributeParser {
+
+        public void applyAttribute(Tag tag, JComponent component, String attrName) {
+            DomModel model = tag.getModel();
+
+            java.util.List<CssBlock> css = model.getGlobalStyles();
+            for (CssBlock block : css) {
+                if (block.matches(tag)) {
+                    for (String name : block.getStyles().keySet()) {
+                        if (!"class".equals(name)) {
+                            tag.setAttribute(name, block.getStyles().get(name));
+                            tag.applyAttribute(component, name);
+                        }
+                    }
+                }
             }
         }
     }
