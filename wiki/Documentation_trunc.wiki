@@ -1661,6 +1661,20 @@ Example:
 </div>
 }}}
 
+== box ==
+Means `javax.swing.CardLayout`.
+
+Each child is placed into container with the id from `id` attribute.
+
+
+Example:
+{{{
+<div style="display: card; ">
+    <div id='card1'></div>
+    <div id='card2'></div>
+</div>
+}}}
+
 == flow ==
 Means `java.awt.FlowLayout`.
 
