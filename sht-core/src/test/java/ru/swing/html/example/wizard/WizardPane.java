@@ -63,7 +63,7 @@ public class WizardPane extends JDialog {
         domModel.query("#finish").enabled(index>=pages.size()-1 ? "true" : "false");
 
         setActivePage(pages.get(index));
-        getActivePage().onPageShow();
+        getActivePage().onPageShow(domModel, getModel());
         CardLayout layout = (CardLayout) pagesContainer.getLayout();
         layout.show(pagesContainer, getActivePage().getId());
     }
@@ -89,7 +89,7 @@ public class WizardPane extends JDialog {
         domModel.query("#finish").enabled(index>=pages.size()-1 ? "true" : "false");
 
         setActivePage(pages.get(index));
-        getActivePage().onPageShow();
+        getActivePage().onPageShow(domModel, model);
         CardLayout layout = (CardLayout) pagesContainer.getLayout();
         layout.show(pagesContainer, getActivePage().getId());
 

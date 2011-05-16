@@ -12,6 +12,7 @@ public class CreatePersonWizard extends WizardPane {
         super("/ru/swing/html/example/wizard/default.html");
         addPage(new Page("index", "Wellcome", "/ru/swing/html/example/wizard/indexpage.html"));
         addPage(new PersonPage("/ru/swing/html/example/wizard/personpage.html"));
+        addPage(new LastPageNotification("last", "Congratulations", "/ru/swing/html/example/wizard/lastpage.html"));
     }
 
 

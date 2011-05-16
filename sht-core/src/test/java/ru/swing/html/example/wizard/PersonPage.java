@@ -16,10 +16,32 @@ public class PersonPage extends Page {
     @Override
     public boolean beforeNextPage(DomModel domModel, Object model) {
         Person person = (Person) model;
-        if (StringUtils.isBlank(person.getName()) || StringUtils.isBlank(person.getLastName()) || StringUtils.isBlank(person.getPhone())) {
-            JOptionPane.showMessageDialog(domModel.getWindow(), "All fields must be filled");
-            return false;
+
+        boolean res = true;
+
+        if (StringUtils.isBlank(person.getName())) {
+            domModel.query("label[for='name']").addClass("error");
+            res = false;
         }
-        return super.beforeNextPage(domModel, model);
+        else {
+            domModel.query("label[for='name']").removeClass("error");
+        }
+
+        if (StringUtils.isBlank(person.getLastName())) {
+            domModel.query("label[for='lastname']").addClass("error");
+            res = false;
+        }
+        else {
+            domModel.query("label[for='lastname']").removeClass("error");
+        }
+
+        if (StringUtils.isBlank(person.getPhone())) {
+            domModel.query("label[for='phone']").addClass("error");
+            res = false;
+        }
+        else {
+            domModel.query("label[for='phone']").removeClass("error");
+        }
+        return res;
     }
 }

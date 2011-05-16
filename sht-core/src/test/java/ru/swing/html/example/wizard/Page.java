@@ -15,10 +15,16 @@ public class Page {
     }
 
 
-    public void onPageShow() {
+    public void onPageShow(DomModel domModel, Object model) {
     }
 
 
+    /**
+     * Invoked before swinching to the  next page.
+     * @param domModel dom model
+     * @param model wizard model object
+     * @return false of switching is forbidden
+     */
     public boolean beforeNextPage(DomModel domModel, Object model) {
         return true;
     }
