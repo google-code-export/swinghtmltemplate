@@ -131,6 +131,15 @@ public class DomModel {
     }
 
     /**
+     * Returns the tag wrapped in QueryResult.
+     * @param tag tag
+     * @return tag, wrapped in QueryResult
+     */
+    public QueryResult query(Tag tag) {
+        return new QueryResult(new Tag[]{tag});
+    }
+
+    /**
      * Selects tags using selector within specified tag.
      * @param selector selector string (comma separated selectors)
      * @param context the tag, searching is done within it

@@ -30,6 +30,11 @@ public class QueryResult implements Iterable<Tag> {
         return results.get(index);
     }
 
+    /**
+     * Invokes visitor for each tag in the result.
+     * @param visitor visitor to be invoked on each result
+     * @return this query result
+     */
     public QueryResult each(TagVisitor visitor) {
         for (Tag tag : results) {
             visitor.visit(tag);
@@ -37,6 +42,14 @@ public class QueryResult implements Iterable<Tag> {
         return this;
     }
 
+    /**
+     * Sets specified attribute for each tag in results. Applies attrinute after that.
+     * @param attrName the name of the attribute
+     * @param attrValue attribute's value
+     * @return this query result
+     * @see Tag#setAttribute(String, String)
+     * @see Tag#applyAttribute(javax.swing.JComponent, String)
+     */
     public QueryResult attr(final String attrName, final String attrValue) {
         return each(new TagVisitor() {
             public void visit(Tag tag) {
@@ -46,14 +59,29 @@ public class QueryResult implements Iterable<Tag> {
         });
     }
 
+    /**
+     * Set the value of the 'width' attribute to the specified value for all tags in the result.
+     * @param width new width
+     * @return this query result
+     */
     public QueryResult width(final String width) {
         return attr("width", width);
     }
 
+    /**
+     * Set the value of the 'height' attribute to the specified value for all tags in the result.
+     * @param height new height
+     * @return this query result
+     */
     public QueryResult height(final String height) {
         return attr("height", height);
     }
 
+    /**
+     * Set the value of the 'enabled' attribute to the specified value for all tags in the result.
+     * @param enabled new enabled value
+     * @return this query result
+     */
     public QueryResult enabled(final String enabled) {
         return attr("enabled", enabled);
     }
