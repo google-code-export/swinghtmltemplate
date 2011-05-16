@@ -7,6 +7,7 @@ import org.jdesktop.beansbinding.AutoBinding;
 import org.jdesktop.beansbinding.BeanProperty;
 import ru.swing.html.ELUtils;
 import ru.swing.html.Utils;
+import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.event.ChangeDelegator;
 
@@ -130,18 +131,17 @@ public class Slider extends Tag {
             //onchange listener
             if (StringUtils.isNotEmpty(getOnChange())) {
 
-                Object controller = getModel().getController();
-                Method method = Utils.findActionMethod(controller.getClass(), getOnChange(), ChangeEvent.class);
-                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-                if (method!=null) {
+                MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(getOnChange(), this);
+                //if invoker is found
+                if (invoker!=null) {
                     //добавляем слушатель, который вызывает метод
                     if (changeDelegator !=null) {
                         slider.removeChangeListener(changeDelegator);
                     }
-                    changeDelegator = new ChangeDelegator(controller, method);
+                    changeDelegator = new ChangeDelegator(invoker);
                 }
                 else {
-                    logger.warn(toString()+ ": can't find method " + getOnChange() + " in class " +controller.getClass().getName());
+                    logger.warn(toString()+ ": can't find method method invoker for '" + getOnChange() + "'");
                 }
 
 

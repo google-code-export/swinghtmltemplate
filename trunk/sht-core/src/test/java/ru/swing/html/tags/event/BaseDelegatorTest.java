@@ -2,27 +2,49 @@ package ru.swing.html.tags.event;
 
 import junit.framework.TestCase;
 import ru.swing.html.Utils;
+import ru.swing.html.configuration.MethodInvoker;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BaseDelegatorTest extends TestCase {
 
     public void testDelegateNoParams() throws Exception {
-        Foo foo = new Foo();
+        final Foo foo = new Foo();
         assertEquals(0, foo.i);
 
-        Method m = Utils.findActionMethod(Foo.class, "foo", Integer.class);
-        CustomDelegator del = new CustomDelegator(foo, m);
+        final Method m = Utils.findActionMethod(Foo.class, "foo", Integer.class);
+        CustomDelegator del = new CustomDelegator(new MethodInvoker() {
+            public void invoke(Class argType, Object arg) {
+                try {
+                    m.invoke(foo);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         del.doTest(null);
         assertEquals(1, foo.i);
     }
 
     public void testDelegate1Param() throws Exception {
-        Foo1 foo = new Foo1();
+        final Foo1 foo = new Foo1();
         assertEquals(0, foo.i);
 
-        Method m = Utils.findActionMethod(Foo1.class, "foo", Integer.class);
-        CustomDelegator del = new CustomDelegator(foo, m);
+        final Method m = Utils.findActionMethod(Foo1.class, "foo", Integer.class);
+        CustomDelegator del = new CustomDelegator(new MethodInvoker() {
+            public void invoke(Class argType, Object arg) {
+                try {
+                    m.invoke(foo, arg);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         del.doTest(10);
         assertEquals(10, foo.i);
     }
@@ -31,12 +53,12 @@ public class BaseDelegatorTest extends TestCase {
 
     public class CustomDelegator extends BaseDelegator {
 
-        public CustomDelegator(Object controller, Method finalM) {
-            super(controller, finalM);
+        public CustomDelegator(MethodInvoker invoker) {
+            super(invoker);
         }
 
         public void doTest(Object event) {
-            delegate(event);
+            delegate(Object.class, event);
         }
     }
 

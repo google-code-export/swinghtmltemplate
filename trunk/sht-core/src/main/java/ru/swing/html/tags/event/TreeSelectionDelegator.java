@@ -1,5 +1,7 @@
 package ru.swing.html.tags.event;
 
+import ru.swing.html.configuration.MethodInvoker;
+
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import java.awt.event.ActionEvent;
@@ -11,12 +13,12 @@ import java.lang.reflect.Method;
  */
 public class TreeSelectionDelegator extends BaseDelegator implements TreeSelectionListener {
 
-    public TreeSelectionDelegator(Object controller, Method finalM) {
-        super(controller, finalM);
+
+    public TreeSelectionDelegator(MethodInvoker invoker) {
+        super(invoker);
     }
 
-
     public void valueChanged(TreeSelectionEvent e) {
-        delegate(e);
+        delegate(TreeSelectionEvent.class, e);
     }
 }
