@@ -74,7 +74,13 @@ public class Composition extends Tag {
 
 
         //loading target document model
-        InputStream in = getClass().getClassLoader().getResourceAsStream(getTemplate());
+        InputStream in = null;
+        try {
+            in = getModel().getConfiguration().getResourceLoader().loadResource(getModel(), getTemplate());
+        } catch (IOException e) {
+            in = null;
+        }
+//        InputStream in = getClass().getClassLoader().getResourceAsStream(getTemplate());
         DomModel target = null;
         try {
             target = DomLoader.loadModel(in);
@@ -90,7 +96,7 @@ public class Composition extends Tag {
         }
 
         //we must clear all ids because source model loader will refill them
-        //and wi will catch "duplicate id" warning
+        //and we will catch "duplicate id" warning
         target.resetIds();
 
         //get snippets to insert

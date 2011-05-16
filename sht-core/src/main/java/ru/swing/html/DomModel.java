@@ -142,6 +142,16 @@ public class DomModel {
         return new QueryResult(tags.toArray(new Tag[tags.size()]));
     }
 
+    /**
+     * Selects tags by component within specified tag.
+     * @param component component to be searched in tags tree
+     * @return matched tags, wrapped with QueryResult
+     */
+    public QueryResult query(JComponent component) {
+        List<Tag> tags = selectTagsByComponent(getRootTag(), component);
+        return new QueryResult(tags.toArray(new Tag[tags.size()]));
+    }
+
     private List<Tag> selectTags(Tag tag, SelectorGroup selector) {
         List<Tag> res = new ArrayList<Tag>();
         if (selector.matches(tag)) {
@@ -149,6 +159,18 @@ public class DomModel {
         }
         for (Tag child : tag.getChildren()) {
             res.addAll(selectTags(child, selector));
+        }
+        return res;
+    }
+
+
+    private List<Tag> selectTagsByComponent(Tag tag, JComponent component) {
+        List<Tag> res = new ArrayList<Tag>();
+        if (component.equals(tag.getComponent())) {
+            res.add(tag);
+        }
+        for (Tag child : tag.getChildren()) {
+            res.addAll(selectTagsByComponent(child, component));
         }
         return res;
     }
@@ -321,7 +343,7 @@ public class DomModel {
      * @param targetTag tag, whose children will be inserted
      */
     public void mergeTag(Tag sourceTag, Tag targetTag) {
-        List<Object> targetChildren = targetTag.getContentChildren();
+        final List<Object> targetChildren = targetTag.getContentChildren();
         Tag parent = sourceTag.getParent();
         if (targetChildren !=null && parent !=null) {
 

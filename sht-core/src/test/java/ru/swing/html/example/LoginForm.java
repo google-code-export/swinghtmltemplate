@@ -43,7 +43,8 @@ public class LoginForm extends JFrame {
 
 
     public void onCancelClick(ActionEvent e) {
-        result.setText("Cancel clicked");
+        model.query(result).attr("text", "Cancel clicked");
+        //result.setText("Cancel clicked");
     }
 
     public void onOkClick() {

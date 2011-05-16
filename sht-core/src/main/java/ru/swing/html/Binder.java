@@ -17,6 +17,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -185,10 +187,16 @@ public class Binder {
 
     public static Map<String, Object> extractModelElements(Object controler) {
         Map<String, Object> res = new HashMap<String, Object>();
-        //получаем поля класса
-        Field[] fields = controler.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            //if field is annotated with @Bind
+        //add all fields from class and it's parents
+        java.util.List<Field> fetched = new ArrayList<Field>();
+        Class cur = controler.getClass();
+        while (cur!=null) {
+            Field[] fields = cur.getDeclaredFields();
+            fetched.addAll(Arrays.asList(fields));
+            cur = cur.getSuperclass();
+        }
+        for (Field field : fetched) {
+            //if field is annotated with @ModelElement
             Annotation a = field.getAnnotation(ModelElement.class);
             if (a!=null) {
                 //get annotation value
@@ -217,9 +225,15 @@ public class Binder {
      * @param component object, to whom model is tied
      */
     public static void bind(DomModel model, Object component) {
-        //получаем поля класса
-        Field[] fields = component.getClass().getDeclaredFields();
-        for (Field field : fields) {
+        //add all fields from class and it's parents
+        java.util.List<Field> fetched = new ArrayList<Field>();
+        Class cur = component.getClass();
+        while (cur!=null) {
+            Field[] fields = cur.getDeclaredFields();
+            fetched.addAll(Arrays.asList(fields));
+            cur = cur.getSuperclass();
+        }
+        for (Field field : fetched) {
             //if field is annotated with @Bind
             Annotation a = field.getAnnotation(Bind.class);
             if (a!=null) {
