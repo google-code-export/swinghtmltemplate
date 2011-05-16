@@ -259,20 +259,42 @@ public class Utils {
      */
     public static Method findActionMethod(Class controllerClass, String name, Class param) {
         //search specified method
-        Method method;
-        try {
-            //1. search no-args method
-            method = controllerClass.getDeclaredMethod(name);
-
-        } catch (NoSuchMethodException e1) {
-            //2. search the method with the argument of specified type
+        Method method = null;
+        //1. search no-args method
+        Class cur = controllerClass;
+        while (method==null && cur!=null) {
             try {
-                method = controllerClass.getDeclaredMethod(name, param);
+                method = cur.getDeclaredMethod(name);
             } catch (NoSuchMethodException e) {
                 method = null;
+            } catch (SecurityException e) {
+                method = null;
+            }
+            if (method==null) {
+                cur = cur.getSuperclass();
+            }
+        }
+        if (method!=null) {
+            return method;
+        }
+
+        //2. search the method with the argument of specified type
+        cur = controllerClass;
+        while (method==null && cur!=null) {
+            try {
+                method = cur.getDeclaredMethod(name, param);
+            } catch (NoSuchMethodException e) {
+                method = null;
+            } catch (SecurityException e) {
+                method = null;
+            }
+
+            if (method==null) {
+                cur = cur.getSuperclass();
             }
         }
         return method;
+
     }
 
 }

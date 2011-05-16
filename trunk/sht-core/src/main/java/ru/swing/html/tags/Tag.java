@@ -297,8 +297,12 @@ public class Tag implements Cloneable {
         if (content instanceof Tag) {
             Tag tag = (Tag) content;
             tag.setParent(this);
-            tag.setModel(getModel());
-            tag.createContextModel();
+            DomConverter.recursivellyVisitTags(tag, new TagVisitor() {
+                public void visit(Tag tag) {
+                    tag.setModel(getModel());
+                    tag.createContextModel();
+                }
+            });
             children.add(tag);
         }
     }
@@ -308,8 +312,12 @@ public class Tag implements Cloneable {
         if (content instanceof Tag) {
             Tag tag = (Tag) content;
             tag.setParent(this);
-            tag.setModel(getModel());
-            tag.createContextModel();
+            DomConverter.recursivellyVisitTags(tag, new TagVisitor() {
+                public void visit(Tag tag) {
+                    tag.setModel(getModel());
+                    tag.createContextModel();
+                }
+            });
         }
     }
 

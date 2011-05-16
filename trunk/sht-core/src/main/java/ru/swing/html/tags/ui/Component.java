@@ -6,6 +6,7 @@ import org.jdesktop.beansbinding.*;
 import org.jdom.JDOMException;
 import ru.swing.html.DomLoader;
 import ru.swing.html.DomModel;
+import ru.swing.html.ELUtils;
 import ru.swing.html.tags.Body;
 import ru.swing.html.tags.Tag;
 
@@ -84,13 +85,14 @@ public class Component extends Tag {
         //loading target document model
 //        InputStream in = getClass().getClassLoader().getResourceAsStream(getSource());
         DomModel targetModel = null;
+        String url = ELUtils.parseStringValue(getSource(), getModelElements());
         try {
-            InputStream in = getModel().getConfiguration().getResourceLoader().loadResource(getModel(), getSource());
+            InputStream in = getModel().getConfiguration().getResourceLoader().loadResource(getModel(), url);
             targetModel = DomLoader.loadModel(in);
         } catch (JDOMException e) {
-            logger.error(toString() + ": Can't load document: " + getSource(), e);
+            logger.error(toString() + ": Can't load document: " + url, e);
         } catch (IOException e) {
-            logger.error(toString() + ": Can't load document: " + getSource(), e);
+            logger.error(toString() + ": Can't load document: " + url, e);
         }
 
         if (targetModel ==null) {

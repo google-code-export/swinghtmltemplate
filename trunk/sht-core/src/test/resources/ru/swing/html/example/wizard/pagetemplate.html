@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head>
+    <title></title>
+</head>
+<body>
+<div style="">
+    <table>
+        <tr>
+            <td width="200" height="fill">
+                <div>
+                    <div class='pageLister' style="display:box;x-boxlayout-direction: vertical" align="top">
+                        <ui:forEach var='pageItem' items='${pages}' varStatus='i'>
+                            <div>
+                                <ui:choose>
+                                    <ui:when test='${pageItem eq page}'>
+                                        <p class="selected">${i.index+1}. ${pageItem.title}</p>
+                                    </ui:when>
+                                    <ui:otherwise>
+                                        <p>${i.index+1}. ${pageItem.title}</p>
+                                    </ui:otherwise>
+                                </ui:choose>
+                            </div>
+                        </ui:forEach>
+                    </div>
+                </div>
+            </td>
+            <td width="fill">
+                <div class="pageDetails">
+                    <ui:insert name='content'/>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
