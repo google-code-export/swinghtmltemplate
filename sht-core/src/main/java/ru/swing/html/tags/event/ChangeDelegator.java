@@ -1,5 +1,7 @@
 package ru.swing.html.tags.event;
 
+import ru.swing.html.configuration.MethodInvoker;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.lang.reflect.Method;
@@ -9,11 +11,12 @@ import java.lang.reflect.Method;
  */
 public class ChangeDelegator extends BaseDelegator implements ChangeListener {
 
-    public ChangeDelegator(Object controller, Method finalM) {
-        super(controller, finalM);
+
+    public ChangeDelegator(MethodInvoker invoker) {
+        super(invoker);
     }
 
     public void stateChanged(ChangeEvent e) {
-        delegate(e);
+        delegate(ChangeEvent.class, e);
     }
 }

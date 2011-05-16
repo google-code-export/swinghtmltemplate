@@ -35,4 +35,7 @@ public interface Configuration {
      * @return layout service
      */
     public LayoutService getLayoutService();
+
+    public MethodResolverService getMethodResolverService();
+
 }

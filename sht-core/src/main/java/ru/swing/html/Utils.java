@@ -254,7 +254,7 @@ public class Utils {
      * searched first, if noone found. the name with the specified param is searched.
      * @param controllerClass controller's class within which the search will occur
      * @param name the method name
-     * @param param the possible parameter type
+     * @param param the possible parameters types
      * @return founded method or null, of no method is found
      */
     public static Method findActionMethod(Class controllerClass, String name, Class param) {

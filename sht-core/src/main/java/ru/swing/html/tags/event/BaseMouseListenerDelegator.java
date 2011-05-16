@@ -1,5 +1,7 @@
 package ru.swing.html.tags.event;
 
+import ru.swing.html.configuration.MethodInvoker;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Method;
@@ -12,10 +14,10 @@ import java.lang.reflect.Method;
  */
 public abstract class BaseMouseListenerDelegator extends BaseDelegator implements MouseListener {
 
-    public BaseMouseListenerDelegator(Object controller, Method finalM) {
-        super(controller, finalM);
-    }
 
+    public BaseMouseListenerDelegator(MethodInvoker invoker) {
+        super(invoker);
+    }
 
     public void mouseClicked(MouseEvent e) {
     }

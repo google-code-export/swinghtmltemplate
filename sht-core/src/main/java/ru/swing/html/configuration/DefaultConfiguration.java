@@ -9,6 +9,7 @@ public class DefaultConfiguration implements Configuration {
     private ResourceLoader resourceLoader = new ClasspathResourceLoader();
     private AttributeParser attributeParser = new DefaultAttributeParser();
     private LayoutService layoutService = new DefaultLayoutService();
+    private MethodResolverService methodResolverService = new DefaultMethodResolverService();
 
     public LibraryLoader getLibraryLoader() {
         return libraryLoader;
@@ -24,5 +25,9 @@ public class DefaultConfiguration implements Configuration {
 
     public LayoutService getLayoutService() {
         return layoutService;
+    }
+
+    public MethodResolverService getMethodResolverService() {
+        return methodResolverService;
     }
 }

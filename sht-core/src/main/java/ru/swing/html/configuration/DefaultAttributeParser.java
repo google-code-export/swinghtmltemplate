@@ -33,8 +33,6 @@ import java.util.Map;
 public class DefaultAttributeParser implements AttributeParser {
 
     private Log logger = LogFactory.getLog(getClass());
-    private ClickDelegator clickDelegator;
-    private DocumentDelegator documentDelegator;
     private Map<String, AttributeParser> parsers = new HashMap<String, AttributeParser>();
 
 
@@ -366,16 +364,19 @@ public class DefaultAttributeParser implements AttributeParser {
                 if (controller!=null) {
 
                     //search specified method
-                    Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
+                    MethodInvoker invoker = tag.getModel().getConfiguration().getMethodResolverService().resolveMethod(onclickMethod, tag);
+//                    Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
 
                     //if one is found, add a listener to the component, who will invoke founded method
-                    if (method!=null) {
+                    if (invoker!=null) {
                         //add listener
                         AbstractButton b = (AbstractButton) component;
+                        ClickDelegator clickDelegator = tag.getClickDelegator();
                         if (clickDelegator !=null) {
                             b.removeActionListener(clickDelegator);
                         }
-                        clickDelegator = new ClickDelegator(controller, method);
+                        clickDelegator = new ClickDelegator(invoker);
+                        tag.setClickDelegator(clickDelegator);
                         b.addActionListener(clickDelegator);
                     }
                     else {
@@ -398,16 +399,18 @@ public class DefaultAttributeParser implements AttributeParser {
                 if (controller!=null) {
 
                     //search specified method
-                    Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, DocumentEvent.class);
+                    MethodInvoker invoker = tag.getModel().getConfiguration().getMethodResolverService().resolveMethod(onchangeMethod, tag);
+//                    Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, DocumentEvent.class);
 
                     //if one is found, add a listener to the component, who will invoke founded method
-                    if (method!=null) {
+                    if (invoker!=null) {
                         //add listener
                         JTextComponent b = (JTextComponent) component;
-                        if (documentDelegator!=null) {
-                            b.getDocument().removeDocumentListener(documentDelegator);
+                        if (tag.getDocumentDelegator()!=null) {
+                            b.getDocument().removeDocumentListener(tag.getDocumentDelegator());
                         }
-                        documentDelegator = new DocumentDelegator(controller, method);
+                        DocumentDelegator documentDelegator = new DocumentDelegator(invoker);
+                        tag.setDocumentDelegator(documentDelegator);
                         b.getDocument().addDocumentListener(documentDelegator);
                     }
                     else {

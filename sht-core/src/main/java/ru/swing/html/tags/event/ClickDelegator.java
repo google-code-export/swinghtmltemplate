@@ -1,5 +1,7 @@
 package ru.swing.html.tags.event;
 
+import ru.swing.html.configuration.MethodInvoker;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
@@ -9,12 +11,12 @@ import java.lang.reflect.Method;
  */
 public class ClickDelegator extends BaseDelegator implements ActionListener {
 
-    public ClickDelegator(Object controller, Method finalM) {
-        super(controller, finalM);
+
+    public ClickDelegator(MethodInvoker invoker) {
+        super(invoker);
     }
 
-
     public void actionPerformed(ActionEvent e) {
-        delegate(e);
+        delegate(ActionEvent.class, e);
     }
 }

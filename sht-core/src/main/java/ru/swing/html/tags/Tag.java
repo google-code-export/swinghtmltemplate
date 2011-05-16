@@ -16,6 +16,8 @@ import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
+import ru.swing.html.tags.event.ClickDelegator;
+import ru.swing.html.tags.event.DocumentDelegator;
 
 import javax.swing.*;
 import java.lang.Cloneable;
@@ -79,6 +81,9 @@ public class Tag implements Cloneable {
     private ObservableMap parentMap;
     private String prefix;
     private Element jdomElement;
+    private ClickDelegator clickDelegator;
+    private DocumentDelegator documentDelegator;
+
 
     /**
      * Returns the forst child tag with the specified name
@@ -782,5 +787,21 @@ public class Tag implements Cloneable {
 
     public void setJdomElement(Element jdomElement) {
         this.jdomElement = jdomElement;
+    }
+
+    public ClickDelegator getClickDelegator() {
+        return clickDelegator;
+    }
+
+    public void setClickDelegator(ClickDelegator clickDelegator) {
+        this.clickDelegator = clickDelegator;
+    }
+
+    public DocumentDelegator getDocumentDelegator() {
+        return documentDelegator;
+    }
+
+    public void setDocumentDelegator(DocumentDelegator documentDelegator) {
+        this.documentDelegator = documentDelegator;
     }
 }

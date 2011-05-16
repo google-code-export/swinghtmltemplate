@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdesktop.beansbinding.ELProperty;
 import ru.swing.html.ELUtils;
 import ru.swing.html.Utils;
+import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.event.MouseListenerClickDelegator;
 import ru.swing.html.tags.event.TreeSelectionDelegator;
@@ -116,18 +117,17 @@ public class Tree extends Tag {
             final String onchangeMethod = getAttribute("onchange");
             if (StringUtils.isNotEmpty(onchangeMethod)) {
 
-                Object controller = getModel().getController();
-                Method method = Utils.findActionMethod(controller.getClass(), onchangeMethod, TreeSelectionEvent.class);
-                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-                if (method!=null) {
-                    //добавляем слушатель, который вызывает метод
+                MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(onchangeMethod, this);
+                //if invoker is found
+                if (invoker!=null) {
+                    //create delegator
                     if (treeModelDelegator !=null) {
                         tree.getSelectionModel().removeTreeSelectionListener(treeModelDelegator);
                     }
-                    treeModelDelegator = new TreeSelectionDelegator(controller, method);
+                    treeModelDelegator = new TreeSelectionDelegator(invoker);
                 }
                 else {
-                    logger.warn(toString()+ ": can't find method " + onchangeMethod + " in class " +controller.getClass().getName());
+                    logger.warn(toString()+ ": can't find method invoker for '" + onchangeMethod + "'");
                 }
 
 
@@ -139,18 +139,17 @@ public class Tree extends Tag {
             final String onclickMethod = getAttribute("onclick");
             if (StringUtils.isNotEmpty(onclickMethod)) {
 
-                Object controller = getModel().getController();
-                Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, MouseEvent.class);
-                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-                if (method!=null) {
+                MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(onclickMethod, this);
+                //if the invoker is found
+                if (invoker!=null) {
                     //добавляем слушатель, который вызывает метод
                     if (mouseListenerClickDelegator !=null) {
                         tree.removeMouseListener(mouseListenerClickDelegator);
                     }
-                    mouseListenerClickDelegator = new MouseListenerClickDelegator(controller, method, 1);
+                    mouseListenerClickDelegator = new MouseListenerClickDelegator(invoker, 1);
                 }
                 else {
-                    logger.warn(toString()+ ": can't find method " + onclickMethod + " in class " +controller.getClass().getName());
+                    logger.warn(toString()+ ": can't find method invoker for '" + onclickMethod + "'");
                 }
 
 
@@ -162,18 +161,17 @@ public class Tree extends Tag {
             final String ondblclickMethod = getAttribute("ondblclick");
             if (StringUtils.isNotEmpty(ondblclickMethod)) {
 
-                Object controller = getModel().getController();
-                Method method = Utils.findActionMethod(controller.getClass(), ondblclickMethod, MouseEvent.class);
-                //если метод нашелся, то добавляем к компоненту слушатель, который вызывает метод.
-                if (method!=null) {
-                    //добавляем слушатель, который вызывает метод
+                MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(ondblclickMethod, this);
+                //if invoker is found
+                if (invoker!=null) {
+                    //add delegator
                     if (mouseListenerDblClickDelegator !=null) {
                         tree.removeMouseListener(mouseListenerDblClickDelegator);
                     }
-                    mouseListenerDblClickDelegator = new MouseListenerClickDelegator(controller, method, 2);
+                    mouseListenerDblClickDelegator = new MouseListenerClickDelegator(invoker, 2);
                 }
                 else {
-                    logger.warn(toString()+ ": can't find method " + ondblclickMethod + " in class " +controller.getClass().getName());
+                    logger.warn(toString()+ ": can't find method invoker for '" + ondblclickMethod + "'");
                 }
 
 
