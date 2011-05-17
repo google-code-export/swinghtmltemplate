@@ -15,14 +15,15 @@ public class BaseDelegatorTest extends TestCase {
 
         final Method m = Utils.findActionMethod(Foo.class, "foo", Integer.class);
         CustomDelegator del = new CustomDelegator(new MethodInvoker() {
-            public void invoke(Class argType, Object arg) {
+            public Object invoke(Class argType, Object arg) {
                 try {
-                    m.invoke(foo);
+                    return m.invoke(foo);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
+                return null;
             }
         });
         del.doTest(null);
@@ -35,14 +36,15 @@ public class BaseDelegatorTest extends TestCase {
 
         final Method m = Utils.findActionMethod(Foo1.class, "foo", Integer.class);
         CustomDelegator del = new CustomDelegator(new MethodInvoker() {
-            public void invoke(Class argType, Object arg) {
+            public Object invoke(Class argType, Object arg) {
                 try {
-                    m.invoke(foo, arg);
+                    return m.invoke(foo, arg);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
                     e.printStackTrace();
                 }
+                return null;
             }
         });
         del.doTest(10);

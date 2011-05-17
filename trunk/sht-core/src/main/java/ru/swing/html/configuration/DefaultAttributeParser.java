@@ -13,6 +13,7 @@ import ru.swing.html.css.CssBlock;
 import ru.swing.html.tags.Tag;
 import ru.swing.html.tags.event.ClickDelegator;
 import ru.swing.html.tags.event.DocumentDelegator;
+import ru.swing.html.tags.event.MouseListenerClickDelegator;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -50,6 +51,7 @@ public class DefaultAttributeParser implements AttributeParser {
         setParserForAttribute("height", new HeightAttributeParser());
         setParserForAttribute("id", new IdAttributeParser());
         setParserForAttribute("onclick", new OnclickAttributeParser());
+        setParserForAttribute("ondblclick", new OndblclickAttributeParser());
         setParserForAttribute("onchange", new OnchangeAttributeParser());
         setParserForAttribute("opaque", new OpaqueAttributeParser());
         setParserForAttribute("icon", new IconAttributeParser());
@@ -378,8 +380,68 @@ public class DefaultAttributeParser implements AttributeParser {
             //if 'onclick' attribute is set and component is buttom (i.e. it can be clicked)
             //then attribute value is the name oth the controller's methos needed to invoke
             final String onclickMethod = tag.getAttribute("onclick");
-            if (StringUtils.isNotEmpty(onclickMethod) && (component instanceof AbstractButton)) {
+            if (StringUtils.isNotEmpty(onclickMethod)) {
+                if ((component instanceof AbstractButton)) {
 
+                    final Object controller = tag.getModel().getController();
+                    if (controller!=null) {
+
+                        //search specified method
+                        MethodInvoker invoker = tag.getModel().getConfiguration().getMethodResolverService().resolveMethod(onclickMethod, tag);
+    //                    Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
+
+                        //if one is found, add a listener to the component, who will invoke founded method
+                        if (invoker!=null) {
+                            //add listener
+                            AbstractButton b = (AbstractButton) component;
+                            ClickDelegator clickDelegator = tag.getClickDelegator();
+                            if (clickDelegator !=null) {
+                                b.removeActionListener(clickDelegator);
+                            }
+                            clickDelegator = new ClickDelegator(invoker);
+                            tag.setClickDelegator(clickDelegator);
+                            b.addActionListener(clickDelegator);
+                        }
+                        else {
+                            logger.warn("Can't find method " +onclickMethod+" in class "+controller.getClass().getName());
+                        }
+                    }
+                }
+                else {
+                    final Object controller = tag.getModel().getController();
+                    if (controller!=null) {
+
+                        //search specified method
+                        MethodInvoker invoker = tag.getModel().getConfiguration().getMethodResolverService().resolveMethod(onclickMethod, tag);
+    //                    Method method = Utils.findActionMethod(controller.getClass(), onclickMethod, ActionEvent.class);
+
+                        //if one is found, add a listener to the component, who will invoke founded method
+                        if (invoker!=null) {
+                            //add listener
+                            MouseListenerClickDelegator clickDelegator = tag.getMouseClickDelegator();
+                            if (clickDelegator !=null) {
+                                component.removeMouseListener(clickDelegator);
+                            }
+                            clickDelegator = new MouseListenerClickDelegator(invoker, 1);
+                            tag.setMouseClickDelegator(clickDelegator);
+                            component.addMouseListener(clickDelegator);
+                        }
+                        else {
+                            logger.warn("Can't find method " +onclickMethod+" in class "+controller.getClass().getName());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    class OndblclickAttributeParser implements AttributeParser {
+
+        public void applyAttribute(Tag tag, JComponent component, String attrName) {
+            //if 'onclick' attribute is set and component is buttom (i.e. it can be clicked)
+            //then attribute value is the name oth the controller's methos needed to invoke
+            final String onclickMethod = tag.getAttribute("ondblclick");
+            if (StringUtils.isNotEmpty(onclickMethod)) {
                 final Object controller = tag.getModel().getController();
                 if (controller!=null) {
 
@@ -390,14 +452,13 @@ public class DefaultAttributeParser implements AttributeParser {
                     //if one is found, add a listener to the component, who will invoke founded method
                     if (invoker!=null) {
                         //add listener
-                        AbstractButton b = (AbstractButton) component;
-                        ClickDelegator clickDelegator = tag.getClickDelegator();
+                        MouseListenerClickDelegator clickDelegator = tag.getMouseDblClickDelegator();
                         if (clickDelegator !=null) {
-                            b.removeActionListener(clickDelegator);
+                            component.removeMouseListener(clickDelegator);
                         }
-                        clickDelegator = new ClickDelegator(invoker);
-                        tag.setClickDelegator(clickDelegator);
-                        b.addActionListener(clickDelegator);
+                        clickDelegator = new MouseListenerClickDelegator(invoker, 2);
+                        tag.setMouseDblClickDelegator(clickDelegator);
+                        component.addMouseListener(clickDelegator);
                     }
                     else {
                         logger.warn("Can't find method " +onclickMethod+" in class "+controller.getClass().getName());
