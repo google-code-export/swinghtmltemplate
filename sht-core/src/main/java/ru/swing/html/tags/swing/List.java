@@ -116,7 +116,7 @@ public class List extends Tag {
         //bind selected rows
         if (StringUtils.isNotEmpty(getSelectedElements())) {
             BeanProperty selectedElement = BeanProperty.create("selectedElements");
-            getModel().bind(getSelectedElement(), getComponent(), selectedElement);
+            getModel().bind(getSelectedElements(), getComponent(), selectedElement);
             logger.trace(toString()+": binded 'selectedElements' to "+getSelectedElement());
         }
 

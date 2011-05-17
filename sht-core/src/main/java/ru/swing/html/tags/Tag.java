@@ -18,6 +18,7 @@ import ru.swing.html.layout.LayoutManagerSupport;
 import ru.swing.html.layout.LayoutManagerSupportFactory;
 import ru.swing.html.tags.event.ClickDelegator;
 import ru.swing.html.tags.event.DocumentDelegator;
+import ru.swing.html.tags.event.MouseListenerClickDelegator;
 
 import javax.swing.*;
 import java.lang.Cloneable;
@@ -82,6 +83,8 @@ public class Tag implements Cloneable {
     private String prefix;
     private Element jdomElement;
     private ClickDelegator clickDelegator;
+    private MouseListenerClickDelegator mouseClickDelegator;
+    private MouseListenerClickDelegator mouseDblClickDelegator;
     private DocumentDelegator documentDelegator;
     private String styleClass;
 
@@ -807,6 +810,23 @@ public class Tag implements Cloneable {
 
     public void setClickDelegator(ClickDelegator clickDelegator) {
         this.clickDelegator = clickDelegator;
+    }
+
+    public MouseListenerClickDelegator getMouseClickDelegator() {
+        return mouseClickDelegator;
+    }
+
+    public void setMouseClickDelegator(MouseListenerClickDelegator mouseClickDelegator) {
+        this.mouseClickDelegator = mouseClickDelegator;
+    }
+
+
+    public MouseListenerClickDelegator getMouseDblClickDelegator() {
+        return mouseDblClickDelegator;
+    }
+
+    public void setMouseDblClickDelegator(MouseListenerClickDelegator mouseDblClickDelegator) {
+        this.mouseDblClickDelegator = mouseDblClickDelegator;
     }
 
     public DocumentDelegator getDocumentDelegator() {

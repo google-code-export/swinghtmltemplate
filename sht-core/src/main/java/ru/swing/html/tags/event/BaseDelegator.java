@@ -19,8 +19,8 @@ public class BaseDelegator {
         this.invoker = invoker;
     }
 
-    protected void delegate(Class argType, Object event) {
-        invoker.invoke(argType, event);
+    protected Object delegate(Class argType, Object event) {
+        return invoker.invoke(argType, event);
     }
 
 }
