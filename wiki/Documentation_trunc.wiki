@@ -1774,7 +1774,8 @@ Tag {{{<table/>}}} uses this layout.
 
 = Events =
 Different event listeners can be attached to components. Supported event types are:
- * `onclick` - it can be assigned to `javax.swing.AbstractButton` descendants. An corresponding method in controller is invoked on click.
+ * `onclick` - An corresponding method in controller is invoked on click.
+ * `ondblclick` - An corresponding method in controller is invoked on double click.
  * `onchange` - it can be assigned to `javax.swing.text.JTextComponent` descendants. An corresponding method in controller is invoked on document change.
 
 
@@ -1782,7 +1783,8 @@ Different event listeners can be attached to components. Supported event types a
 Make sure an controller is binded to a model.
 A method, whose name is equal to `onclick` value, is searched in controller. You can make 2 type of methods:
  * no-params (is searched first)
- * 1-param (java.awt.event.ActionEvent) (is searched if there's no no-param method)
+ * 1-param (java.awt.event.ActionEvent) (is searched if there's no no-param method and component is JAbstractButton)
+ * 1-param (java.awt.event.MouseEvent) (is searched if there's no no-param method and component is not JAbstractButton)
 {{{
 <html>
    <head></head>
@@ -1808,6 +1810,48 @@ public class Foo {
    }
 }
 }}}
+
+If the component is instance of `javax.swing.JAbstractButton` (i.e. for `<input type='button'/>`) then this event is
+triggered each time the button is clicked (it may be clicked with keyboard). This is done by adding actionListener
+to the button.
+
+If the component is not instance of `javax.swing.JAbstractButton` then this event is triggered each time mouse clicks
+on component. This is done by adding mouseListener to the button.
+
+== ondblclick ==
+Make sure an controller is binded to a model.
+A method, whose name is equal to `ondblclick` value, is searched in controller. You can make 2 type of methods:
+ * no-params (is searched first)
+ * 1-param (java.awt.event.MouseEvent) (is searched if there's no no-param method)
+{{{
+<html>
+   <head></head>
+   <body>
+      <div ondblclick='foo'></div>
+   </body>
+</html>
+}}}
+{{{
+public class Foo {
+   public Foo() {
+      try {
+          model = Binder.bind(this, true);
+      } catch (JDOMException e) {
+          e.printStackTrace();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+   }
+
+   public void foo() {
+      System.out.println("Foo is clicked");
+   }
+}
+}}}
+
+
+
+
 
 == onchange ==
 Make sure an controller is binded to a model.
