@@ -1100,6 +1100,8 @@ public class CustomRenderer extends DefaultListCellRenderer implements ListCellR
 </c:list>
 }}}
 
+Tag supports `onchange` event, invoked when current item is changed in a list. Attribute value
+is method name. Method can have no arguments or have one argument of type `javax.swing.event.ListSelectionEvent`.
 
 === scroll ===
 Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are
