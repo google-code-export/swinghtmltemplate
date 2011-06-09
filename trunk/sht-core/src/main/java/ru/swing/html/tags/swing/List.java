@@ -188,7 +188,7 @@ public class List extends Tag {
                 jlist.setVisibleRowCount(0);
             }
         }
-        else if ("rowsPerColumn".equals(name)) {
+        else if ("rowspercolumn".equalsIgnoreCase(name)) {
             if (StringUtils.isNotEmpty(getRowsPerColumn())) {
 
                 if (StringUtils.isNumeric(getRowsPerColumn())) {
@@ -239,7 +239,7 @@ public class List extends Tag {
         else if ("renderer".equals(name)) {
             setRenderer(value);
         }
-        else if ("rowsPerColumn".equalsIgnoreCase(name)) {
+        else if ("rowspercolumn".equalsIgnoreCase(name)) {
             setRowsPerColumn(value);
         }
         else if ("onchange".equals(name)) {

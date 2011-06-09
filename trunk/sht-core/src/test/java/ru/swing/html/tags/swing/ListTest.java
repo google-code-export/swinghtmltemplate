@@ -5,19 +5,46 @@ import ru.swing.html.*;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import java.awt.event.ActionEvent;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 public class ListTest extends TestCase {
 
     public void testCreateComponent() throws Exception {
-        List combobox = new List();
-        JComponent c = combobox.createComponent();
+        List list = new List();
+        JComponent c = list.createComponent();
         assertNotNull(c);
         assertTrue(c instanceof JList);
     }
 
+    public void testType() throws Exception {
+        List list = new List();
+        JList c = (JList) list.createComponent();
+        
+        assertEquals(JList.VERTICAL, c.getLayoutOrientation());
+
+        list.setAttribute("type", "vertical-wrap");
+        list.applyAttribute(c, "type");
+        assertEquals(JList.VERTICAL_WRAP, c.getLayoutOrientation());
+
+        list.setAttribute("type", "horizontal-wrap");
+        list.applyAttribute(c, "type");
+        assertEquals(JList.HORIZONTAL_WRAP, c.getLayoutOrientation());
+
+    }
+
+    public void testRowsPerColumn() throws Exception {
+        List list = new List();
+        JList c = (JList) list.createComponent();
+
+        list.setAttribute("rowsPerColumn", "2");
+        list.applyAttribute(c, "rowsPerColumn");
+        assertEquals(2, c.getVisibleRowCount());
+
+        list.setAttribute("rowsPerColumn", "1");
+        list.applyAttribute(c, "rowsPerColumn");
+        assertEquals(1, c.getVisibleRowCount());
+    }
 
     public void testOnchange() throws Exception {
 
@@ -47,7 +74,7 @@ public class ListTest extends TestCase {
         assertEquals("foo2", controller.text);
         assertEquals(1, controller.selectedCount);
 
-        b.setSelectedIndices(new int[] {0, 1});
+        b.setSelectedIndices(new int[]{0, 1});
         assertEquals(2, controller.selectedCount);
 
     }
