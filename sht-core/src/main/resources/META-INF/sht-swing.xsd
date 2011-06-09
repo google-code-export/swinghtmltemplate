@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+    <!--<xs:import namespace="http://www.w3.org/1999/xhtml"/>-->
+
+    <xs:simpleType name="elBinding">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+
+    <xs:complexType name="tag" abstract="true">
+        <xs:sequence>
+            <xs:any/>
+        </xs:sequence>
+        <xs:attribute name="align" type="elBinding"/>
+        <xs:attribute name="background-color" type="elBinding"/>
+        <xs:attribute name="background-image" type="elBinding"/>
+        <xs:attribute name="border" type="elBinding"/>
+        <xs:attribute name="class" type="elBinding"/>
+        <xs:attribute name="color" type="elBinding"/>
+        <xs:attribute name="enabled" type="elBinding"/>
+        <xs:attribute name="font-family" type="elBinding"/>
+        <xs:attribute name="font-size" type="elBinding"/>
+        <xs:attribute name="font-style" type="elBinding"/>
+        <xs:attribute name="font-weight" type="elBinding"/>
+        <xs:attribute name="id" type="elBinding"/>
+        <xs:attribute name="onclick" type="elBinding"/>
+        <xs:attribute name="ondblclick" type="elBinding"/>
+        <xs:attribute name="onchange" type="elBinding"/>
+        <xs:attribute name="opaque" type="elBinding"/>
+        <xs:attribute name="icon" type="elBinding"/>
+        <xs:attribute name="max-height" type="elBinding"/>
+        <xs:attribute name="max-width" type="elBinding"/>
+        <xs:attribute name="margin" type="elBinding"/>
+        <xs:attribute name="min-height" type="elBinding"/>
+        <xs:attribute name="min-width" type="elBinding"/>
+        <xs:attribute name="readonly" type="elBinding"/>
+        <xs:attribute name="style" type="elBinding"/>
+        <xs:attribute name="text" type="elBinding"/>
+        <xs:attribute name="text-align" type="elBinding"/>
+        <xs:attribute name="vertical-align" type="elBinding"/>
+        <xs:attribute name="width" type="elBinding"/>
+        <xs:anyAttribute/>
+    </xs:complexType>
+
+
+    <xs:complexType name="selectItemsType">
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+    <!-- attribute -->
+    <xs:complexType name="attributeType">
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="value" type="elBinding"/>
+        <xs:attribute name="type" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="attribute" type="attributeType"/>
+
+    <!-- column -->
+    <xs:complexType name="columnType">
+        <xs:attribute name="title" type="xs:string"/>
+        <xs:attribute name="value" type="elBinding"/>
+        <xs:attribute name="readonly" type="xs:string"/>
+        <xs:attribute name="editor" type="elBinding"/>
+        <xs:attribute name="editorClass" type="xs:string"/>
+        <xs:attribute name="renderer" type="elBinding"/>
+        <xs:attribute name="rendererClass" type="xs:string"/>
+    </xs:complexType>
+
+
+    <!-- combobox -->
+    <xs:complexType name="comboboxType">
+        <xs:complexContent>
+            <xs:extension base="tag">
+                <xs:sequence>
+                    <xs:element name="selectItems" type="selectItemsType"/>
+                </xs:sequence>
+                <xs:attribute name="selectedElement" type="elBinding"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="combobox" type="comboboxType"/>
+
+
+    <!-- dataTable -->
+    <xs:complexType name="dataTableType">
+        <xs:complexContent>
+            <xs:extension base="tag">
+                <xs:sequence>
+                    <xs:element name="column" type="columnType"/>
+                </xs:sequence>
+                <xs:attribute name="selectionType">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="single"/>
+                            <xs:enumeration value="multiple"/>
+                            <xs:enumeration value="custom"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="selectedElement" type="elBinding"/>
+                <xs:attribute name="selectedElements" type="elBinding"/>
+                <xs:attribute name="autoresize">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="off"/>
+                            <xs:enumeration value="all"/>
+                            <xs:enumeration value="last"/>
+                            <xs:enumeration value="next"/>
+                            <xs:enumeration value="auto"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="dataTable" type="dataTableType"/>
+
+
+    <!-- editorPane -->
+    <xs:complexType name="editorPaneType">
+        <xs:complexContent>
+            <xs:extension base="tag">
+                <xs:attribute name="value" type="elBinding"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="editorPane" type="editorPaneType"/>
+
+
+
+    <!-- formTable -->
+    <xs:complexType name="formTableType">
+        <xs:complexContent>
+            <xs:extension base="tag">
+                <xs:attribute name="showheader" type="xs:boolean"/>
+                <xs:attribute name="autoresize">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="off"/>
+                            <xs:enumeration value="all"/>
+                            <xs:enumeration value="last"/>
+                            <xs:enumeration value="next"/>
+                            <xs:enumeration value="auto"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="formTable" type="formTableType"/>
+
+    <!-- glue -->
+    <xs:complexType name="glueType">
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="horizontal"/>
+                    <xs:enumeration value="vertical"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:element name="glue" type="glueType"/>
+
+    <!-- list-->
+    <xs:complexType name="listType">
+        <xs:sequence>
+            <xs:element name="selectItems" type="selectItemsType"/>
+            <xs:any/>
+        </xs:sequence>
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="vertical"/>
+                    <xs:enumeration value="vertical-wrap"/>
+                    <xs:enumeration value="horizontal-wrap"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="rowsPerColumn" type="xs:int"/>
+        <xs:attribute name="selectedElement" type="elBinding"/>
+        <xs:attribute name="selectedelements" type="elBinding"/>
+        <xs:attribute name="renderer" type="elBinding"/>
+        <xs:anyAttribute/>
+    </xs:complexType>
+
+    <xs:element name="list" type="listType"/>
+
+    
+    <!-- scroll -->
+    <xs:complexType name="scrollType" >
+        <xs:complexContent>
+            <xs:extension base="tag"/>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="scroll" type="scrollType" />
+
+    <!-- slider -->
+    <xs:complexType name="sliderType" >
+        <xs:complexContent>
+            <xs:extension base="tag">
+                <xs:attribute name="max" type="xs:string"/>
+                <xs:attribute name="min" type="xs:string"/>
+                <xs:attribute name="value" type="elBinding"/>
+                <xs:attribute name="snap" type="elBinding"/>
+                <xs:attribute name="majorspace" type="elBinding"/>
+                <xs:attribute name="minorspace" type="elBinding"/>
+                <xs:attribute name="onchange" type="elBinding"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="slider" type="sliderType" />
+
+
+
+</xs:schema>
