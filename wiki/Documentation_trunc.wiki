@@ -808,6 +808,9 @@ public class CreateProjectForm extends JPanel {
 }
 }}}
 
+Tag supports `onchange` event, invoked when current item is changed in combobox. Attribute value
+is method name. Method can have no arguments or have one argument of type `ActionEvent`.
+
 
 === dataTable ===
 Tag is converted to the `javax.swing.JTable`.
