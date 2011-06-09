@@ -9,8 +9,11 @@ import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.swingbinding.JComboBoxBinding;
 import org.jdesktop.swingbinding.JTableBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.event.ClickDelegator;
+import ru.swing.html.tags.event.TreeSelectionDelegator;
 
 import javax.swing.*;
 import java.lang.*;
@@ -50,11 +53,17 @@ import java.util.Map;
  *    ...
  * }
  * </pre>
+ *
+ *
+ * Tag supports 'onchange' event, invoked when current item is changed in combobox. Attribute value
+ * is method name. Method can have no arguments or have one argument of type ActionEvent.
  */
 public class Combobox extends Tag {
 
     private Log logger = LogFactory.getLog(getClass());
     private String selectedElement;
+    private String onchange;
+    private ClickDelegator clickDelegator;
 
     @Override
     public JComponent createComponent() {
@@ -103,13 +112,41 @@ public class Combobox extends Tag {
 
     }
 
+    public void applyAttribute(JComponent component, String name) {
+        JComboBox comboBox = (JComboBox) component;
 
+        if ("onchange".equals(name)) {
+            //install model selection listener
+            final String onchangeMethod = getOnchange();
+            if (StringUtils.isNotEmpty(onchangeMethod)) {
+
+                MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(onchangeMethod, this);
+                //if invoker is found
+                if (invoker!=null) {
+                    //create delegator
+                    if (clickDelegator !=null) {
+                        comboBox.removeActionListener(clickDelegator);
+                    }
+                    clickDelegator = new ClickDelegator(invoker);
+                    comboBox.addActionListener(clickDelegator);
+                }
+                else {
+                    logger.warn(toString()+ ": can't find method invoker for '" + onchangeMethod + "'");
+                }
+
+
+            }
+        }
+    }
 
     @Override
     public void setAttribute(String name, String value) {
         super.setAttribute(name, value);
         if ("selectedelement".equals(name)) {
             setSelectedElement(value);
+        }
+        else if ("onchange".equals(name)) {
+            setOnchange(value);
         }
     }
 
@@ -120,5 +157,13 @@ public class Combobox extends Tag {
 
     public void setSelectedElement(String selectedElement) {
         this.selectedElement = selectedElement;
+    }
+
+    public String getOnchange() {
+        return onchange;
+    }
+
+    public void setOnchange(String onchange) {
+        this.onchange = onchange;
     }
 }
