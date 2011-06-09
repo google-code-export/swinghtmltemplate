@@ -8,8 +8,10 @@ import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.swingbinding.JListBinding;
 import org.jdesktop.swingbinding.SwingBindings;
+import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.event.ListSelectionDelegator;
 
 import javax.swing.*;
 import java.util.Map;
@@ -83,7 +85,8 @@ import java.util.Map;
  *  &lt;/c:list>
  *  </pre?
  *
- *
+ * Tag supports 'onchange' event, invoked when current item is changed in combobox. Attribute value
+ * is method name. Method can have no arguments or have one argument of type javax.swing.event.ListSelectionEvent.
  */
 public class List extends Tag {
 
@@ -91,7 +94,9 @@ public class List extends Tag {
     private String selectedElement;
     private String selectedElements;
     private String renderer;
+    private String onchange;
     private String rowsPerColumn;
+    private ListSelectionDelegator listSelectionDelegator;
 
     @Override
     public JComponent createComponent() {
@@ -170,31 +175,55 @@ public class List extends Tag {
         JList jlist = (JList) component;
 
         //set layout orientation
-        if (StringUtils.isNotEmpty(getType())) {
-            int type = JList.VERTICAL;
-            if ("vertical-wrap".equals(getType())) {
-                type = JList.VERTICAL_WRAP;
+        if ("type".equals(name)) {
+            if (StringUtils.isNotEmpty(getType())) {
+                int type = JList.VERTICAL;
+                if ("vertical-wrap".equals(getType())) {
+                    type = JList.VERTICAL_WRAP;
+                }
+                else if ("horizontal-wrap".equals(getType())) {
+                    type = JList.HORIZONTAL_WRAP;
+                }
+                jlist.setLayoutOrientation(type);
+                jlist.setVisibleRowCount(0);
             }
-            else if ("horizontal-wrap".equals(getType())) {
-                type = JList.HORIZONTAL_WRAP;
-            }
-            jlist.setLayoutOrientation(type);
-            jlist.setVisibleRowCount(0);
         }
+        else if ("rowsPerColumn".equals(name)) {
+            if (StringUtils.isNotEmpty(getRowsPerColumn())) {
 
-        if (StringUtils.isNotEmpty(getRowsPerColumn())) {
-
-            if (StringUtils.isNumeric(getRowsPerColumn())) {
-                int rows = Integer.parseInt(getRowsPerColumn());
-                jlist.setVisibleRowCount(rows);
+                if (StringUtils.isNumeric(getRowsPerColumn())) {
+                    int rows = Integer.parseInt(getRowsPerColumn());
+                    jlist.setVisibleRowCount(rows);
+                }
+                else {
+                    logger.warn(toString()+": can't parse 'rowsPerColumn' attribute value, it is not numeric");
+                }
             }
-            else {
-                logger.warn(toString()+": can't parse 'rowsPerColumn' attribute value, it is not numeric");
+        }
+        else if ("onchange".equals(name)) {
+            //install model selection listener
+            final String onchangeMethod = getOnchange();
+            if (StringUtils.isNotEmpty(onchangeMethod)) {
+
+                MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(onchangeMethod, this);
+                //if invoker is found
+                if (invoker!=null) {
+                    //create delegator
+                    if (listSelectionDelegator !=null) {
+                        jlist.getSelectionModel().removeListSelectionListener(listSelectionDelegator);
+                    }
+                    listSelectionDelegator = new ListSelectionDelegator(invoker);
+                    jlist.getSelectionModel().addListSelectionListener(listSelectionDelegator);
+                }
+                else {
+                    logger.warn(toString()+ ": can't find method invoker for '" + onchangeMethod + "'");
+                }
+
+
             }
         }
         else {
             super.applyAttribute(component, name);
-
         }
     }
 
@@ -212,6 +241,9 @@ public class List extends Tag {
         }
         else if ("rowsPerColumn".equalsIgnoreCase(name)) {
             setRowsPerColumn(value);
+        }
+        else if ("onchange".equals(name)) {
+            setOnchange(value);
         }
     }
 
@@ -245,5 +277,13 @@ public class List extends Tag {
 
     public void setRowsPerColumn(String rowsPerColumn) {
         this.rowsPerColumn = rowsPerColumn;
+    }
+
+    public String getOnchange() {
+        return onchange;
+    }
+
+    public void setOnchange(String onchange) {
+        this.onchange = onchange;
     }
 }
