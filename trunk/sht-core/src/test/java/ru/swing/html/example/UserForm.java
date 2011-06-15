@@ -1,16 +1,26 @@
 package ru.swing.html.example;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.JDOMException;
 import ru.swing.html.Bind;
 import ru.swing.html.Binder;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 public class UserForm {
 
     @Bind("rootPanel")
     private JPanel rootPanel;
+
+
+    private Log logger = LogFactory.getLog(getClass());
 
     public UserForm() {
         try {
@@ -24,6 +34,23 @@ public class UserForm {
 
     public JPanel getRootPanel() {
         return rootPanel;
+    }
+
+
+    public void copy(ActionEvent e) {
+        logger.debug("Copy action invoked");
+        if (e.getSource() instanceof JTextComponent) {
+            JTextComponent c = (JTextComponent) e.getSource();
+            c.copy();
+        }
+    }
+
+    public void paste(ActionEvent e) {
+        logger.debug("Paste action invoked");
+        if (e.getSource() instanceof JTextComponent) {
+            JTextComponent c = (JTextComponent) e.getSource();
+            c.paste();
+        }
     }
 
     public static void main(String[] args) {

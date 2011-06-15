@@ -22,12 +22,6 @@ import java.lang.Object;
 import java.util.*;
 import java.util.List;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Deady
- * Date: 17.05.11
- * Time: 12:51
- */
 public class DndForm extends JFrame {
 
     private Log logger = LogFactory.getLog(getClass());

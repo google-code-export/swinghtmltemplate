@@ -14,7 +14,10 @@ public class SwingTagFactory implements TagFactory {
     private Log logger = LogFactory.getLog(getClass());
 
     public Tag createTag(String name) {
-        if ("attribute".equals(name)) {
+        if ("action".equals(name)) {
+            return new Action();
+        }
+        else if ("attribute".equals(name)) {
             return new Attribute();
         }
         else if ("editorPane".equals(name)) {
@@ -25,6 +28,15 @@ public class SwingTagFactory implements TagFactory {
         }
         else if ("list".equals(name)) {
             return new List();
+        }
+        else if ("menu".equals(name)) {
+            return new Menu();
+        }
+        else if ("menuItem".equals(name)) {
+            return new MenuItem();
+        }
+        else if ("popupMenu".equals(name)) {
+            return new PopupMenu();
         }
         else if ("scroll".equals(name)) {
             return new ScrollPane();
