@@ -10,6 +10,8 @@ import ru.swing.html.configuration.DefaultConfiguration;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.swing.*;
+import ru.swing.html.tags.swing.Action;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,6 +42,7 @@ public class DomModel {
      * Contains meta data, filled by <meta> tags inside <head>
      */
     private Map<String, String> metaItems = new HashMap<String, String>();
+    private Map<String, javax.swing.Action> actions = new HashMap<String, javax.swing.Action>();
 
     private PropertyChangeListener controllerPCL = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
@@ -384,6 +387,10 @@ public class DomModel {
 
     public Map<String, String> getMetaItems() {
         return metaItems;
+    }
+
+    public Map<String, javax.swing.Action> getActions() {
+        return actions;
     }
 
     public Window getWindow() {

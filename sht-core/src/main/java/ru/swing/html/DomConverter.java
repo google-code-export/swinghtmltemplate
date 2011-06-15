@@ -3,14 +3,18 @@ package ru.swing.html;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.tags.Meta;
 import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.swing.*;
 
 import javax.swing.*;
+import javax.swing.Action;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -193,6 +197,12 @@ public class DomConverter {
         Tag body = html.getChildByName("body");
         JComponent b = convertComponent(body, substitutions);
 
+
+        //install actions from model into root component
+        for (Map.Entry<String, Action> actionPair : model.getActions().entrySet()) {
+            b.getActionMap().put(actionPair.getKey(), actionPair.getValue());
+        }
+
         logger.trace("after-conversion phase");
         recursivellyVisitTags(html, new TagVisitor() {
             public void visit(Tag tag) {
@@ -210,6 +220,8 @@ public class DomConverter {
                 ((JDialog)w).getContentPane().add(b);
             }
         }
+
+
 
         return b;
     }
@@ -279,8 +291,14 @@ public class DomConverter {
                 Meta meta = (Meta) headChild;
                 model.getMetaItems().put(meta.getMetaName(), meta.getMetaContent());
             }
+            else if ("action".equals(headChild.getName())) {
+                ru.swing.html.tags.swing.Action action = (ru.swing.html.tags.swing.Action) headChild;
+                AbstractAction swingAction = action.createSwingAction();
+                model.getActions().put(action.getActionName(), swingAction);
+            }
         }
     }
+
 
     /**
      * Converts single tag to the swing component

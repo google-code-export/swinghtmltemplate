@@ -6,10 +6,14 @@ import org.apache.commons.logging.LogFactory;
 import ru.swing.html.configuration.AttributeParser;
 import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.tags.Tag;
+import ru.swing.html.tags.swing.ScrollPane;
 
 import javax.swing.*;
+import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.*;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +29,7 @@ public class DropTargetAttributeParser implements AttributeParser {
 
     private Log logger = LogFactory.getLog(getClass());
 
-    public void applyAttribute(final Tag tag, JComponent component, String attrName) {
+    public void applyAttribute(final Tag tag, final JComponent component, String attrName) {
 
         final String acceptedMime = tag.getAttribute("accept-mime");
 
@@ -56,9 +60,15 @@ public class DropTargetAttributeParser implements AttributeParser {
             }
 
             public void dragOver(DropTargetDragEvent dtde) {
+                if (tag instanceof DropTargetListener) {
+                    ((DropTargetListener)tag).dragOver(dtde);
+                }
             }
 
             public void dropActionChanged(DropTargetDragEvent dtde) {
+                if (tag instanceof DropTargetListener) {
+                    ((DropTargetListener)tag).dropActionChanged(dtde);
+                }
             }
 
             public void dragExit(DropTargetEvent dte) {
