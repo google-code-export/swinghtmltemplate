@@ -10,6 +10,9 @@ import ru.swing.html.Utils;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
+import java.beans.Introspector;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
 According to `type` value converts to
@@ -45,7 +48,10 @@ value attribute:</p>
 public class Input extends Tag {
 
     public static final String VALUE_ATTRIBUTE = "value";
+    public static final String SIZE_ATTRIBUTE = "size";
+
     private Log logger = LogFactory.getLog(getClass());
+
     @Override
     public JComponent createComponent() {
         String type = getType();
@@ -106,6 +112,21 @@ public class Input extends Tag {
                 String contentAreaFilled = getAttribute("content-area-filled");
                 if (StringUtils.isNotEmpty(contentAreaFilled)) {
                     b.setContentAreaFilled(Utils.convertStringToObject(contentAreaFilled, Boolean.class));
+                }
+            }
+        }
+        else if (SIZE_ATTRIBUTE.equals(name)) {
+            if (component instanceof JTextComponent) {
+                JTextComponent c = (JTextComponent) getComponent();
+                try {
+                    Method m = c.getClass().getMethod("setColumns", Integer.TYPE);
+                    m.invoke(component, Utils.convertStringToObject(getAttribute(SIZE_ATTRIBUTE), Integer.class));
+                } catch (NoSuchMethodException e) {
+                    logger.warn(toString() + ": can't set component size: no method 'setColumns' was found");
+                } catch (InvocationTargetException e) {
+                    logger.error(toString() + ": can't set component size: "+e.getMessage());
+                } catch (IllegalAccessException e) {
+                    logger.error(toString() + ": can't set component size: "+e.getMessage());
                 }
             }
         }

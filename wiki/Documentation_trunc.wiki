@@ -449,6 +449,20 @@ value attribute:
 text inputs can be binded to `java.lang.String`type properties.
 checkboxes can be binded to `boolean` (not `java.lang.Boolean`) type properties.
 
+
+`size` attribute can be used to set the columns count for text components (`JTextComponent` successor):
+{{{
+<input type='text' size='10' value='${account.login}'/>
+}}}
+This will invoke
+{{{
+input.setColumns(10);
+}}}
+Reflection is used to set this attribute: setColumns(int) method is searched. If noone is found a warning message
+will be printed.
+
+
+
 === label ===
 Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.
 
