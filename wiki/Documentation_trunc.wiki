@@ -580,6 +580,12 @@ preferred < number < fill
 Default size is {{{preferred}}}. So, if you specify {{{width}}} ({{{height}}}) for any cell with numeric value,
 then this value will override {{{preferred}}}. Similarly value {{{fill}}} overrides any numeric value and {{{preferred}}}.
 
+The size of the cell can be
+ * integer - this will set cell size in pixels (`<td width='10'>`)
+ * percent - this will set cell size in percent (`<td width='14%'>`)
+ * double - this will set cell size in percent (same as in percent) (`<td width='0.14'>`)
+ * on of the keywords: `fill` of `preferred`
+
 Pay attention that specifying {{{x-tablelayout-column-sizes}}} ({{{x-tablelayout-row-sizes}}}) automatically
 sets column (row) count (so any column outside column count will be invisible).
 Column (row) count is cumputed dynamically otherwise.
@@ -1740,6 +1746,18 @@ Means [https://tablelayout.dev.java.net TableLayout].
 Column sizes are set with {{{x-tablelayout-column-sizes}}} attribute.
 
 Row sizes are set with {{{x-tablelayout-row-sizes}}} attribute.
+
+You can use `preferred`, `fill`, doubles and integers followed by persent as size value:
+{{{
+x-tablelayout-row-sizes: preferred 0.1 13 25% fill
+}}}
+
+This will produce 5 rows with these sizes:
+ * preferred
+ * 0.1 (10%)
+ * 13 pixels
+ * 0.25 (25%)
+ * fill
 
 Examples:
 {{{

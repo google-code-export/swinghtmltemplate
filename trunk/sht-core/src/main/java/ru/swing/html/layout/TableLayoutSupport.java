@@ -2,6 +2,8 @@ package ru.swing.html.layout;
 
 import info.clearthought.layout.TableLayout;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
@@ -20,6 +22,8 @@ public class TableLayoutSupport implements LayoutManagerSupport{
     public static final String CELLSPACING_ATTRIBUTE = "cellspacing";
     public static final String ROW_SIZES_ATTRIBUTE = "x-tablelayout-row-sizes";
     public static final String COLUMN_SIZES_ATTRIBUTE = "x-tablelayout-column-sizes";
+
+    private static Log logger = LogFactory.getLog(TableLayoutSupport.class);
 
     public void addComponent(JComponent parent, JComponent child, Tag childTag, String constraint) {
         parent.add(child, constraint);
@@ -41,11 +45,11 @@ public class TableLayoutSupport implements LayoutManagerSupport{
     }
 
     /**
-     * Парсит строку размеров. Строка должна состоять из чисел и слов fill, preffered.
-     * @param colsSizes строка размеров
-     * @return массив размеров, подходящий для конструктора TableLayout
+     * Parses the string of sizes (columns or rows). The string must contain 'fill', 'preferred' keywords or numbers.
+     * @param colsSizes the string of sizes
+     * @return the array of sizes, siutable for TableLayout
      */
-    private double[] parse(String colsSizes) {
+    public static double[] parse(String colsSizes) {
         String[] tokens = colsSizes.split(" ");
         java.util.List<Double> sizes = new ArrayList<Double>();
         for (String t : tokens) {
@@ -57,7 +61,28 @@ public class TableLayoutSupport implements LayoutManagerSupport{
                 sizes.add(TableLayout.PREFERRED);
             }
             else if (StringUtils.isNotEmpty(t)) {
-                sizes.add(new Double(t.trim()));
+
+                //special case for 'x%'
+                if (t.length()>1 && t.endsWith("%")) {
+                    Double num = null;
+                    try {
+                        num = new Double(t.substring(0, t.length()-1))/100; //convert percent to double
+                        sizes.add(num);
+                    } catch (NumberFormatException e) {
+                        logger.warn("Can't parse '"+num+"' string as double. Using 'preferred' value.");
+                        sizes.add(TableLayout.PREFERRED);
+                    }
+                }
+                else {
+                    Double num = null;
+                    try {
+                        num = new Double(t.trim());
+                        sizes.add(num);
+                    } catch (NumberFormatException e) {
+                        logger.warn("Can't parse '"+num+"' string as double. Using 'preferred' value.");
+                        sizes.add(TableLayout.PREFERRED);
+                    }
+                }
             }
         }
         double[] res = new double[sizes.size()];

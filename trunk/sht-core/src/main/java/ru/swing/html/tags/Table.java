@@ -1,5 +1,6 @@
 package ru.swing.html.tags;
 
+import info.clearthought.layout.TableLayout;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -191,16 +192,28 @@ public class Table extends Tag {
                                 //parse cell's width
                                 Double h;
                                 try {
-                                    h = new Double(child.getWidth());
+                                    //handle percents: 'x%'
+                                    if (child.getWidth().length()>1 && child.getWidth().endsWith("%")) {
+                                        h = new Double(child.getWidth().substring(0, child.getWidth().length()-1))/100;
+                                    }
+                                    else {
+                                        h = new Double(child.getWidth());
+                                    }
                                 } catch (NumberFormatException e) {
-                                    h = 0d;
+                                    h = TableLayout.PREFERRED;
                                 }
                                 //parse maximum width
                                 Double max;
                                 try {
-                                    max = new Double(widths.get(currentCol));
+                                    //handle percents: 'x%'
+                                    if (widths.get(currentCol).length()>1 && widths.get(currentCol).endsWith("%")) {
+                                        max = new Double(widths.get(currentCol).substring(0, widths.get(currentCol).length()-1))/100;
+                                    }
+                                    else {
+                                        max = new Double(widths.get(currentCol));
+                                    }
                                 } catch (NumberFormatException e) {
-                                    max = 0d;//parsing will fail when max==preferred
+                                    max = TableLayout.PREFERRED;//parsing will fail when max==preferred
                                 }
                                 if (h>max) {
                                     //if new value is bigger then stored, store new value
@@ -235,16 +248,28 @@ public class Table extends Tag {
                                 //parse cell's height
                                 Double h;
                                 try {
-                                    h = new Double(child.getHeight());
+                                    //handle percents: 'x%'
+                                    if (child.getHeight().length()>1 && child.getHeight().endsWith("%")) {
+                                        h = new Double(child.getHeight().substring(0, child.getHeight().length()-1))/100;
+                                    }
+                                    else {
+                                        h = new Double(child.getHeight());
+                                    }
                                 } catch (NumberFormatException e) {
-                                    h = 0d;
+                                    h = TableLayout.PREFERRED;
                                 }
                                 //parse maximum height
                                 Double max;
                                 try {
-                                    max = new Double(heights.get(currentRow));
+                                    //handle percents: 'x%'
+                                    if (heights.get(currentRow).length()>1 && heights.get(currentRow).endsWith("%")) {
+                                        max = new Double(heights.get(currentRow).substring(0, heights.get(currentRow).length()-1))/100;
+                                    }
+                                    else {
+                                        max = new Double(heights.get(currentRow));
+                                    }
                                 } catch (NumberFormatException e) {
-                                    max = 0d;//parsing will fail when max==preferred
+                                    max = TableLayout.PREFERRED;//parsing will fail when max==preferred
                                 }
                                 if (h>max) {
                                     //if new value is bigger then stored, store new value
