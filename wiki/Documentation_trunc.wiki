@@ -703,6 +703,55 @@ Example:
 
 == `http://www.oracle.com/swing` namespace ==
 
+
+
+
+
+
+
+
+
+
+
+=== action ===
+This tag must be used inside `<head>` tag. It is used to specify action listeners for named action.
+An `AbstractAction` object is created for every `<action>` and is placed in the root component action map.
+
+Supported attributes for tag:
+  * `actionname` - the name of the action. It is used as the key when placing action in the action map
+  * `onaction` - the el to the method, that will be invoked when action is triggered. This method can take no arguments or 1 argument of type ActionEvent.
+  * `title` - the name for action
+  * `icon` - the icon for action
+
+This tags are parsed during "parsing-head" phase and stored in the dom model. They are added to the root component
+action map immediatelly after conversion phase and before after-conversion phase.
+
+Example:
+{{{
+<html>
+   <head>
+      <action actionname='doLoad' onaction="doLoad" icon='/img/load.png'/>
+   </head>
+</html>
+}}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 === attribute ===
 Special tag for assigning value to the parent's tag component. Doesn't convert to any swing component.
 
@@ -794,6 +843,19 @@ public class MyCustomTableCellEditor implements TableCellEditor {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 === combobox ===
 Tag is converted to the `javax.swing.JComboBox`.
 
@@ -830,6 +892,23 @@ public class CreateProjectForm extends JPanel {
 
 Tag supports `onchange` event, invoked when current item is changed in combobox. Attribute value
 is method name. Method can have no arguments or have one argument of type `ActionEvent`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 === dataTable ===
@@ -1052,6 +1131,91 @@ Example:
 }}}
 
 
+
+
+
+
+
+
+
+
+
+
+
+=== menu ===
+This tag is used to create menu in the context menu (for grouping menu items).
+
+Supported attributes:
+  * `title` - the name for an menu.
+
+
+ Example:
+ {{{
+     <c:popupMenu for="input">
+         <c:menuItem actionName='cut'/>
+         <c:menuItem actionName='copy'/>
+         <c:menuItem actionName='paste'/>
+         <c:menu title='extra'>
+             <c:menuItem actionName='cut' title='Cut!'/>
+             <c:menuItem actionName='copy' icon='/img/iconPaste.png'/>
+             <c:menuItem actionName='paste'/>
+         </c:menu>
+     </c:popupMenu>
+ }}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=== menuItem ===
+This tag is used to create menu items in the context menu. It must be used togeather with the `<action>` tag.
+
+Supported attributes:
+  * `actionname` - the name of the action. Use `<action>` tag to add actions.
+  * `icon` - the icon for an action. By default the one from the action is used. If set, it will be overriden.
+  * `title` - the name for an action. By default the one from the action is used. If set, it will be overriden.
+
+Example:
+{{{
+<c:popupMenu for="input">
+    <c:menuItem actionName='cut'/>
+    <c:menuItem actionName='copy'/>
+    <c:menuItem actionName='paste'/>
+    <c:menu title='extra'>
+        <c:menuItem actionName='cut' title='Cut!'/>
+        <c:menuItem actionName='copy' icon='/img/iconPaste.png'/>
+        <c:menuItem actionName='paste'/>
+    </c:menu>
+</c:popupMenu>
+}}}
+
+
+
+
+
+
+
+
+
+
+
 === list ===
 Tag is converted to the `javax.swing.JList`.
 
@@ -1122,6 +1286,92 @@ public class CustomRenderer extends DefaultListCellRenderer implements ListCellR
 
 Tag supports `onchange` event, invoked when current item is changed in a list. Attribute value
 is method name. Method can have no arguments or have one argument of type `javax.swing.event.ListSelectionEvent`.
+
+
+
+
+
+
+
+
+
+
+=== popupMenu ===
+This tag is used for adding context menus to the components. Context menus are showed on right click on the component.
+
+Supported attributes:
+  * `for` - the css selector for the tags, the context menu is attached to
+  * `nested` - when set to true and empty 'for', switch this menu to the nested mode
+
+
+The possible children of this tag are `<menu>` and `<menuItem>`. They are appended to the context menu.
+
+In the nested mode the menu is first appended with the direct children. Then the context menus are searched in
+the parent tags (up to the root tag) and if the founded menu is suitable for the menu's parent (`for` is empty or
+matches the parent tag) when children of the founded menu are appened to the original menu after the separator.
+
+
+Example:
+{{{
+<div id="rootPanel" align="top" style="display: mig;x-miglayout-column-constraints: [right]related[grow,fill]">
+
+    <p style="font-weight: normal;">Имя:</p>
+    <input type="text" align="wrap">
+        <c:popupMenu nested='true'>
+            <c:menuItem actionName='cut'/>
+        </c:popupMenu>
+    </input>
+
+    <p>Фамилия:</p>
+    <input type="text" align="wrap"/>
+
+    <p style="font-style:italic;font-weight:normal">Отчество:</p>
+    <input type="text" align="wrap"/>
+
+    <p style="font-style:italic;font-weight:bold;">Адрес:</p>
+    <input type="text" align="wrap, span" dragsource='true' droptarget='true' accept-drop='image/png' ondrop='' ondrag=''/>
+
+    <p>Полных лет:</p>
+    <c:spinner align="wrap, span"/>
+
+
+    <c:popupMenu for="input">
+        <c:menuItem actionName='cut'/>
+        <c:menuItem actionName='copy'/>
+        <c:menuItem actionName='paste'/>
+        <c:menu title='extra'>
+            <c:menuItem actionName='cut' title='Cut!'/>
+            <c:menuItem actionName='copy' icon='/img/iconPaste.png'/>
+            <c:menuItem actionName='paste'/>
+        </c:menu>
+    </c:popupMenu>
+
+</div>
+}}}
+
+
+Every input component will have the context menu. The first component will have an extra item, so menu for it will look
+like:
+{{{
+*******
+*Cut  *
+*******
+*Cut  *
+*Copy *
+*Paste*  *******
+*Extra*->*Cut! *
+*******  *Copy *
+         *Paste*
+         *******
+}}}
+
+
+When selecting an element from menu item the corresponding action is triggered and the corresponding method is called.
+If this method takes `ActionEvent` as argument, when the passed event will contain an target component as event source.
+
+
+
+
 
 === scroll ===
 Tag is converted to `javax.swing.ScrollPane`. The first child tag component will be placed in the viewport. If there are

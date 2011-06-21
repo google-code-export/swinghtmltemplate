@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
 
 /**
  *
- * Actions are injected into root component immediatelly after conversion phase and befor after-conversion phase.
+ * Actions are injected into root component immediatelly after conversion phase and before after-conversion phase.
  */
 public class Action extends Tag {
 
