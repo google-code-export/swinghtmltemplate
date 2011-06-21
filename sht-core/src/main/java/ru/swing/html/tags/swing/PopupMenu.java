@@ -46,7 +46,7 @@ public class PopupMenu extends Tag {
         JPopupMenu popupMenu = (JPopupMenu) getComponent();
 
 
-        Boolean nest = Boolean.valueOf(ELUtils.parseStringValue(nested, getModelElements()));
+        Boolean nest = Boolean.valueOf(ELUtils.parseStringValue(nested, getModelElements())) && StringUtils.isEmpty(getFor());
 
         elements = new ArrayList<Tag>(getChildren());
 
