@@ -18,9 +18,9 @@
         <j2se version="1.5+" initial-heap-size="32m" max-heap-size="128m"/>
         <property name="jnlp.versionEnabled" value="true"/>
         
-<jar href="sht-builder-0.6-SNAPSHOT.jar" main="true"/>
-<jar href="sht-mydoggy-0.6-SNAPSHOT.jar"/>
-<jar href="sht-core-0.6-SNAPSHOT.jar"/>
+<jar href="sht-builder-0.6.jar" main="true"/>
+<jar href="sht-mydoggy-0.6.jar"/>
+<jar href="sht-core-0.6.jar"/>
 <jar href="jdom-1.1.jar"/>
 <jar href="commons-lang-2.1.jar"/>
 <jar href="TableLayout-20050920.jar"/>
@@ -39,7 +39,7 @@
 <jar href="mydoggy-plaf-1.4.2.jar"/>
 <jar href="mydoggy-api-1.4.2.jar"/>
 <jar href="mydoggy-res-1.4.2.jar"/>
-<jar href="sht-xhtmlrenderer-0.6-SNAPSHOT.jar"/>
+<jar href="sht-xhtmlrenderer-0.6.jar"/>
 <jar href="core-renderer-R8pre2.jar"/>
 <jar href="itext-2.1.0.jar"/>
 <jar href="bcmail-jdk14-136.jar"/>
