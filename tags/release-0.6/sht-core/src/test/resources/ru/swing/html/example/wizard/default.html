@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head>
+    <title></title>
+    <meta name='display-as' content="dialog"/>
+    <meta name='size' content="640 480"/>
+    <meta name='onclose' content="exit"/>
+    <style type="text/css">
+        p {
+            font-weight: normal;
+        }
+        .pageLister {
+            background-color: white;
+        }
+        .pageLister p.selected {
+            font-weight: bold;
+        }
+
+        .pageDetails {
+            border: compound (etched) (empty 6 6 6 6) 
+        }
+
+        label {
+            color: black;
+        }
+        label.error {
+            color: red;
+        }
+
+
+    </style>
+</head>
+<body style="display:border">
+
+<div id="pages" style="display:card;border: empty 12 12 12 12;">
+    <ui:forEach var='page' items='${pages}'>
+        <div id='${page.id}'>
+            <ui:component src='${page.pageUrl}' page='${page}'  />
+        </div>
+    </ui:forEach>
+</div>
+
+<div align="bottom" style="display:border">
+    <div align="top">
+        <hr type="horizontal"/>
+    </div>
+    <div style="border: empty 12 12 12 12;margin: 6 6;">
+
+        <table align="right" cellspacing="6">
+            <tr>
+                <td>
+                    <div>
+                        <input id='pageBack' align='left' onclick="onBack" type='button' text="&lt; Back" enabled='false'/>
+                        <input id='pageNext' type='button' onclick="onNext" text="Next &gt;"/>
+                    </div>
+                </td>
+                <td>
+                    <input id='finish' type='button' text="Finish" onclick="onFinish"/>
+                </td>
+                <td>
+                    <input id='cancel' type='button' text="Cancel" onclick="onCancel"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

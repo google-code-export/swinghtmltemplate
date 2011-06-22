@@ -1,0 +1,50 @@
+<html xmlns:c='http://www.oracle.com/swing'>
+<head>
+
+    <c:action actionName='copy' title='Copy' onAction='copy' icon='/img/iconCopy.png'/>
+    <c:action actionName='cut' title='Cut' onAction='cut' icon='/img/iconCut.png'/>
+    <c:action actionName='paste' title='Paste' onAction='paste' icon='/img/iconPaste.png'/>
+
+</head>
+
+<body style="display:border;">
+
+<div id="rootPanel" align="top" style="display: mig;x-miglayout-column-constraints: [right]related[grow,fill]">
+
+    <p style="font-weight: normal;">Имя:</p>
+    <input type="text" align="wrap">
+        <c:popupMenu nested='true'>
+            <c:menuItem actionName='cut'/>
+        </c:popupMenu>
+    </input>
+
+    <p>Фамилия:</p>
+    <input type="text" align="wrap"/>
+
+    <p style="font-style:italic;font-weight:normal">Отчество:</p>
+    <input type="text" align="wrap"/>
+
+    <p style="font-style:italic;font-weight:bold;">Адрес:</p>
+    <input type="text" align="wrap, span" dragsource='true' droptarget='true' accept-drop='image/png' ondrop='' ondrag=''/>
+
+    <p>Полных лет:</p>
+    <c:spinner align="wrap, span"/>
+
+
+    <c:popupMenu for="input">
+        <c:menuItem actionName='cut'/>
+        <c:menuItem actionName='copy'/>
+        <c:menuItem actionName='paste'/>
+        <c:menu title='extra'>
+            <c:menuItem actionName='cut' title='Cut!'/>
+            <c:menuItem actionName='copy' icon='/img/iconPaste.png'/>
+            <c:menuItem actionName='paste'/>
+        </c:menu>
+    </c:popupMenu>
+
+</div>
+
+
+</body>
+
+</html>

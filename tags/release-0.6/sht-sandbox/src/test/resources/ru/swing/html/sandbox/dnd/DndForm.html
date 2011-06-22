@@ -1,0 +1,44 @@
+<html xmlns:j="http://www.oracle.com/swing">
+<head>
+    <title>DND test</title>
+    <meta name='display-as' content="frame"/>
+    <meta name='size' content="800 600"/>
+    <meta name='onclose' content="exit"/>
+</head>
+<body style="display: border;">
+
+    <table>
+        <tr>
+            <td width="fill" height="fill">
+                <div>
+                    <input type="text" text='test' align="top" dragsource='true'/>
+                    <j:scroll>
+                        <j:list id='source' droptarget='true'
+                                ondblclick='onDblclick' selectedElements='${model.selectedSource}'
+                                dragsource='true' accept-mime='sht/tag-source' ondrop='onDrop'>
+                            <j:selectItems value='${source}'/>
+                        </j:list>
+                    </j:scroll>
+                </div>
+            </td>
+            <td width="fill">
+                <j:scroll>
+                    <j:list id='target' droptarget='true'
+                            ondblclick='onDblclick' selectedElements='${model.selectedTarget}'
+                            dragsource='true' accept-mime='sht/tag-source' ondrop='onDrop'>
+                        <j:selectItems value='${target}'/>
+                    </j:list>
+                </j:scroll>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" height="200">
+                <j:scroll>
+                    <j:tree droptarget='true' accept-mime='sht/tag-source' ondrop='onDrop'/>
+                </j:scroll>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

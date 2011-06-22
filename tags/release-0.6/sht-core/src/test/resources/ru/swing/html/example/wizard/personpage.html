@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns:j="http://www.oracle.com/swing"
+      xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>
+<head>
+    <title></title>
+</head>
+<body style="display:border">
+<ui:composition template='ru/swing/html/example/wizard/pagetemplate.html'>
+
+    <ui:define name='content'>
+
+        <table cellspacing="6">
+            <tr>
+                <td><label for='name'>First Name:</label></td>
+                <td width="fill"><input id='name' type='text' value='${model.name}'/></td>
+            </tr>
+            <tr>
+                <td><label for='lastname'>Last Name:</label></td>
+                <td width="fill"><input id='lastname' type='text' value='${model.lastName}'/></td>
+            </tr>
+            <tr>
+                <td><label for='phone'>Phone:</label></td>
+                <td width="fill"><input id='phone' type='text' value='${model.phone}'/></td>
+            </tr>
+        </table>
+
+    </ui:define>
+
+</ui:composition>
+
+</body>
+</html>

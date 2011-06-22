@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing">
+<head>
+    <title></title>
+    <style type="text/css">
+        #earPanel * {
+            enabled: false;
+        }
+        body * {
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body style="display:border;">
+
+    <!--Top white panel with image-->
+    <div align="top" style="background-color:white;">
+        <div style="background-color:white;">
+            <p content='html'><![CDATA[
+                &nbsp;<b>Dynamic Web project</b><br>
+                &nbsp;&nbsp;&nbsp;Create a standalone Dynamic Web project or add it to a new or existing Enterprise Application]]>
+            </p>
+        </div>
+        <img align='right' src="/examples/createproject/create_project_logo.png"/>
+    </div>
+
+    <div style="border: empty 12 12 12 12;">
+
+        <div align="top" style="display: box;x-boxlayout-direction: vertical">
+
+            <!--Project name input-->
+            <div style="margin: 6 6;">
+                <label align='left'>Project name:</label>
+                <input type='text' value="${model.name}"/>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Project contents block-->
+            <div style='border: compound (titled "Project contents" (etched)) (empty 6 6 6 6);'>
+                <table cellspacing="6">
+                    <tr>
+                        <td colspan="3">
+                            <div>
+                                <input id='default' align='left'
+                                       value="${model.useDefaultPath}"
+                                       type="checkbox" onclick="onDefaultPathClick"/>
+                                <label for="default">Use default</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p class='pathElement' enabled='false'>Directory:</p></td>
+                        <td width='fill'>
+                            <input id='path' class='pathElement' type='text' enabled='false' value="${model.path}"/>
+                        </td>
+                        <td><input class='pathElement' type='button' enabled='false' onclick="onBrowseClick" text="Browse..."/></td>
+                    </tr>
+                </table>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Target runtime block-->
+            <div style='border: compound (titled "Target Runtime" (etched)) (empty 6 6 6 6); margin: 6 6;'>
+                <c:combobox align='center' selectedElement="${model.runtime}">
+                    <c:selectItems value="${runtimeValues}"/>
+                </c:combobox>
+                <input type='button' align='right' text='New...'/>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Version block-->
+            <div style='border: compound (titled "Dynamic Web Module version" (etched)) (empty 6 6 6 6);'>
+                <c:combobox align='center' selectedElement="${model.version}">
+                    <c:selectItems value="${versionValues}"/>
+                </c:combobox>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--Configuration block-->
+            <div style='border: compound (titled "Configuration" (etched)) (empty 6 6 6 6); margin: 6 6;'>
+                <c:combobox align='center' selectedElement="${model.configuration}">
+                    <c:selectItems value="${runtimeValues}"/>
+                </c:combobox>
+                <input type='button' align='right' text='Modify...'/>
+                <p align="bottom" content="html"><![CDATA[A good starting point for working with Apache Tomcat v6.0 runtime. 
+                    Additional facets can later be installed to add new functionality to project.]]>
+                </p>
+            </div>
+
+            <c:strut type="vertical" style="height: 6"/>
+
+            <!--EAR block-->
+            <div id='earPanel' style='border: compound (titled "EAR membership" (etched)) (empty 6 6 6 6);'>
+                <table cellspacing="6">
+                    <tr>
+                        <td colspan="3">
+                            <div>
+                                <input id='ear' align='left' type="checkbox"/>
+                                <label for="ear">Add project to an EAR</label>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><p>EAR Project Name:</p></td>
+                        <td width='fill'><input type='text'>captchaWebEAR</input></td>
+                        <td><input type='button' text="New..."/></td>
+                    </tr>
+                </table>
+            </div>
+
+
+            <c:glue/>
+        </div>
+
+
+    </div>
+
+    <!--Bottom buttons-->
+    <div align="bottom" style="display:border">
+        <div align="top">
+            <hr type="horizontal"/>
+        </div>
+        <div style="border: empty 12 12 12 12;margin: 6 6;">
+
+            <input align='left' type='button' icon="/examples/createproject/help.gif" style='opaque: true;'>
+                <c:attribute name="borderPainted" value="false" type='boolean'/>
+                <c:attribute name="contentAreaFilled" value="false" type='boolean'/>
+            </input>
+            
+            <table align="right" cellspacing="6">
+                <tr>
+                    <td>
+                        <div>
+                            <input align='left' type='button' text="&lt; Back" enabled='false'/>
+                            <input type='button' text="Next &gt;"/>
+                        </div>
+                    </td>
+                    <td>
+                        <input type='button' text="Finish" onclick="onFinish"/>
+                    </td>
+                    <td>
+                        <input type='button' text="Cancel"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing"
+      xmlns:ui="http://swinghtmltemplate.googlecode.com/ui">
+<head>
+    <title>Login form</title>
+    <meta name="display-as" content="frame"/>
+    <meta name="onclose" content="exit"/>
+    <meta name="size" content="320 190"/>
+
+    <link type="text/css" rel="stylesheet" href="loginform.css"/>
+    <style type="text/css">
+        #ok, #cancel {
+            height:39;
+            width:106;
+            max-width:106;
+            min-width:106;
+        }
+    </style>
+    <ui:loadBundle baseName="ru.swing.html.example.loginform" var='msg'/>
+</head>
+<body id="rootPanel" style="display: border;">
+<div style="border: empty 12 12 12 12;/*background-image: /img/wood-bkg.jpg*/;opaque: false">
+<table style="opaque:false">
+    <tr>
+        <td rowspan="3" class="top">
+            <img src="/img/login_icon.gif" alt=""/>
+        </td>
+        <td width="fill">
+            <form id="loginForm" style="opaque:false">
+                <label>${msg.label_login_text}</label>
+                <input id="login" type="text" value="${account.name}" align="wrap"/>
+                <label for="password">${msg.label_password_text}</label>
+                <input id="password" type="password" value="${account.password}" align="wrap" />
+            </form>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p id="result" class="red"></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6;opaque:false;">
+                <c:glue type="horizontal"/>
+                <input type="button" text="${msg.label_ok_text}" id="ok" icon="/img/accept.png" class="button" onclick="onOkClick"/>
+                <c:strut type="horizontal" style="width: 6"/>
+                <input type="button" text="${msg.label_cancel_text}" id="cancel" icon="/img/cancel.png" class="button" onclick="onCancelClick"/>
+            </div>
+        </td>
+    </tr>
+</table>
+
+</div>
+
+</body>
+</html>

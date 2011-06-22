@@ -1,0 +1,10 @@
+.red {
+    color: red;
+}
+.top {
+    vertical-align: top;
+}
+#loginForm {
+    x-miglayout-column-constraints: [right]related[grow,fill];
+}
+
