@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <groupId>com.googlecode.swinghtmltemplate</groupId>
+        <artifactId>swinghtmltemplate</artifactId>
+        <version>0.6</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>sht-builder</artifactId>
+    <packaging>jar</packaging>
+    <name>sht-builder</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo.webstart</groupId>
+                <artifactId>webstart-maven-plugin</artifactId>
+            </plugin>
+
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo.webstart</groupId>
+                    <artifactId>webstart-maven-plugin</artifactId>
+                    <!-- do not bind to install phase -->
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>jnlp</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <jnlp>
+                            <mainClass>ru.swing.html.builder.Builder</mainClass>
+                        </jnlp>
+                        <sign>
+                            <keystore>${project.basedir}/../../sht.jks</keystore>
+                            <keypass>qwerty</keypass>
+                            <storepass>qwerty</storepass>
+                            <storetype>jks</storetype>
+                            <alias>account</alias>
+                            <verify>true</verify>
+                        </sign>
+                        <unsign>true</unsign>
+                        <verbose>true</verbose>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.googlecode.swinghtmltemplate</groupId>
+            <artifactId>sht-mydoggy</artifactId>
+            <version>0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.swinghtmltemplate</groupId>
+            <artifactId>sht-xhtmlrenderer</artifactId>
+            <version>0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fifesoft</groupId>
+            <artifactId>rsyntaxtextarea</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>1.7.1</version>
+        </dependency>
+
+    </dependencies>
+
+
+</project>
