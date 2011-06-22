@@ -159,7 +159,7 @@ Let's take a look.
             <h1>Test xhtml template</h1>
             <p>Hello world!</p>
             <div id='wrapper' style='maring: 10px 10px 10px 10px;'>
-                <div id='panel' style='display:block;'>
+                <div id='panel' renderer='swing' style='display:block;'>
                     <input type='button' text='Click me!'/>
                 </div>
             </div>
