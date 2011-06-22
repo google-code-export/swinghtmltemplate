@@ -1315,23 +1315,23 @@ Example:
 {{{
 <div id="rootPanel" align="top" style="display: mig;x-miglayout-column-constraints: [right]related[grow,fill]">
 
-    <p style="font-weight: normal;">Имя:</p>
+    <p style="font-weight: normal;">First name:</p>
     <input type="text" align="wrap">
         <c:popupMenu nested='true'>
             <c:menuItem actionName='cut'/>
         </c:popupMenu>
     </input>
 
-    <p>Фамилия:</p>
+    <p>Last name:</p>
     <input type="text" align="wrap"/>
 
-    <p style="font-style:italic;font-weight:normal">Отчество:</p>
+    <p style="font-style:italic;font-weight:normal">Middle name:</p>
     <input type="text" align="wrap"/>
 
-    <p style="font-style:italic;font-weight:bold;">Адрес:</p>
+    <p style="font-style:italic;font-weight:bold;">Address:</p>
     <input type="text" align="wrap, span" dragsource='true' droptarget='true' accept-drop='image/png' ondrop='' ondrag=''/>
 
-    <p>Полных лет:</p>
+    <p>Age:</p>
     <c:spinner align="wrap, span"/>
 
 
