@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * Is converted to JMenuItem
@@ -21,6 +23,8 @@ public class MenuItem extends Tag {
     private String title;
     private String icon;
     private JComponent popupTarget;
+    private javax.swing.Action bindedAction;
+    private BindedActionListener bindedActionListener = new BindedActionListener();
 
     @Override
     public void handleLayout() {
@@ -60,6 +64,14 @@ public class MenuItem extends Tag {
     public void applyAttribute(JComponent component, String attrName) {
         JMenuItem menuItem = (JMenuItem) component;
         if ("actionname".equals(attrName)) {
+
+
+            //as we create wrapper for action, we need to bind some properties from original
+            //action with wrapper
+            if (bindedAction!=null) {
+                bindedAction.removePropertyChangeListener(bindedActionListener);
+            }
+
             String actionName = getActionName();
             final javax.swing.Action swingAction = getModel().getActions().get(actionName);
 
@@ -79,6 +91,9 @@ public class MenuItem extends Tag {
             wrapper.putValue(javax.swing.Action.NAME, StringUtils.isNotEmpty(getTitle()) ? getTitle() : swingAction.getValue(javax.swing.Action.NAME));
             wrapper.putValue(javax.swing.Action.SHORT_DESCRIPTION, swingAction.getValue(javax.swing.Action.SHORT_DESCRIPTION));
             wrapper.putValue(javax.swing.Action.SMALL_ICON, StringUtils.isNotEmpty(getIcon()) ? loadIcon() : swingAction.getValue(javax.swing.Action.SMALL_ICON));
+
+            bindedAction = swingAction;
+            bindedAction.addPropertyChangeListener(bindedActionListener);
 
             menuItem.setAction(wrapper);
         } else if ("icon".equals(attrName)) {
@@ -138,5 +153,40 @@ public class MenuItem extends Tag {
 
     public JComponent getPopupTarget() {
         return popupTarget;
+    }
+
+    /**
+     * This class will keep original action from dom model in sync with JMenuItem.
+     */
+    private class BindedActionListener implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            JMenuItem menuItem = (JMenuItem) getComponent();
+            if ("enabled".equals(evt.getPropertyName())) {
+                menuItem.setEnabled((Boolean) evt.getNewValue());
+            }
+            else if (javax.swing.Action.ACCELERATOR_KEY.equals(evt.getPropertyName())) {
+                menuItem.getAction().putValue(javax.swing.Action.ACCELERATOR_KEY, evt.getNewValue());
+            }
+            else if (javax.swing.Action.ACTION_COMMAND_KEY.equals(evt.getPropertyName())) {
+                menuItem.getAction().putValue(javax.swing.Action.ACTION_COMMAND_KEY, evt.getNewValue());
+            }
+            else if (javax.swing.Action.LONG_DESCRIPTION.equals(evt.getPropertyName())) {
+                menuItem.getAction().putValue(javax.swing.Action.LONG_DESCRIPTION, evt.getNewValue());
+            }
+            else if (javax.swing.Action.MNEMONIC_KEY.equals(evt.getPropertyName())) {
+                menuItem.getAction().putValue(javax.swing.Action.MNEMONIC_KEY, evt.getNewValue());
+            }
+            //check name is not overriden
+            else if (javax.swing.Action.NAME.equals(evt.getPropertyName()) && StringUtils.isEmpty(getTitle())) {
+                menuItem.getAction().putValue(javax.swing.Action.NAME, evt.getNewValue());
+            }
+            else if (javax.swing.Action.SHORT_DESCRIPTION.equals(evt.getPropertyName())) {
+                menuItem.getAction().putValue(javax.swing.Action.SHORT_DESCRIPTION, evt.getNewValue());
+            }
+            //check icon is not overriden
+            else if (javax.swing.Action.SMALL_ICON.equals(evt.getPropertyName()) && StringUtils.isNotEmpty(getIcon())) {
+                menuItem.getAction().putValue(javax.swing.Action.SMALL_ICON, evt.getNewValue());
+            }
+        }
     }
 }

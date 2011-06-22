@@ -70,11 +70,24 @@ public class Action extends Tag {
     }
 
     public AbstractAction createSwingAction() {
-        final MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(getOnAction(), this);
+
+        final MethodInvoker invoker;
+        if (StringUtils.isNotEmpty(getOnAction())) {
+            invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(getOnAction(), this);
+        }
+        else {
+            invoker = null;
+        }
 
         AbstractAction swingAction = new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
-                invoker.invoke(ActionEvent.class, e);
+                if (invoker!=null) {
+                    try {
+                        invoker.invoke(ActionEvent.class, e);
+                    } catch (Exception e1) {
+                        logger.error(toString()+": can't invoke method '"+getOnAction()+"': "+e1.getMessage());
+                    }
+                }
             }
         };
         if (StringUtils.isNotEmpty(getTitle())) {
