@@ -74,6 +74,32 @@ public class InputTest extends TestCase {
 
     }
 
+    public void testSetEmptyValue() throws Exception {
+
+        //check that 'value' attribute overrides tag content
+        String html = "<html>" +
+                "<head></head>" +
+                "<body style='display: border;'>" +
+                "   <input value=''>Foo</input>" +
+                "</body>" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+        JComponent root = model.getRootTag().getChildByName("body").getComponent();
+
+
+        assertEquals(1, root.getComponentCount());
+
+        assertEquals(BorderLayout.class, root.getLayout().getClass());
+        BorderLayout l = (BorderLayout) root.getLayout();
+
+        assertTrue(l.getLayoutComponent(root, BorderLayout.CENTER) instanceof JTextField);
+        JTextField textField = (JTextField) l.getLayoutComponent(root, BorderLayout.CENTER);
+        assertEquals("", textField.getText());
+
+
+    }
+
     public void testSizeAttribute() throws Exception {
 
         String html = "<html>" +
