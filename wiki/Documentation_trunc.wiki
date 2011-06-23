@@ -1302,6 +1302,7 @@ This tag is used for adding context menus to the components. Context menus are s
 Supported attributes:
   * `for` - the css selector for the tags, the context menu is attached to
   * `nested` - when set to true and empty 'for', switch this menu to the nested mode
+  * `beforePopup` - contains method to be invoked before showing popup menu. This can be usefull to enable/disable actions.
 
 
 The possible children of this tag are `<menu>` and `<menuItem>`. They are appended to the context menu.

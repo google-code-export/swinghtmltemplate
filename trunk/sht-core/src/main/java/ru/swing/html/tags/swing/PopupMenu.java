@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import ru.swing.html.DomConverter;
 import ru.swing.html.ELUtils;
 import ru.swing.html.TagVisitor;
+import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Hr;
 import ru.swing.html.tags.Tag;
@@ -20,6 +21,7 @@ public class PopupMenu extends Tag {
 
     private String forAttribute;
     private String nested;
+    private String beforePopup;
 
 
     private List<Tag> elements;
@@ -105,12 +107,22 @@ public class PopupMenu extends Tag {
         this.nested = nested;
     }
 
+    public String getBeforePopup() {
+        return beforePopup;
+    }
+
+    public void setBeforePopup(String beforePopup) {
+        this.beforePopup = beforePopup;
+    }
+
     @Override
     public void setAttribute(String name, String value) {
         if ("for".equals(name)) {
             setFor(value);
         } else if ("nested".equals(name)) {
             setNested(value);
+        } else if ("beforepopup".equals(name)) {
+            setBeforePopup(value);
         }
         super.setAttribute(name, value);
     }
@@ -210,7 +222,15 @@ public class PopupMenu extends Tag {
 
         @Override
         public void mousePressed(MouseEvent e) {
+            handleClick(e);
+        }
+
+        private void handleClick(MouseEvent e) {
             if (e.isPopupTrigger()) {
+                if (StringUtils.isNotEmpty(getBeforePopup())) {
+                    MethodInvoker invoker = getModel().getConfiguration().getMethodResolverService().resolveMethod(getBeforePopup(), PopupMenu.this);
+                    invoker.invoke(MouseEvent.class, e);
+                }
                 setPopupTarget(target);
                 menu.show(target, e.getX(), e.getY());
             }
@@ -218,10 +238,7 @@ public class PopupMenu extends Tag {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            if (e.isPopupTrigger()) {
-                setPopupTarget(target);
-                menu.show(target, e.getX(), e.getY());
-            }
+            handleClick(e);
         }
     }
 }
