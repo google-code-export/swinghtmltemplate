@@ -69,7 +69,7 @@ public class PopupMenu extends Tag {
                         if (StringUtils.isEmpty(parentMenu.getFor()) || new SelectorGroup(parentMenu.getFor()).matches(getParent())) {
                             elements.add(new Hr());//place separator between parent menus
                             for (Tag parentItem : parentMenu.getChildren()) {
-                                elements.add(parentItem);
+                                elements.add(parentItem.clone());
                             }
                         }
                     }
