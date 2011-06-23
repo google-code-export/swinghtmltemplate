@@ -91,7 +91,7 @@ public class Input extends Tag {
         //tag content is always equals to empty string, so when binding is uses,
         //an empty string will be assigned to binded model property during conversion phase.
         //to avoid this check that no binding is used
-        if (TAG_CONTENT.equals(name) && StringUtils.isEmpty(getAttribute(VALUE_ATTRIBUTE))) {
+        if (TAG_CONTENT.equals(name) && !getAttributes().containsKey(VALUE_ATTRIBUTE)) {
             if (component instanceof JTextComponent) {
                 JTextComponent c = (JTextComponent) getComponent();
                 c.setText(getContent());
@@ -148,6 +148,10 @@ public class Input extends Tag {
                 }
 
                 bind(el, getComponent(), componentProperty, AutoBinding.UpdateStrategy.READ_WRITE);
+            }
+            else {
+                JTextComponent c = (JTextComponent) getComponent();
+                c.setText("");
             }
         }
         else {
