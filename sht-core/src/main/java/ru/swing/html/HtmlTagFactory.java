@@ -17,11 +17,7 @@ public class HtmlTagFactory implements TagFactory {
     private Log logger = LogFactory.getLog(getClass());
 
     public Tag createTag(String name) {
-        if ("attribute".equals(name)) {
-            logger.warn("attribute tag moved to 'http://www.oracle.com/swing' namespace");
-            return new Attribute();
-        }
-        else if ("body".equals(name)) {
+        if ("body".equals(name)) {
             return new Body();
         }
         else if ("div".equals(name)) {
@@ -60,24 +56,8 @@ public class HtmlTagFactory implements TagFactory {
         else if ("tr".equals(name)) {
             return new Tr();
         }
-        else if ("scroll".equals(name)) {
-            logger.warn("scroll tag moved to 'http://www.oracle.com/swing' namespace");
-            return new ScrollPane();
-        }
         else if ("span".equals(name)) {
             return new Span();
-        }
-        else if ("split".equals(name)) {
-            logger.warn("split tag moved to 'http://www.oracle.com/swing' namespace");
-            return new SplitPane();
-        }
-        else if ("strut".equals(name)) {
-            logger.warn("strut tag moved to 'http://www.oracle.com/swing' namespace");
-            return new Strut();
-        }
-        else if ("tabs".equals(name)) {
-            logger.warn("tabs tag moved to 'http://www.oracle.com/swing' namespace");
-            return new Tabs();
         }
         else {
             return new Tag();
