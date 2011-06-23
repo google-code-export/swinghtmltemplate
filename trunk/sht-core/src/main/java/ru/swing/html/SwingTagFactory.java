@@ -20,7 +20,7 @@ public class SwingTagFactory implements TagFactory {
         else if ("attribute".equals(name)) {
             return new Attribute();
         }
-        else if ("editorPane".equals(name)) {
+        else if ("editorPane".equalsIgnoreCase(name)) {
             return new EditorPane();
         }
         else if ("glue".equals(name)) {
@@ -32,10 +32,10 @@ public class SwingTagFactory implements TagFactory {
         else if ("menu".equals(name)) {
             return new Menu();
         }
-        else if ("menuItem".equals(name)) {
+        else if ("menuItem".equalsIgnoreCase(name)) {
             return new MenuItem();
         }
-        else if ("popupMenu".equals(name)) {
+        else if ("popupMenu".equalsIgnoreCase(name)) {
             return new PopupMenu();
         }
         else if ("scroll".equals(name)) {
@@ -56,10 +56,10 @@ public class SwingTagFactory implements TagFactory {
         else if ("slider".equals(name)) {
             return new Slider();
         }
-        else if ("dataTable".equals(name)) {
+        else if ("dataTable".equalsIgnoreCase(name)) {
             return new DataTable();
         }
-        else if ("formTable".equals(name)) {
+        else if ("formTable".equalsIgnoreCase(name)) {
             return new FormTable();
         }
         else if ("column".equals(name)) {
@@ -68,7 +68,7 @@ public class SwingTagFactory implements TagFactory {
         else if ("combobox".equals(name)) {
             return new Combobox();
         }
-        else if ("selectItems".equals(name)) {
+        else if ("selectItems".equalsIgnoreCase(name)) {
             return new SelectItems();
         }
         else if ("tree".equals(name)) {
