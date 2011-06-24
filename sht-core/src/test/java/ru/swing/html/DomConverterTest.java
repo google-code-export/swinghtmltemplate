@@ -1,6 +1,7 @@
 package ru.swing.html;
 
 import junit.framework.TestCase;
+import org.jdom.JDOMException;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.tags.Tag;
@@ -8,6 +9,7 @@ import ru.swing.html.tags.Tag;
 import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -113,4 +115,29 @@ public class DomConverterTest extends TestCase {
         assertEquals(centerLabel, rootLabel);
 
     }
+
+
+
+    public void testSetTitle() throws JDOMException, IOException {
+        //http://code.google.com/p/swinghtmltemplate/issues/detail?id=14
+        //	title tag should support l10n
+        
+        String html = "<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>" +
+                "<head>" +
+                "  <title>${msg.title}</title>" +
+                "  <meta name='display-as' value='dialog'/>" +
+                "  <ui:loadBundle baseName='ru.swing.html.Localization' var='msg' />" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "</body>" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        JDialog controller = new JDialog();
+        Binder.bind(controller, true, model);
+
+
+        assertEquals("Test", controller.getTitle());
+
+    }
+
 }

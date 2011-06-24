@@ -3,18 +3,15 @@ package ru.swing.html;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import ru.swing.html.configuration.MethodInvoker;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.css.SelectorGroup;
 import ru.swing.html.css.StyleParser;
 import ru.swing.html.tags.Meta;
 import ru.swing.html.tags.Tag;
-import ru.swing.html.tags.swing.*;
 
 import javax.swing.*;
 import javax.swing.Action;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -90,11 +87,12 @@ public class DomConverter {
 
 
         //apply metas
-        QueryResult title = model.query("html > head > title");
+        QueryResult titleQuery = model.query("html > head > title");
         if (res instanceof JDialog) {
             JDialog dlg = (JDialog) res;
-            if (title.size()>0) {
-                dlg.setTitle(title.get(0).getContent());
+            if (titleQuery.size()>0) {
+                String title = ELUtils.parseStringValue(titleQuery.get(0).getContent(), model.getModelElements());
+                dlg.setTitle(title);
             }
 
             String onclose = model.getMetaItems().get("onclose");
@@ -116,8 +114,9 @@ public class DomConverter {
         }
         else if (res instanceof JFrame) {
             JFrame frame = (JFrame) res;
-            if (title.size()>0) {
-                frame.setTitle(title.get(0).getContent());
+            if (titleQuery.size()>0) {
+                String title = ELUtils.parseStringValue(titleQuery.get(0).getContent(), model.getModelElements());
+                frame.setTitle(title);
             }
 
             String onclose = model.getMetaItems().get("onclose");
