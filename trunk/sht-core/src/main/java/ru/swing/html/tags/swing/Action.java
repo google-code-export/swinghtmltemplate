@@ -23,6 +23,8 @@ public class Action extends Tag {
     private String onAction;
     private String title;
     private String icon;
+    private String shortcut;
+    private String scope;
     private Log logger = LogFactory.getLog(getClass());
 
     @Override
@@ -50,6 +52,12 @@ public class Action extends Tag {
         else if ("icon".equals(name)) {
             icon = value;
         }
+        else if ("scope".equals(name)) {
+            scope = value;
+        }
+        else if ("shortcut".equals(name)) {
+            shortcut = value;
+        }
         super.setAttribute(name, value);
     }
 
@@ -67,6 +75,40 @@ public class Action extends Tag {
 
     public String getIcon() {
         return icon;
+    }
+
+    public String getShortcut() {
+        return shortcut;
+    }
+
+    /**
+     * Sets the keyboard shortcut for this action. This shortcut will be used as key when
+     * inserting this action into inputMap of root component.
+     *
+     * Must be set in format of KeyStroke#getKeyStroke(String).
+     *
+     * @param shortcut shortcut for this action
+     * @see KeyStroke#getKeyStroke(String)
+     */
+    public void setShortcut(String shortcut) {
+        this.shortcut = shortcut;
+    }
+
+    /**
+     * Returns the inputMap scope into which the keyboard shortcut will be installed.
+     * @return scope
+     */
+    public String getScope() {
+        return scope;
+    }
+
+    /**
+     * Returns the inputMap scope into which the keyboard shortcut will be installed.
+     * Values: 'ancestor', 'window', 'focused'
+     * @param scope
+     */
+    public void setScope(String scope) {
+        this.scope = scope;
     }
 
     public AbstractAction createSwingAction() {

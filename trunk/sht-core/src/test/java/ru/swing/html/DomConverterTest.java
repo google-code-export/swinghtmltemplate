@@ -8,6 +8,7 @@ import ru.swing.html.tags.Tag;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -140,4 +141,24 @@ public class DomConverterTest extends TestCase {
 
     }
 
+
+    public void testActionShortcuts() throws Exception {
+
+        //http://code.google.com/p/swinghtmltemplate/issues/detail?id=19
+        String html = "<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'" +
+                " xmlns:c=\"http://www.oracle.com/swing\">" +
+                "<head>" +
+                "  <meta name='display-as' value='dialog'/>" +
+                "  <c:action shortcut='control X' actionname='exit'/>" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "</body>" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        JPanel rootPanel = (JPanel) DomConverter.toSwing(model);
+
+        assertEquals("exit", rootPanel.getInputMap().get(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_MASK)));
+
+
+    }
 }

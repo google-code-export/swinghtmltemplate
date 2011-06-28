@@ -722,15 +722,28 @@ Supported attributes for tag:
   * `onaction` - the el to the method, that will be invoked when action is triggered. This method can take no arguments or 1 argument of type ActionEvent.
   * `title` - the name for action
   * `icon` - the icon for action
+  * `shortcut` - the keyboard shortcut to be used to trigger action.
+  * `scope` - the scope of input map to be used for shortcut
 
 This tags are parsed during "parsing-head" phase and stored in the dom model. They are added to the root component
 action map immediatelly after conversion phase and before after-conversion phase.
+
+The `shortcut` must be in the format of `KeyStroke#getKeyStroke(String)`. This string will be used as a key to be added
+into root component input map. The shortcut is added into input map immediatelly after adding action to action map.
+
+The `scope` is used to select the input map for shortcut. Possible values:
+  * `window` - JComponent.WHEN_IN_FOCUSED_WINDOW
+  * `ancestor` - JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
+  * `focused` - JComponent.WHEN_FOCUSED
+
+By default the value `focused` is used.
+
 
 Example:
 {{{
 <html>
    <head>
-      <action actionname='doLoad' onaction="doLoad" icon='/img/load.png'/>
+      <action actionname='doLoad' onaction="doLoad" icon='/img/load.png' shortcut='control O' scope='window'/>
    </head>
 </html>
 }}}
