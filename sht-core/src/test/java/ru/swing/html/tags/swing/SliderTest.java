@@ -49,12 +49,12 @@ public class SliderTest extends TestCase {
 
         DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
         Model m = new Model();
-        m.setValue(123);
         model.addModelElement("model", m);
         DomConverter.toSwing(model);
 
 
         JSlider slider = (JSlider) model.getTagById("slider").getComponent();
+        m.setValue(123);
         assertEquals(123, slider.getValue());
 
         slider.setValue(321);
@@ -109,9 +109,8 @@ public class SliderTest extends TestCase {
             pcs.addPropertyChangeListener(listener);
         }
 
-        public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-            pcs.addPropertyChangeListener(propertyName, listener);
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+            pcs.removePropertyChangeListener(listener);
         }
-
     }
 }
