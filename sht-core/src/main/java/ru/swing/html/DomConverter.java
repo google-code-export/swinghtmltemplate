@@ -201,6 +201,27 @@ public class DomConverter {
         for (Map.Entry<String, Action> actionPair : model.getActions().entrySet()) {
             b.getActionMap().put(actionPair.getKey(), actionPair.getValue());
         }
+        //install actions into input map of root component
+        for (Tag headChild : head.getChildren()) {
+            if (headChild instanceof ru.swing.html.tags.swing.Action) {
+                ru.swing.html.tags.swing.Action action = (ru.swing.html.tags.swing.Action) headChild;
+
+                int scope;
+                if ("ancestor".equalsIgnoreCase(action.getScope())) {
+                    scope = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+                }
+                else if ("window".equalsIgnoreCase(action.getScope())) {
+                    scope = JComponent.WHEN_IN_FOCUSED_WINDOW;
+                }
+                else {
+                    scope = JComponent.WHEN_FOCUSED;
+                }
+
+                if (StringUtils.isNotEmpty(action.getShortcut())) {
+                    b.getInputMap(scope).put(KeyStroke.getKeyStroke(action.getShortcut()), action.getActionName());
+                }
+            }
+        }
 
         logger.trace("after-conversion phase");
         recursivellyVisitTags(html, new TagVisitor() {
