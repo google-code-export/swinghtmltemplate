@@ -515,6 +515,9 @@ There are special metas that are used in convetion process:
  * `size` - sets the size of the window. It is used only if `display-as` meta is used. Format of the size: `width height`.
    Example: `<meta name='size' content='1024 768'/>`
 
+ * `default-button` - This is used to set default button. It is used only if `display-as` meta is used. The value is the id of the target button.
+   Example: `<meta name='default-button' content='okBtn'/>`
+
 
 === object ===
 Tag is converted to the component which classname is specified with `classid` attribute.

@@ -126,7 +126,7 @@ public class DomConverterTest extends TestCase {
         String html = "<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'>" +
                 "<head>" +
                 "  <title>${msg.title}</title>" +
-                "  <meta name='display-as' value='dialog'/>" +
+                "  <meta name='display-as' content='dialog'/>" +
                 "  <ui:loadBundle baseName='ru.swing.html.Localization' var='msg' />" +
                 "</head>" +
                 "<body style='display: border;'>" +
@@ -148,7 +148,6 @@ public class DomConverterTest extends TestCase {
         String html = "<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'" +
                 " xmlns:c=\"http://www.oracle.com/swing\">" +
                 "<head>" +
-                "  <meta name='display-as' value='dialog'/>" +
                 "  <c:action shortcut='control X' actionname='exit'/>" +
                 "</head>" +
                 "<body style='display: border;'>" +
@@ -158,6 +157,31 @@ public class DomConverterTest extends TestCase {
         JPanel rootPanel = (JPanel) DomConverter.toSwing(model);
 
         assertEquals("exit", rootPanel.getInputMap().get(KeyStroke.getKeyStroke(KeyEvent.VK_X, KeyEvent.CTRL_MASK)));
+
+
+    }
+
+
+
+    public void testSetDefaultBtn() throws JDOMException, IOException {
+        //http://code.google.com/p/swinghtmltemplate/issues/detail?id=19
+        String html = "<html xmlns:ui='http://swinghtmltemplate.googlecode.com/ui'" +
+                " xmlns:c=\"http://www.oracle.com/swing\">" +
+                "<head>" +
+                "  <meta name='display-as' content='dialog'/>" +
+                "  <meta name='default-button' content='okBtn'/>" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "   <input type='button' id='okBtn'/>" +
+                "</body>" +
+                "</html>";
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        JDialog controller = new JDialog();
+        Binder.bind(controller, true, model);
+        
+        JButton okBtn = (JButton) model.getTagById("okBtn").getComponent();
+
+        assertEquals(okBtn, controller.getRootPane().getDefaultButton());
 
 
     }

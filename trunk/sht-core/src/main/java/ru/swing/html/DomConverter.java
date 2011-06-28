@@ -110,6 +110,24 @@ public class DomConverter {
 
             dlg.setModal(Utils.convertStringToObject(model.getMetaItems().get("modal"), Boolean.class));
 
+            //apply default button
+            String defaultBtn = model.getMetaItems().get("default-button");
+            if (StringUtils.isNotEmpty(defaultBtn)) {
+                Tag defaultBtnTag = model.getTagById(defaultBtn);
+                if (defaultBtnTag==null) {
+                    logger.warn("Can't find component with id='"+defaultBtn+"' to be used as default btn.");
+                }
+                else if (defaultBtnTag.getComponent()==null) {
+                    logger.warn("Can't find component with id='"+defaultBtn+"' to be used as default btn.");
+                }
+                else if (!(defaultBtnTag.getComponent() instanceof JButton)) {
+                    logger.warn("Component with id='"+defaultBtn+"' must be button to be used as default btn.");
+                }
+                else {
+                    dlg.getRootPane().setDefaultButton((JButton) defaultBtnTag.getComponent());
+                }
+            }
+
 
         }
         else if (res instanceof JFrame) {
@@ -135,6 +153,23 @@ public class DomConverter {
                 }
             }
 
+            //apply default button
+            String defaultBtn = model.getMetaItems().get("default-button");
+            if (StringUtils.isNotEmpty(defaultBtn)) {
+                Tag defaultBtnTag = model.getTagById(defaultBtn);
+                if (defaultBtnTag==null) {
+                    logger.warn("Can't find component with id='"+defaultBtn+"' to be used as default btn.");
+                }
+                else if (defaultBtnTag.getComponent()==null) {
+                    logger.warn("Can't find component with id='"+defaultBtn+"' to be used as default btn.");
+                }
+                else if (!(defaultBtnTag.getComponent() instanceof JButton)) {
+                    logger.warn("Component with id='"+defaultBtn+"' must be button to be used as default btn.");
+                }
+                else {
+                    frame.getRootPane().setDefaultButton((JButton) defaultBtnTag.getComponent());
+                }
+            }
         }
 
 
@@ -202,23 +237,25 @@ public class DomConverter {
             b.getActionMap().put(actionPair.getKey(), actionPair.getValue());
         }
         //install actions into input map of root component
-        for (Tag headChild : head.getChildren()) {
-            if (headChild instanceof ru.swing.html.tags.swing.Action) {
-                ru.swing.html.tags.swing.Action action = (ru.swing.html.tags.swing.Action) headChild;
+        if (head!=null) {
+            for (Tag headChild : head.getChildren()) {
+                if (headChild instanceof ru.swing.html.tags.swing.Action) {
+                    ru.swing.html.tags.swing.Action action = (ru.swing.html.tags.swing.Action) headChild;
 
-                int scope;
-                if ("ancestor".equalsIgnoreCase(action.getScope())) {
-                    scope = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
-                }
-                else if ("window".equalsIgnoreCase(action.getScope())) {
-                    scope = JComponent.WHEN_IN_FOCUSED_WINDOW;
-                }
-                else {
-                    scope = JComponent.WHEN_FOCUSED;
-                }
+                    int scope;
+                    if ("ancestor".equalsIgnoreCase(action.getScope())) {
+                        scope = JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+                    }
+                    else if ("window".equalsIgnoreCase(action.getScope())) {
+                        scope = JComponent.WHEN_IN_FOCUSED_WINDOW;
+                    }
+                    else {
+                        scope = JComponent.WHEN_FOCUSED;
+                    }
 
-                if (StringUtils.isNotEmpty(action.getShortcut())) {
-                    b.getInputMap(scope).put(KeyStroke.getKeyStroke(action.getShortcut()), action.getActionName());
+                    if (StringUtils.isNotEmpty(action.getShortcut())) {
+                        b.getInputMap(scope).put(KeyStroke.getKeyStroke(action.getShortcut()), action.getActionName());
+                    }
                 }
             }
         }
