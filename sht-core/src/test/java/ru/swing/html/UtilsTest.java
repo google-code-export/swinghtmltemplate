@@ -106,6 +106,18 @@ public class UtilsTest extends TestCase {
         assertNull(Utils.findActionMethod(Foo1.class, "foo1", Integer.class));
     }
 
+
+    public void testUnwrap() throws Exception {
+        assertEquals("foo", Utils.unwrap("'foo'"));
+        assertEquals("foo", Utils.unwrap("\"foo\""));
+        assertEquals("\"foo'", Utils.unwrap("\"foo'"));
+        assertEquals("foo", Utils.unwrap("foo"));
+        assertEquals("", Utils.unwrap("''"));
+        assertEquals("", Utils.unwrap("\"\""));
+        assertEquals("\"", Utils.unwrap("\""));
+        assertEquals("'", Utils.unwrap("'"));
+    }
+
     /**
      * Test class for testing Utils.findActionMethod().
      */
