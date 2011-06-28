@@ -133,6 +133,9 @@ public class PopupMenu extends Tag {
 
         final JPopupMenu menu = (JPopupMenu) getComponent();
 
+        //http://code.google.com/p/swinghtmltemplate/issues/detail?id=22
+        getParent().getComponent().remove(menu);
+
         if (StringUtils.isNotEmpty(getFor())) {
             getModel().query(getFor()).each(new TagVisitor() {
                 public void visit(Tag tag) {
