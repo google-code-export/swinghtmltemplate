@@ -297,4 +297,32 @@ public class Utils {
 
     }
 
+    /**
+     * <p>Removes leading and trailing symbols ' and " if string starts with and ends with one of these symbols.</p>
+     * <h2>Example:</h2>
+     * <ul>
+     * <li>'foo' -> foo</li>
+     * <li>"foo" -> foo</li>
+     * <li>'' -> (empty) </li>
+     * <li>"" -> (empty) </li>
+     * <li>' -> '</li>
+     * <li>" -> "</li>
+     * <li>foo -> foo</li>
+     * </ul>
+     * @param string original string
+     * @return unwrapped string
+     */
+    public static String unwrap(String string) {
+        if (StringUtils.isEmpty(string)) {
+             return  string;
+        }
+
+        if (string.startsWith("'") && string.endsWith("'") && string.length()>=2) {
+            return string.substring(1, string.length()-1);
+        }
+        else if (string.startsWith("\"") && string.endsWith("\"") && string.length()>=2) {
+            return string.substring(1, string.length()-1);
+        }
+        return string;
+    }
 }

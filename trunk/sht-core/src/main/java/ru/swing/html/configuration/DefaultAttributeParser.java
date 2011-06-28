@@ -118,12 +118,15 @@ public class DefaultAttributeParser implements AttributeParser {
 
         public void applyAttribute(Tag tag, JComponent component, String attrName) {
             Icon icon = null;
+
+            String iconAttrValue = tag.getAttribute("icon");
+            iconAttrValue = Utils.unwrap(iconAttrValue);
             try {
-                String val = ELUtils.parseStringValue(tag.getAttribute("icon"), tag.getModelElements());
+                String val = ELUtils.parseStringValue(iconAttrValue, tag.getModelElements());
                 Image image = ImageIO.read(tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), val));
                 icon = new ImageIcon(image);
             } catch (Exception e) {
-                logger.warn("Can't load icon from resource '"+tag.getAttribute("icon")+"': "+e.getMessage());
+                logger.warn("Can't load icon from resource '"+ iconAttrValue +"': "+e.getMessage());
             }
 
             if (icon!=null) {
