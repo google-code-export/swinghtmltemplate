@@ -12,7 +12,6 @@ import ru.swing.html.tags.event.ClickDelegator;
 import ru.swing.html.tags.event.DocumentDelegator;
 import ru.swing.html.tags.event.MouseListenerClickDelegator;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -228,15 +227,23 @@ public class DefaultAttributeParser implements AttributeParser {
             String clicked = ELUtils.parseStringValue(tag.getAttribute("background-image-clicked"), tag.getModelElements());
 
             try {
-                ImageIcon staticBkg = new ImageIcon(ImageIO.read(tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), staticB)));
+                InputStream in = tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), staticB);
+                Image image = Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in));
+                ImageIcon staticBkg = new ImageIcon(image);
                 if (StringUtils.isEmpty(hover)) {
                     hover = staticB;
                 }
                 if (StringUtils.isEmpty(clicked)) {
                     clicked = staticB;
                 }
-                ImageIcon hoverBkg = new ImageIcon(ImageIO.read(tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), hover)));
-                ImageIcon clickedBkg = new ImageIcon(ImageIO.read(tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), clicked)));
+
+                in = tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), hover);
+                image = Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in));
+                ImageIcon hoverBkg = new ImageIcon(image);
+
+                in = tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), clicked);
+                image = Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in));
+                ImageIcon clickedBkg = new ImageIcon(image);
 
                 BackgroundImageLayerUI backgroundLayerUI = new BackgroundImageLayerUI(staticBkg, hoverBkg, clickedBkg, staticBkg);
                 JXLayer layer = new JXLayer<JComponent>(component, backgroundLayerUI);
