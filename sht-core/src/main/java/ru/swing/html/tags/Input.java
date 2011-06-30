@@ -160,14 +160,6 @@ public class Input extends Tag {
             if (getModel().getActions().containsKey(getAction())) {
                 Action a = getModel().getActions().get(getAction());
                 b.setAction(a);
-                //check we do not replace overriden 'text' attr
-                if (getAttributes().containsKey("text")) {
-                    applyAttribute(component, "text");
-                }
-                //check we do not replace overriden 'icon' attr
-                if (getAttributes().containsKey("icon")) {
-                    applyAttribute(component, "icon");
-                }
             }
             else {
                 logger.warn(toString()+": no action with name '"+getAction()+"' is found");
