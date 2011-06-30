@@ -51,6 +51,7 @@ public class Input extends Tag {
     public static final String SIZE_ATTRIBUTE = "size";
 
     private Log logger = LogFactory.getLog(getClass());
+    private String action;
 
     @Override
     public JComponent createComponent() {
@@ -154,9 +155,43 @@ public class Input extends Tag {
                 c.setText("");
             }
         }
+        else if ("action".equals(name) && component instanceof AbstractButton) {
+            AbstractButton b = (AbstractButton) component;
+            if (getModel().getActions().containsKey(getAction())) {
+                Action a = getModel().getActions().get(getAction());
+                b.setAction(a);
+                //check we do not replace overriden 'text' attr
+                if (getAttributes().containsKey("text")) {
+                    applyAttribute(component, "text");
+                }
+                //check we do not replace overriden 'icon' attr
+                if (getAttributes().containsKey("icon")) {
+                    applyAttribute(component, "icon");
+                }
+            }
+            else {
+                logger.warn(toString()+": no action with name '"+getAction()+"' is found");
+            }
+        }
         else {
             super.applyAttribute(component, name);
         }
 
+    }
+
+    @Override
+    public void setAttribute(String name, String value) {
+        if ("action".equals(name)) {
+            setAction(value);
+        }
+        super.setAttribute(name, value);
+    }
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
     }
 }

@@ -6,6 +6,7 @@
     <meta name="display-as" content="frame"/>
     <meta name="onclose" content="exit"/>
     <meta name="size" content="320 190"/>
+    <c:action actionName='login' title='${msg.label_ok_text}' onAction='onOkClick' icon="/img/cancel.png"/>
 
     <link type="text/css" rel="stylesheet" href="loginform.css"/>
     <style type="text/css">
@@ -51,7 +52,7 @@
             <td>
                 <div style="display: box; x-boxlayout-direction: horizontal;border: empty 0 0 0 6;opaque:false;">
                     <c:glue type="horizontal"/>
-                    <input type="button" text="${msg.label_ok_text}" id="ok" class="button" onclick="onOkClick"/>
+                    <input type="button" action='login' id="ok" class="button" text='123'/>
                     <c:strut type="horizontal" style="width: 6"/>
                     <input type="button" text="${msg.label_cancel_text}" id="cancel" class="button"
                            onclick="onCancelClick"/>

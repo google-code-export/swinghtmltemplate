@@ -156,6 +156,44 @@ public class InputTest extends TestCase {
 
     }
 
+    public void testButtonAction() throws Exception {
+        //test action is assigned to button
+        String html = "<html>" +
+                "<head xmlns:j=\"http://www.oracle.com/swing\">" +
+                "   <j:action actionname='foo' title='foo'/>" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "   <input id='in' action='foo' type='button' value='${person.name}'></input>" +
+                "</body>" +
+                "</html>";
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+
+        JButton b = (JButton) model.getTagById("in").getComponent();
+        assertEquals("foo", b.getText());
+
+    }
+
+    public void testButtonAction2() throws Exception {
+        //test action is assigned to button, but text overrides action's title
+        String html = "<html>" +
+                "<head xmlns:j=\"http://www.oracle.com/swing\">" +
+                "   <j:action actionname='foo' title='foo'/>" +
+                "</head>" +
+                "<body style='display: border;'>" +
+                "   <input id='in' action='foo' type='button' text='foo1' value='${person.name}'></input>" +
+                "</body>" +
+                "</html>";
+
+        DomModel model = DomLoader.loadModel(new ByteArrayInputStream(html.getBytes()));
+        DomConverter.toSwing(model);
+
+        JButton b = (JButton) model.getTagById("in").getComponent();
+        assertEquals("foo1", b.getText());
+
+    }
+
     public void testUnknownType() {
         Input p = new Input();
         p.setType("foo");

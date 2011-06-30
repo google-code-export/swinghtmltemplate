@@ -67,11 +67,16 @@ DomConverter.toSwing(model);
 }}}
 
 The conversion consists of several phases:
+ # before-parsing-head
  # parsing-head
  # before-component-conversion
  # component-conversion
  # after-conversion phase
 
+
+In the "before-parsing-head" phase the `beforeParsingHead()` callback is called for each tag in the
+model. Here tag can do some work needed to be done before head is parsed. For example, `ui:loadBundle`
+loads resource bundle in this phase, so every tag (even in the head) can use values from resource bundle in conversion phase.
 
 In "parsing-head" phase all `<head>` elements are parsed and stored in dom model. These elements include
  * `title`
@@ -83,8 +88,7 @@ In "parsing-head" phase all `<head>` elements are parsed and stored in dom model
 E.g. all `meta` tags are stored in dom model in the `metas` property as `java.util.Map`.
 
 In the "before-component-conversion" phase the `beforeComponentsConvertion()` callback is called for each tag in the
-model. Here tag can do some work needed to be done before actual convertion is started. For example, `ui:loadBundle`
-loads resource bundle in this phase, so every tag can use values from resource bundle in conversion phase.
+model. Here tag can do some work needed to be done before actual convertion is started.
 
 In the "component-conversion" phase the recursive conversion procedure is started. This procedure converts every
 component (started with root) to swing in following steps:
@@ -461,7 +465,44 @@ input.setColumns(10);
 Reflection is used to set this attribute: setColumns(int) method is searched. If noone is found a warning message
 will be printed.
 
+`action` attribute can be used to set action for buttons (e.g. `<input type='button'/>`). Action
+must be specified in the `<head>` section with `<action>` tag.
+Button will take action's title and icon unless other value is specified in the `<input>` tag.
+Example:
+{{{
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://www.oracle.com/swing"
+      xmlns:ui="http://swinghtmltemplate.googlecode.com/ui">
+<head>
+    <title>Login form</title>
+    <meta name="display-as" content="frame"/>
+    <meta name="onclose" content="exit"/>
+    <meta name="size" content="320 190"/>
+    <c:action actionName='login' title='${msg.label_ok_text}' onAction='onOkClick' icon="/img/small.png"/>
+    <c:action actionName='cancel' title='${msg.label_cancel_text}' onAction='onCancelClick' icon="/img/small.png"/>
 
+    <link type="text/css" rel="stylesheet" href="loginform.css"/>
+    <style type="text/css">
+
+        #ok {
+            icon: "/img/accept.png";
+        }
+
+        #cancel {
+            icon: "/img/cancel.png";
+        }
+    </style>
+    <ui:loadBundle baseName="ru.swing.html.example.loginform" var='msg'/>
+</head>
+<body id="rootPanel" style="display: border;">
+    <input type="button" action='login' id="ok" class="button" text='Do Login'/>
+    <input type="button" action='cancel' id="cancel" class="button"/>
+</body>
+</html>
+}}}
+
+Both buttons use actions. "OK" button overrides title with 'Do Login' value, while "cancel" button uses action's
+title.
 
 === label ===
 Tag is converted to `javax.swing.JLabel`. The content of the tag is assigned as a component's text.

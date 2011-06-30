@@ -844,4 +844,10 @@ public class Tag implements Cloneable {
     public void setStyleClass(String styleClass) {
         this.styleClass = styleClass;
     }
+
+    /**
+     * This call-back method is called in DomConverter before parsing head phase
+     */
+    public void beforeParsingHead() {
+    }
 }

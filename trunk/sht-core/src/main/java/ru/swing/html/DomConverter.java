@@ -216,6 +216,13 @@ public class DomConverter {
         logger.trace("Converting dom model to swing components");
         Tag html = model.getRootTag();
 
+        logger.trace("before-parsing-head phase");
+        recursivellyVisitTags(html, new TagVisitor() {
+            public void visit(Tag tag) {
+                tag.beforeParsingHead();
+            }
+        });
+
         logger.trace("parsing-head phase");
         Tag head = html.getChildByName("head");
         parseHead(model, head);

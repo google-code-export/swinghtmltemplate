@@ -59,7 +59,7 @@ public class LoadBundle extends Tag {
     }
 
     @Override
-    public void beforeComponentsConvertion() {
+    public void beforeParsingHead() {
 
         Locale locale;
         if (StringUtils.isNotEmpty(getLocale())) {
