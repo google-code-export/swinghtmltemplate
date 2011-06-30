@@ -4,14 +4,15 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import ru.swing.html.ELUtils;
+import ru.swing.html.IOUtils;
 import ru.swing.html.tags.Tag;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.InputStream;
 
 /**
  * Is converted to JMenuItem
@@ -124,7 +125,9 @@ public class MenuItem extends Tag {
         Icon icon = null;
         try {
             String val = ELUtils.parseStringValue(getIcon(), getModelElements());
-            Image image = ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), val));
+            InputStream in = getModel().getConfiguration().getResourceLoader().loadResource(getModel(), val);
+            Image image = Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in));
+            /*Image image = ImageIO.read(getModel().getConfiguration().getResourceLoader().loadResource(getModel(), val));*/
             icon = new ImageIcon(image);
         } catch (Exception e) {
             logger.warn("Can't load icon from resource '"+getIcon()+"': "+e.getMessage());
