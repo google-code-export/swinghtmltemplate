@@ -132,6 +132,16 @@ public class Action extends Tag {
                 }
             }
         };
+        return swingAction;
+    }
+
+
+    @Override
+    public void afterComponentsConverted() {
+        super.afterComponentsConverted();
+        //we need to resolve placeholders here, because the were didn't resolved during 'parse head ' phase:
+        // ui:loadBundle was not invoked.
+        javax.swing.Action swingAction = getModel().getActions().get(getActionName());
         if (StringUtils.isNotEmpty(getTitle())) {
             swingAction.putValue(javax.swing.Action.NAME, ELUtils.parseStringValue(getTitle(), getModelElements()));
         }
@@ -149,10 +159,8 @@ public class Action extends Tag {
                 swingAction.putValue(javax.swing.Action.SMALL_ICON, icon);
             }
         }
-        return swingAction;
+
     }
-
-
 }
 
 
