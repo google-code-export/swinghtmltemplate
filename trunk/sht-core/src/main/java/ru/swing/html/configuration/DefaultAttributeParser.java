@@ -4,10 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdesktop.jxlayer.JXLayer;
-import ru.swing.html.ColorFactory;
-import ru.swing.html.DomModel;
-import ru.swing.html.ELUtils;
-import ru.swing.html.Utils;
+import ru.swing.html.*;
 import ru.swing.html.components.BackgroundImageLayerUI;
 import ru.swing.html.css.CssBlock;
 import ru.swing.html.tags.Tag;
@@ -20,6 +17,7 @@ import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.AttributedCharacterIterator;
@@ -123,7 +121,9 @@ public class DefaultAttributeParser implements AttributeParser {
             iconAttrValue = Utils.unwrap(iconAttrValue);
             try {
                 String val = ELUtils.parseStringValue(iconAttrValue, tag.getModelElements());
-                Image image = ImageIO.read(tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), val));
+                InputStream in = tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), val);
+                Image image = Toolkit.getDefaultToolkit().createImage(IOUtils.toByteArray(in));
+//                Image image = ImageIO.read(tag.getModel().getConfiguration().getResourceLoader().loadResource(tag.getModel(), val));
                 icon = new ImageIcon(image);
             } catch (Exception e) {
                 logger.warn("Can't load icon from resource '"+ iconAttrValue +"': "+e.getMessage());
