@@ -133,7 +133,7 @@ public class Action extends Tag {
             }
         };
         if (StringUtils.isNotEmpty(getTitle())) {
-            swingAction.putValue(javax.swing.Action.NAME, getTitle());
+            swingAction.putValue(javax.swing.Action.NAME, ELUtils.parseStringValue(getTitle(), getModelElements()));
         }
         if (StringUtils.isNotEmpty(getIcon())) {
             Icon icon = null;

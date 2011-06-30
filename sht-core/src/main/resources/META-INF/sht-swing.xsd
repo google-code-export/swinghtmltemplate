@@ -49,6 +49,18 @@
     </xs:complexType>
 
 
+    <!-- action -->
+    <xs:complexType name="actionType">
+        <xs:attribute name="actionName" type="xs:string"/>
+        <xs:attribute name="title" type="elBinding"/>
+        <xs:attribute name="icon" type="elBinding"/>
+        <xs:attribute name="onAction" type="elBinding"/>
+        <xs:attribute name="shortcut" type="xs:string"/>
+        <xs:attribute name="scope" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:element name="action" type="actionType"/>
+
     <!-- attribute -->
     <xs:complexType name="attributeType">
         <xs:attribute name="name" type="xs:string"/>
